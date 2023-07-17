@@ -58,6 +58,9 @@ const user = sequelizeDb.define("users_blood_bank", {
         type: DataTypes.ENUM("Active", "Deactivate"),
         defaultValue: "Active",
     }
+}, 
+{
+    paranoid: true
 });
 
 

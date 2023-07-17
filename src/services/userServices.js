@@ -1,10 +1,5 @@
 const sequelizeModel = require('../models/userModels')
-// const userData = require('../utils/userData')
 const md5 = require("md5");
-const userStatus = "Active";
-
-
-
 
 
 
@@ -12,6 +7,7 @@ const userStatus = "Active";
 
 
 const userRegistrationData = async (req, res) => {
+    let userStatus = "Active";
     if (req.body.role == "blood_bank") {
         userStatus = "Deactivate";
     }
@@ -64,7 +60,7 @@ const userRegistrationData = async (req, res) => {
                 });
             }
             else {
-                res.send("user already exist");
+                res.send("username already exist");
             }
 
         }).catch((error) => {
@@ -82,41 +78,104 @@ const userRegistrationData = async (req, res) => {
 //*************************************************************User login Api************************************************** */
 
 
-const userAuthenticationData = (req, res)=>{
+const userAuthenticationData = (req, res) => {
     sequelizeModel.sync().then(() => {
         sequelizeModel.findOne({
             where: {
                 username: req.body.username
             }
         }).then(result => {
-            if(result==null){
+            if (result == null) {
                 res.send("username doesn't exists");
-            }else{
-               if(result.password == md5(req.body.password)){
-                sequelizeModel.update(
-                    { is_active: 'true' },
-                    { where: { username: req.body.username } }
-                  ).then((result)=>{
-                    console.log(result)
-                  }).catch((err)=>{
-                    console.log(err)
-                  })
-                res.send("you are logged In");
-               }
-               else{
-                res.send("wrong Credentials");
-               }
+            }
+
+            else {
+                // res.send(result.user_status);
+                if (result.user_status == "Deactivate") {
+                    res.send("you bank's registration application is under progress");
+
+                }
+                else {
+                    if (result.password == md5(req.body.password)) {
+                        sequelizeModel.update(
+                            { is_active: 'true' },
+                            { where: { username: req.body.username } }
+                        ).then((result) => {
+                            console.log(result)
+                        }).catch((err) => {
+                            console.log(err)
+                        })
+                        res.send("you are logged In");
+                    }
+                    else {
+                        res.send("wrong Credentials");
+                    }
+
+                }
+
+
+
             }
         })
-        .catch(err=>{
-            res.send(err)
+            .catch(err => {
+                res.send(err)
+            })
+    })
+}
+
+
+//********************************************soft Delete Here***************************************************** */
+
+const userDeletionData = (req, res) => {
+    sequelizeModel.sync().then(() => {
+        sequelizeModel.findOne({
+            where: {
+                username: req.body.username
+            }
+        }).then(result => {
+            if (result == null) {
+                res.send("username doesn't exists");
+            }
+            else if (result.user_status == "Deactivate") {
+                res.send("you bank's registration application is under progress you doesn't delete your blood bank");
+
+            }
+            else {
+                if (result.password == md5(req.body.password)) {
+                    sequelizeModel.destroy({
+                        where: {
+                            username: req.body.username
+                        }
+                    }).then(() => { res.send("Account is Deleted"); })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                }
+                else {
+                    res.send("Wrong Credentials");
+                }
+            }
         })
-})
+            .catch(err => {
+                res.send(err)
+            })
+    })
 }
 
 
 
+//Get api
 
+const userGetData = (req, res) => {
+    sequelizeModel.sync().then(() => {
+        sequelizeModel.findAll({}).then((result) => {
+            res.send(result);
+        })
+            .catch((err) => {
+                console.log(err);
+            })
+    })
 
+}
 
-module.exports = {userRegistrationData, userAuthenticationData};  
+module.exports = { userRegistrationData, userAuthenticationData, userDeletionData, userGetData };  

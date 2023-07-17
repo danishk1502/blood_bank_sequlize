@@ -11,3 +11,16 @@ exports.userRegister= (service.userRegistrationData);
 exports.userAuthentication= (service.userAuthenticationData);
 
 
+//************************************************User Deletion Controller***************************************************** */
+
+exports.userDeletion= (service.userDeletionData);
+
+//************************************************User get Controller***************************************************** */
+
+exports.userGet= (service.userGetData);
+
+
+
+
+
+

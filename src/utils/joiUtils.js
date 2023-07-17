@@ -20,6 +20,11 @@ const joiUtils = (user)=>
 			.min(3)
 			.max(40)
 			.required(),
+			
+		role: Joi.string()
+			.min(3)
+			.max(40)
+			.required(),
 
 		lname: Joi.string()
 			.min(3)
