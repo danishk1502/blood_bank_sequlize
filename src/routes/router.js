@@ -3,11 +3,13 @@ const userRoute = require("./userRoute")
 const usermiddelware = require("../middelware/userMiddelware")
 
 
-
-//*****************************************************User Routes ***********************************8 */
+// *****************************************Users Routes*****************************************************/ 
+//*****************************************************User Routes Registration*********************************** */
 router.post("/register", usermiddelware, userRoute.userRegisterRoute);
 
-// router.post("/register", usermiddelware, userRoute.userRegisterRoute);
+// /*****************************************************User Routes ***********************************8 */
+router.patch("/login", userRoute.userAuthenticationRoute);
+
 
 
 

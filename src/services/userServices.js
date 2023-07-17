@@ -8,6 +8,7 @@ const userStatus = "Active";
 
 
 
+//****************************************************************User Registration********************************************************/
 
 
 const userRegistrationData = async (req, res) => {
@@ -74,10 +75,48 @@ const userRegistrationData = async (req, res) => {
     }).catch((error) => {
         console.error('Unable to create table : ', error);
     });
+};
+
+
+
+//*************************************************************User login Api************************************************** */
+
+
+const userAuthenticationData = (req, res)=>{
+    sequelizeModel.sync().then(() => {
+        sequelizeModel.findOne({
+            where: {
+                username: req.body.username
+            }
+        }).then(result => {
+            if(result==null){
+                res.send("username doesn't exists");
+            }else{
+               if(result.password == md5(req.body.password)){
+                sequelizeModel.update(
+                    { is_active: 'true' },
+                    { where: { username: req.body.username } }
+                  ).then((result)=>{
+                    console.log(result)
+                  }).catch((err)=>{
+                    console.log(err)
+                  })
+                res.send("you are logged In");
+               }
+               else{
+                res.send("wrong Credentials");
+               }
+            }
+        })
+        .catch(err=>{
+            res.send(err)
+        })
+})
 }
 
 
 
 
 
-module.exports = {userRegistrationData};  
+
+module.exports = {userRegistrationData, userAuthenticationData};  
