@@ -1,0 +1,25 @@
+User Sample Data
+    {
+        "username": "kdanish",
+        "name": "Danish",
+        "lname": "Kumar",
+        "email": "kdanish@123.com",
+        "password": "12345",
+        "role": "user",
+        "state": "Himachal",
+        "distt": "Una"
+    }
+
+
+Blood Bank Sample Data 
+    {
+        "username": "blood_bank",
+        "name": "Blood",
+        "lname": "bank",
+        "email": "blood@123.com",
+        "password": "12345",
+        "role": "blood_bank",
+        "state": "Himachal",
+        "distt": "Una"
+    }
+
