@@ -7,5 +7,8 @@ const usermiddelware = require("../middelware/userMiddelware")
 //*****************************************************User Routes ***********************************8 */
 router.post("/register", usermiddelware, userRoute.userRegisterRoute);
 
+// router.post("/register", usermiddelware, userRoute.userRegisterRoute);
+
+
 
 module.exports = router;
