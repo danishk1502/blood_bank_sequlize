@@ -1,18 +1,23 @@
 const userController = require("../controllers/userController")
 
 
-
-//*******************************************************************User Register route***************************************************************************************** */
+/*****************************************************
+* route-Controller*
+* @deprecated * route-Controller for user Registration
+* ****************************************************/
 exports.userRegisterRoute = userController.userRegister;
 
 
-/*******************************************************************User Authentication route***************************************************************************************** */
+/*****************************************************
+* route-Controller*
+* @deprecated * route-Controller for user Authentication
+* ****************************************************/
 exports.userAuthenticationRoute = userController.userAuthentication;
 
 
-/*******************************************************************User Deletion route***************************************************************************************** */
+/*****************************************************
+* route-Controller*
+* @deprecated * route-Controller for user Deletion
+* ****************************************************/
 exports.userDeletionRoute = userController.userDeletion;
 
-
-/*******************************************************************User Get route***************************************************************************************** */
-exports.userGetRoute = userController.userGet;

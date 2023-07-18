@@ -3,14 +3,19 @@ const userController = require("../controllers/userController")
 
 
 
-//get api
+/*****************************************************
+* route-Controller*
+* @deprecated * route-Controller connection for get all data
+* ****************************************************/
 
-/*******************************************************************User Get route***************************************************************************************** */
 exports.userGetRoute = userController.userGet;
 
 
 
 
-/*******************************************************************User Filter role Get route************************************************************************/
+/*****************************************************
+* route-Controller*
+* @deprecated * route-Controller connection for get all data using role filter 
+* ****************************************************/
 
 exports.userRoleFilter=userController.userRoleFilter
