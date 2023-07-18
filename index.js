@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3212;
+const port = 3312;
 const route = require("./src/routes/router")
 const mysql = require("mysql");
 
