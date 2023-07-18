@@ -58,8 +58,6 @@ const findEmail = async (email) => {
 
 
 
-
-
 /*******************************************************************
  * userRegistrationData
  * @param {*} userData 
@@ -124,62 +122,50 @@ const userDeletion = async (username) => {
 
 
 
+/***********************************************************************************
+ * @description Getter function (using role filter)
+ * *********************************************************************************/
 
 
 
 
-        //********************************************soft Delete Here***************************************************** */
+/*******************************************************************
+ * get all Data
+ * @param {*}  
+ * @returns : Used for getting all Data 
+ * @description : This function used to get all Data
+*******************************************************************/
 
-        // const userDeletionData = (req, res) => {
-        //     sequelizeModel.sync().then(() => {
-        //         sequelizeModel.findOne({
-        //             where: {
-        //                 username: req.body.username
-        //             }
-        //         }).then(result => {
-        //             if (result == null) {
-        //                 res.send("username doesn't exists");
-        //             }
-        //             else if (result.user_status == "Deactivate") {
-        //                 res.send("you bank's registration application is under progress you doesn't delete your blood bank");
-
-        //             }
-        //             else {
-        //                 if (result.password == md5(req.body.password)) {
-        //                     sequelizeModel.destroy({
-        //                         where: {
-        //                             username: req.body.username
-        //                         }
-        //                     }).then(() => { res.send("Account is Deleted"); })
-        //                         .catch((err) => {
-        //                             console.log(err);
-        //                         })
-        //                 }
-        //                 else {
-        //                     res.send("Wrong Credentials");
-        //                 }
-        //             }
-        //         })
-        //             .catch(err => {
-        //                 res.send(err)
-        //             })
-        //     })
-        // }
+const usersGetData = async () => {
+    try {
+        const users = await sequelizeModel.findAll({})
+        return users;
+    } catch (e) {
+        throw e;
+    }
+};
 
 
+/*******************************************************************
+ * get all Data of a specific role
+ * @param {*}  role
+ * @returns : get all Data of a specific role
+ * @description : This function used to get all Data of a specific role
+*******************************************************************/
 
-        //Get api
+const userRoleFilter = async (role) => {
+    try {
+        const users = await sequelizeModel.findAll({
+            where : {
+                role : role
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e;
+    }
+};
 
-        const userGetData = (req, res) => {
-            sequelizeModel.sync().then(() => {
-                sequelizeModel.findAll({}).then((result) => {
-                    res.send(result);
-                })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-            })
+       
 
-        }
-
-        module.exports = { userRegistrationData, findEmail, userDeletion, userGetData, findUsername, userAuthentication };  
+module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, userRoleFilter };  

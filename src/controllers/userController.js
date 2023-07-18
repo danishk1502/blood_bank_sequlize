@@ -117,10 +117,49 @@ exports.userDeletion = (async (req, res) => {
     }
 });
 
-//************************************************User get Controller***************************************************** */
 
-exports.userGet = (service.userGetData);
+/**
+ * userDeletion Controller 
+ * Creating soft Deletion controller 
+ * @Response : res.status(200)
+ */
 
+exports.userGet = (async (req, res) => {
+    const users = await service.usersGetData()
+    return res.status(200).json({ status: 200, data: users, message: "All Data" });
+           
+});
+
+/**
+ * userDeletion Controller 
+ * Creating soft Deletion controller 
+ * @Response : res.status(200)
+ */
+
+exports.userGet = (async (req, res) => {
+    const users = await service.usersGetData()
+    return res.status(200).json({ status: 200, data: users, message: "All Data" });
+});
+
+
+/**
+ * user role Filter Controller 
+ * @Request role 
+ * @Response : res.status(200, 404)
+ * @description : provide data on a specific role
+ */
+
+
+exports.userRoleFilter = (async (req, res) => {
+    const dataRole = await service.userRoleFilter(req.body.role);
+    if(dataRole != null){
+        return res.status(200).json({ status: 200, data: dataRole, message: "Data of role :" +req.body.role });
+    }
+    else{
+        return res.status(404).json({ status: 404, data: data, message: "Data Not Found" });
+    }
+    
+});
 
 
 
