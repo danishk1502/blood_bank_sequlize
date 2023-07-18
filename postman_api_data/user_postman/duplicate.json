@@ -1,0 +1,15 @@
+
+[
+{
+    "status": 403,
+    "data": null,
+    "message": "Username already exist"
+}
+,
+
+{
+    "status": 403,
+    "data": null,
+    "message": "Email already exist"
+}
+]

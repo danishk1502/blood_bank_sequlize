@@ -7,7 +7,9 @@ const data=(req, res, next)=>{
 	user = req.body;
     response = joiValidations(user);
     if(response.error){
-        res.send(response.error.details[0].message);
+        res.json({
+            status:412,
+            msg:response.error.details[0].message});
     }
     else{
         next();
