@@ -1,3 +1,4 @@
+
 const sequelizeModel = require('../models/userModels')
 
 
@@ -51,10 +52,6 @@ const findEmail = async (email) => {
 
 
 
-
-
-
-
 /***********************************************************************************
  * @description User, Blood-bank and Superuser CRUD functions 
  * *********************************************************************************/
@@ -78,48 +75,96 @@ const userRegistrationData = async (userData) => {
             )
         return userCreate;
     } catch (e) {
-        throw Error('Error while Paginating Users')
+        throw e;
     }
 };
 
 
+
+/*******************************************************************
+ * userAuthentication
+ * @param {*} is_active 
+ * @returns : Change is_Active to true while login
+ * @description : This function used to login
+*******************************************************************/
+
+const userAuthentication = async (username) => {
+    try {
+        const userLogin = await sequelizeModel.update(
+            { is_active: 'true' },
+            { where: { username: username }}
+            )
+        return userLogin;
+    } catch (e) {
+        throw e;
+    }
+};
+
+
+/*******************************************************************
+ * userDeletion
+ * @param {*} username 
+ * @returns : Used for soft delete
+ * @description : This function used to delete a user
+*******************************************************************/
+
+const userDeletion = async (username) => {
+    try {
+        const userDelete = await sequelizeModel.destroy({
+            where: {
+                username: username
+            }
+        })
+        return userDelete;
+    } catch (e) {
+        throw e;
+    }
+};
+
+
+
+
+
+
+
+
         //********************************************soft Delete Here***************************************************** */
 
-        const userDeletionData = (req, res) => {
-            sequelizeModel.sync().then(() => {
-                sequelizeModel.findOne({
-                    where: {
-                        username: req.body.username
-                    }
-                }).then(result => {
-                    if (result == null) {
-                        res.send("username doesn't exists");
-                    }
-                    else if (result.user_status == "Deactivate") {
-                        res.send("you bank's registration application is under progress you doesn't delete your blood bank");
+        // const userDeletionData = (req, res) => {
+        //     sequelizeModel.sync().then(() => {
+        //         sequelizeModel.findOne({
+        //             where: {
+        //                 username: req.body.username
+        //             }
+        //         }).then(result => {
+        //             if (result == null) {
+        //                 res.send("username doesn't exists");
+        //             }
+        //             else if (result.user_status == "Deactivate") {
+        //                 res.send("you bank's registration application is under progress you doesn't delete your blood bank");
 
-                    }
-                    else {
-                        if (result.password == md5(req.body.password)) {
-                            sequelizeModel.destroy({
-                                where: {
-                                    username: req.body.username
-                                }
-                            }).then(() => { res.send("Account is Deleted"); })
-                                .catch((err) => {
-                                    console.log(err);
-                                })
-                        }
-                        else {
-                            res.send("Wrong Credentials");
-                        }
-                    }
-                })
-                    .catch(err => {
-                        res.send(err)
-                    })
-            })
-        }
+        //             }
+        //             else {
+        //                 if (result.password == md5(req.body.password)) {
+        //                     sequelizeModel.destroy({
+        //                         where: {
+        //                             username: req.body.username
+        //                         }
+        //                     }).then(() => { res.send("Account is Deleted"); })
+        //                         .catch((err) => {
+        //                             console.log(err);
+        //                         })
+        //                 }
+        //                 else {
+        //                     res.send("Wrong Credentials");
+        //                 }
+        //             }
+        //         })
+        //             .catch(err => {
+        //                 res.send(err)
+        //             })
+        //     })
+        // }
 
 
 
@@ -137,4 +182,4 @@ const userRegistrationData = async (userData) => {
 
         }
 
-        module.exports = { userRegistrationData, findEmail, userAuthenticationData, userDeletionData, userGetData, findUsername };  
+        module.exports = { userRegistrationData, findEmail, userDeletion, userGetData, findUsername, userAuthentication };  

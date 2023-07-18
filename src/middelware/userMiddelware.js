@@ -5,7 +5,6 @@ const joiValidations = require("../utils/joiUtils");
 
 const data=(req, res, next)=>{
 	user = req.body;
-   
     response = joiValidations(user);
     if(response.error){
         res.send(response.error.details[0].message);

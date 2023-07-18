@@ -12,56 +12,110 @@ const md5 = require('md5');
 
 exports.userRegister = (async (req, res) => {
     try {
-        const users = await service.findUsername(req.body.username)
-        const email = await service.findEmail(req.body.email)
-        if(users==null){
-            if(email==null){
+        const usernameInfo = await service.findUsername(req.body.username)
+        const emailInfo = await service.findEmail(req.body.email)
+        if (usernameInfo == null) {
+            if (emailInfo == null) {
                 let userStatus = "Active";
-            if (req.body.role == "blood_bank") {
-                userStatus = "Deactivate";
-            }
-
-            const userInfo = {
-                name: req.body.name,
-                lname: req.body.lname,
-                email: req.body.email,
-                password: md5(req.body.password),
-                role: req.body.role,
-                username: req.body.username,
-                state: req.body.state,
-                distt: req.body.distt,
-                is_deleted: "false",
-                created_by: req.body.username,
-                updated_by: req.body.username,
-                is_active: "true",
-                user_status: userStatus
-            }
-            const saveData = await service.userRegistrationData(userInfo);
+                if (req.body.role == "blood_bank") {
+                    userStatus = "Deactivate";
+                }
+                const userInfo = {
+                    name: req.body.name,
+                    lname: req.body.lname,
+                    email: req.body.email,
+                    password: md5(req.body.password),
+                    role: req.body.role,
+                    username: req.body.username,
+                    state: req.body.state,
+                    distt: req.body.distt,
+                    is_deleted: "false",
+                    created_by: req.body.username,
+                    updated_by: req.body.username,
+                    is_active: "true",
+                    user_status: userStatus
+                }
+                const saveData = await service.userRegistrationData(userInfo);
 
                 return res.status(200).json({ status: 200, data: saveData, message: "Succesfully User created" });
             }
-            else{
+            else {
                 return res.status(403).json({ status: 403, data: null, message: "Email already exist" });
             }
         }
-        else{
+        else {
             return res.status(403).json({ status: 403, data: null, message: "Username already exist" });
         }
-        
+
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
 
 });
 
-//************************************************Authentication Controller***************************************************** */
-
-exports.userAuthentication = (service.userAuthenticationData);
 
 
-//************************************************User Deletion Controller***************************************************** */
 
-exports.userDeletion = (service.userDeletionData);
+
+/**
+ * userAuthentication Controller 
+ * Creating Authentication controller 
+ * @Response : res.status(200, 403, 202)
+ * @Request : password, username
+ */
+
+
+exports.userAuthentication = (async (req, res) => {
+    const users = await service.findUsername(req.body.username)
+    if (users != null) {
+        if (users.user_status == "Active") {
+            if (users.password == md5(req.body.password)) {
+                const username = req.body.username;
+                const loginData = service.userAuthentication(username);
+                return res.status(200).json({ status: 200, data: users, message: "User logged in" });
+            }
+            else {
+                return res.status(403).json({ status: 403, data: null, message: "Password Incorrect" });
+            }
+        }
+        else {
+            return res.status(202).json({ status: 202, data: null, message: "your bank's registration application is under progress" })
+        }
+    }
+    else {
+        return res.status(403).json({ status: 403, data: users, message: "Username Incorrect" });
+    }
+});
+
+
+/**
+ * userDeletion Controller 
+ * Creating soft Deletion controller 
+ * @Response : res.status(202, 204, 403, )
+ * @Request : password, username
+ */
+
+exports.userDeletion = (async (req, res) => {
+    const user = await service.findUsername(req.body.username)
+    if (user != null) { 
+        if(user.user_status=="Active"){
+            if(user.password == md5(req.body.password)){
+                const username = req.body.username;
+                const userDelete = service.userDeletion(username);
+                return res.status(202).json({ status: 204, data: null, message: "Account Deleted" });
+            }
+            else {
+                return res.status(403).json({ status: 403, data: userDelete, message: "Password Incorrect" });
+            }
+        }
+        else{
+            return res.status(202).json({ status: 202, data: null, message: "your bank's registration application is under progress" })
+        }
+    }
+    else {
+        return res.status(403).json({ status: 403, data: user, message: "Username Incorrect" });
+    }
+});
 
 //************************************************User get Controller***************************************************** */
 

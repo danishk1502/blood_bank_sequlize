@@ -13,5 +13,6 @@ exports.userAuthenticationRoute = userController.userAuthentication;
 /*******************************************************************User Deletion route***************************************************************************************** */
 exports.userDeletionRoute = userController.userDeletion;
 
+
 /*******************************************************************User Get route***************************************************************************************** */
 exports.userGetRoute = userController.userGet;
