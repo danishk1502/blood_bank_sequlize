@@ -3,15 +3,20 @@ const secretKey = "ThisismysecretKey"
 const fetchId = require("../services/userServices")
 
 exports.loginJwt= async (userData)=>{
-    const dataId = await fetchId.findUsername(userData.username);
-    if(dataId==null){
-        return "username doesn't exist";
+
+    try{
+        const dataId = await fetchId.findUsername(userData.username);
+        if(dataId==null){
+            return "username doesn't exist";
+        }
+        else{
+            const token = await jwt.sign({id:dataId.id, username:dataId.username},  secretKey, {expiresIn:"300s"});
+            return token;
+        }
     }
-    else{
-        const token = await jwt.sign({id:dataId.id, username:dataId.username, email:dataId.email},  secretKey, {expiresIn:"600s"});
-        return token;
+    catch(error){
+        throw error;
     }
-    
 }
 
 

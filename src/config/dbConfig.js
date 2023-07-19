@@ -1,7 +1,9 @@
 const Sequelize = require("sequelize");
 
 
-//***************************************Database Connection*************************************8 */
+/* 
+@Description : This is for database connection 
+*/
 
 const sequelize = new Sequelize(
     'blood_bank_db',
@@ -11,6 +13,7 @@ const sequelize = new Sequelize(
        host: 'localhost',
        dialect: 'mysql',
      }
+
    );
    sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');

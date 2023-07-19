@@ -25,9 +25,9 @@ const data=(req, res, next)=>{
  * Middelware for update data regestration 
  */
 
-const updateMiddelware=(req, res, next)=>{
+const updateMiddelware=async (req, res, next)=>{
 	dataUpdate = req.body;
-    response = joiValidations.joiUpdateUtils(dataUpdate);
+    response = await joiValidations.joiUpdateUtils(dataUpdate);
     if(response.error){
         res.json({
             status:412,
@@ -42,7 +42,7 @@ const updateMiddelware=(req, res, next)=>{
         })
     }
     else{
-        const verifiedToken = jwtValidation.verifyToken(userToken);
+        const verifiedToken = await jwtValidation.verifyToken(userToken);
         if(verifiedToken.error){
             res.send("Enter valid Token");
         }

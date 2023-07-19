@@ -101,11 +101,11 @@ exports.userDeletion = (async (req, res) => {
         if (user.user_status == "Active") {
             if (user.password == md5(req.body.password)) {
                 const username = req.body.username;
-                const userDelete = service.userDeletion(username);
+                const userDelete = await service.userDeletion(username);
                 return res.status(202).json({ status: 204, data: null, message: "Account Deleted" });
             }
             else {
-                return res.status(403).json({ status: 403, data: userDelete, message: "Password Incorrect" });
+                return res.status(403).json({ status: 403, data: null, message: "Password Incorrect" });
             }
         }
         else {
