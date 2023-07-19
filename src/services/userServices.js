@@ -119,6 +119,29 @@ const userDeletion = async (username) => {
     }
 };
 
+/*******************************************************************
+ * userUpdation
+ * @param {*} username 
+ * @returns : Used for Data update
+ * @description : This function used to update a user
+*******************************************************************/
+
+const userUpdation = async (updateData, id) => {
+    try {
+        const userUpdate = await sequelizeModel.update(
+            updateData,
+            
+            {
+            where: {
+                id: id
+            }
+        })
+        return userUpdate;
+    } catch (e) {
+        throw e;
+    }
+};
+
 
 
 
@@ -168,4 +191,4 @@ const userRoleFilter = async (role) => {
 
        
 
-module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, userRoleFilter };  
+module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, userRoleFilter, userUpdation };  

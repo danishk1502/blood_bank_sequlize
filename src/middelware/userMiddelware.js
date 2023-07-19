@@ -2,8 +2,9 @@ const joiValidations = require("../utils/joiUtils");
 const jwtValidation = require("../utils/jwtUtils");
 
 
-
-//Middelware for user registration 
+/**
+ * Middelware for data regestration 
+ */
 
 const data=(req, res, next)=>{
 	user = req.body;
@@ -19,6 +20,11 @@ const data=(req, res, next)=>{
 }
 
 
+
+/**
+ * Middelware for update data regestration 
+ */
+
 const updateMiddelware=(req, res, next)=>{
 	dataUpdate = req.body;
     response = joiValidations.joiUpdateUtils(dataUpdate);
@@ -28,30 +34,50 @@ const updateMiddelware=(req, res, next)=>{
             msg:response.error.details[0].message});
     }
     else{
-        next();
+        userToken = req.headers['authorization']
+    
+    if(typeof userToken == 'undefined'){
+        res.json({
+            message:"Invalid Token"
+        })
+    }
+    else{
+        const verifiedToken = jwtValidation.verifyToken(userToken);
+        if(verifiedToken.error){
+            res.send("Enter valid Token");
+        }
+        else{
+            req.data = verifiedToken;      /**This is for updation  */
+            next();
+        }
+    }
     }
 }
 
 
-//JWT login Token
 
-const loginMiddelware=(req, res, next)=>{
+/**
+ * Middelware for user login 
+ */
+
+const loginMiddelware=async(req, res, next)=>{
     userData = req.body;
-    const token = jwtValidation.loginJwt(userData);
+    const token = await jwtValidation.loginJwt(userData);
     console.log(token);
     req.token = token;
     next()
 }
 
-//JWT verify Token
+
+/**
+ * Middelware for token verification data regestration 
+ */
 
 const jwtVerification = (req, res, next)=>{
     userToken = req.headers['authorization']
     
     if(typeof userToken == 'undefined'){
-        // res.send(userToken)
         res.json({
-            
             message:"Invalid Token"
         })
     }

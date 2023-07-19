@@ -127,9 +127,17 @@ exports.userDeletion = (async (req, res) => {
 */
 
 
-// exports.userUpdation = ((req, res) => {
+exports.userUpdation = (async(req, res) => {
+    const tokenData = req.data.id;
+    const updateData = req.body;
+    if(updateData.password){
+        updateData.password = md5(updateData.password);
+        console.log(updateData.password);
+    }
+    const updationData =await service.userUpdation(updateData, tokenData)
+    res.json(updationData);
 
-// })
+})
 
 
 

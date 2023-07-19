@@ -31,7 +31,7 @@ router.patch("/login", usermiddelware.loginMiddelware, userRoute.userAuthenticat
  * User Updation Route*
  * @description creating user update route
  * ****************************************************/
-// router.patch("/update",usermiddelware.updateMiddelware ,userRoute.userUpdationRoute);
+router.patch("/update",usermiddelware.updateMiddelware ,userRoute.userUpdationRoute);
 
 
 

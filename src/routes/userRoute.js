@@ -27,6 +27,6 @@ exports.userDeletionRoute = userController.userDeletion;
 * route-Controller*
 * @description * route-Controller for user updation
 * ****************************************************/
-// exports.userUpdationRoute = userController.userUpdation;
+exports.userUpdationRoute = userController.userUpdation;
 
 

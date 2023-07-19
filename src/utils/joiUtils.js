@@ -52,7 +52,7 @@ const joiUtils = (user)=>
 
 //function to validate the user while update 
 
-const joiUpdateUtils = (user)=>
+const joiUpdateUtils = (dataUpdate)=>
 {
 	const JoiSchema = Joi.object({
 	
@@ -88,7 +88,7 @@ const joiUpdateUtils = (user)=>
 		password: Joi.string()
 		.pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),			
 	}).options({ abortEarly: false });
-	return JoiSchema.validate(user)
+	return JoiSchema.validate(dataUpdate)
 }
 
 
