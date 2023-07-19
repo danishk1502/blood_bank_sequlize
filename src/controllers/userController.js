@@ -118,21 +118,10 @@ exports.userDeletion = (async (req, res) => {
 });
 
 
-/**
- * userDeletion Controller 
- * Creating soft Deletion controller 
- * @Response : res.status(200)
- */
-
-exports.userGet = (async (req, res) => {
-    const users = await service.usersGetData()
-    return res.status(200).json({ status: 200, data: users, message: "All Data" });
-           
-});
 
 /**
- * userDeletion Controller 
- * Creating soft Deletion controller 
+ * userGet   
+ * Get all data from db
  * @Response : res.status(200)
  */
 

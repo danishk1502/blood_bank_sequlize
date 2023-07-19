@@ -11,7 +11,6 @@ const sequelize = new Sequelize(
        host: 'localhost',
        dialect: 'mysql',
      }
-     
    );
    sequelize.authenticate().then(() => {
     console.log('Connection has been established successfully.');
