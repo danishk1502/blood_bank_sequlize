@@ -71,7 +71,7 @@ exports.userAuthentication = (async (req, res) => {
         if (users.user_status == "Active") {
             if (users.password == md5(req.body.password)) {
                 const username = req.body.username;
-                const loginData = service.userAuthentication(username);
+                const loginData = await service.userAuthentication(username);
                 return res.status(200).json({ status: 200, data: users, message: "User logged in", token:req.token});
             }
             else {
@@ -129,7 +129,10 @@ exports.userDeletion = (async (req, res) => {
 
 exports.userUpdation = (async(req, res) => {
     const tokenData = req.data.id;
+    const dataId =await service.findId(tokenData);
+    // const tokenUsername = req.data.username;
     const updateData = req.body;
+    updateData.updated_by = dataId.username;
     if(updateData.password){
         updateData.password = md5(updateData.password);
         console.log(updateData.password);

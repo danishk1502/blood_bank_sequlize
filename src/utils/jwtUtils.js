@@ -4,8 +4,14 @@ const fetchId = require("../services/userServices")
 
 exports.loginJwt= async (userData)=>{
     const dataId = await fetchId.findUsername(userData.username);
-    const token = await jwt.sign({id:dataId.id, username:dataId.username, email:dataId.email},  secretKey, {expiresIn:"600s"});
-    return token;
+    if(dataId==null){
+        return "username doesn't exist";
+    }
+    else{
+        const token = await jwt.sign({id:dataId.id, username:dataId.username, email:dataId.email},  secretKey, {expiresIn:"600s"});
+        return token;
+    }
+    
 }
 
 

@@ -63,7 +63,7 @@ const updateMiddelware=(req, res, next)=>{
 const loginMiddelware=async(req, res, next)=>{
     userData = req.body;
     const token = await jwtValidation.loginJwt(userData);
-    console.log(token);
+    // console.log(token);
     req.token = token;
     next()
 }
@@ -73,7 +73,7 @@ const loginMiddelware=async(req, res, next)=>{
  * Middelware for token verification data regestration 
  */
 
-const jwtVerification = (req, res, next)=>{
+const jwtVerification = async(req, res, next)=>{
     userToken = req.headers['authorization']
     
     if(typeof userToken == 'undefined'){
@@ -82,7 +82,7 @@ const jwtVerification = (req, res, next)=>{
         })
     }
     else{
-        const verifiedToken = jwtValidation.verifyToken(userToken);
+        const verifiedToken = await jwtValidation.verifyToken(userToken);
         if(verifiedToken.error){
             res.send("Enter valid Token");
         }

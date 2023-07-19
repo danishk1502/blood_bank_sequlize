@@ -10,6 +10,29 @@ const sequelizeModel = require('../models/userModels')
 
 
 /*******************************************************************
+ * findId
+ * @param {*} username 
+ * @returns : return data if id exist or not
+ * @description : This function check about id in database
+ * (This function also used in login)
+*******************************************************************/
+
+const findId = async (id) => {
+    try {
+        const users = await  sequelizeModel.findOne({
+            where: {
+                id: id
+            }
+        })
+        return users;
+    } catch (e) {
+        throw Error('Error while Paginating Users')
+    }
+};
+
+
+
+/*******************************************************************
  * findUsername
  * @param {*} username 
  * @returns : return data if username exist or not
@@ -191,4 +214,4 @@ const userRoleFilter = async (role) => {
 
        
 
-module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, userRoleFilter, userUpdation };  
+module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, findId, userRoleFilter, userUpdation };  
