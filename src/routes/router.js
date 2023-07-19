@@ -39,7 +39,7 @@ router.patch("/login", usermiddelware.loginMiddelware, userRoute.userAuthenticat
  * User Routes delete*
  * @description creating user Deletion route
  * ****************************************************/
-router.delete("/delete", userRoute.userDeletionRoute);
+router.delete("/delete", usermiddelware.jwtVerification, userRoute.userDeletionRoute);
 
 
 
