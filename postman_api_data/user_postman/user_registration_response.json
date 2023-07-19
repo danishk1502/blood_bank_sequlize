@@ -1,1 +1,22 @@
-user Created
+{
+    "status": 200,
+    "data": {
+        "id": 21,
+        "name": "Danish",
+        "lname": "Kumar",
+        "email": "kdanish@12133.com",
+        "password": "827ccb0eea8a706c4c34a16891f84e7b",
+        "role": "user",
+        "username": "kdanish1245",
+        "state": "Himachal",
+        "distt": "Una",
+        "is_deleted": "false",
+        "created_by": "kdanish1245",
+        "updated_by": "kdanish1245",
+        "is_active": "true",
+        "user_status": "Active",
+        "updatedAt": "2023-07-18T13:26:02.097Z",
+        "createdAt": "2023-07-18T13:26:02.097Z"
+    },
+    "message": "Succesfully User created"
+}

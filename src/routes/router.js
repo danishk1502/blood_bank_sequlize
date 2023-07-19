@@ -13,7 +13,8 @@ Users Routes
  * User Routes Registration*
  * @description creating user registration route
  * ****************************************************/
-router.post("/register", usermiddelware, userRoute.userRegisterRoute);
+router.post("/register", usermiddelware.data, userRoute.userRegisterRoute);
+
 
 
 
@@ -21,7 +22,16 @@ router.post("/register", usermiddelware, userRoute.userRegisterRoute);
  * User Routes Auth*
  * @description creating user Authentication route
  * ****************************************************/
-router.patch("/login", userRoute.userAuthenticationRoute);
+router.patch("/login", usermiddelware.loginMiddelware, userRoute.userAuthenticationRoute);
+
+
+
+
+/*****************************************************
+ * User Updation Route*
+ * @description creating user update route
+ * ****************************************************/
+// router.patch("/update",usermiddelware.updateMiddelware ,userRoute.userUpdationRoute);
 
 
 
