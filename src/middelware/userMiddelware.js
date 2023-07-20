@@ -1,6 +1,6 @@
-const { object } = require("joi");
 const joiValidations = require("../utils/joiUtils");
 const jwtValidation = require("../utils/jwtUtils");
+const jwt = require('jsonwebtoken');
 
 
 /**
@@ -37,7 +37,7 @@ const updateMiddelware = async (req, res, next) => {
         });
     }
     else {
-        userToken = req.headers['authorization']
+        userToken = req.headers['authorization'];
 
         if (typeof userToken == 'undefined') {
             res.json({
@@ -46,11 +46,13 @@ const updateMiddelware = async (req, res, next) => {
         }
         else {
             const verifiedToken = await jwtValidation.verifyToken(userToken);
-            if (verifiedToken.expire) {
-                res.send("Enter valid Token");
+            if (verifiedToken instanceof jwt.JsonWebTokenError || verifiedToken==undefined) {
+                res.json({
+                    "message": "Invalid Token here"
+                })
             }
             else {
-                req.data = verifiedToken;      /**This is for updation  */
+               req.data=verifiedToken;
                 next();
             }
         }
@@ -80,18 +82,18 @@ const jwtVerification = async (req, res, next) => {
 
     if (typeof userToken == undefined) {
         res.json({
-            message: "Invalid Token"
+            message: "Invalid Token here"
         })
     }
     else {
         const verifiedToken = await jwtValidation.verifyToken(userToken);
-        if(verifiedToken==undefined || verifiedToken instanceof jwt.JsonWebTokenError){
+        if (verifiedToken instanceof jwt.JsonWebTokenError || verifiedToken==undefined) {
             res.json({
-                "message":"Invalid Token"
+                "message": "Invalid Token here"
             })
         }
-        else{
-            req.data = verifiedToken
+        else {
+           req.data=verifiedToken;
             next();
         }
     }

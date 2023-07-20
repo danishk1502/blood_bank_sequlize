@@ -8,7 +8,7 @@ exports.loginJwt= async (userData)=>{
             return "username doesn't exist";
         }
         else{
-            const token = jwt.sign({id:dataId.id, username:dataId.username},  secretKey, {expiresIn:"5sec"});
+            const token = jwt.sign({id:dataId.id, username:dataId.username},  secretKey, {expiresIn:"600sec"});
             return token;
         }
     }
@@ -16,7 +16,7 @@ exports.loginJwt= async (userData)=>{
 
 exports.verifyToken = (userToken)=>{
     try {
-	const tokenVerification = jwt.verify(tokenKey, secretKey)
+	const tokenVerification = jwt.verify(userToken, secretKey)
     return tokenVerification;
 	} catch (e) {
 		if (e instanceof jwt.JsonWebTokenError) {
