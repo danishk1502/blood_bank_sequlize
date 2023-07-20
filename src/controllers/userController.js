@@ -230,7 +230,8 @@ exports.pendingRequest = async (req, res) => {
     }
     else {
 
-        const updationData = await service.userUpdation(updateData, tokenData)
+        const bloodBankList = await service.bloodBankPending("blood_bank");
+        res.json(bloodBankList);
     }
 }
 
@@ -306,4 +307,5 @@ exports.requestAcception = async(req, res) => {
     }
 
 }
+
 
