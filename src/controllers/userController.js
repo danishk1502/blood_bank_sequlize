@@ -1,6 +1,7 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
+const responseJson = require("../utils/responseUtils")
 
 
 
@@ -44,7 +45,7 @@ exports.userRegister = (async (req, res) => {
             }
         }
         else {
-            return res.status(403).json({ status: 403, data: null, message: "Username already exist" });
+            return res.status(403).json(responseJson.responseData("username already Exist"));
         }
 
     } catch (e) {
@@ -183,13 +184,22 @@ exports.userGet = (async (req, res) => {
 
 
 exports.userRoleFilter = (async (req, res) => {
-    const dataRole = await service.userRoleFilter(req.body.role);
-    if (dataRole != null) {
-        return res.status(200).json({ status: 200, data: dataRole, message: "Data of role :" + req.body.role });
+    if(req.body.role=="user" || req.body.role == "superuser"){
+        return res.status(403).json({ status: 403, data: null, message: "You are not able to watch list" });
     }
-    else {
-        return res.status(404).json({ status: 404, data: data, message: "Data Not Found" });
+    else if(req.body.role == "blood_bank"){
+        const dataRole = await service.userRoleFilter(req.body.role);
+        if (dataRole != null) {
+            return res.status(200).json({ status: 200, data: dataRole, message: "Data of role :" + req.body.role });
+        }
+        else {
+            return res.status(404).json({ status: 404, data: data, message: "Data Not Found" });
+        }
     }
+    else{
+        return res.status(403).json({ status: 403, data: null, message: "Please make Valid request" });
+    }
+   
 
 });
 

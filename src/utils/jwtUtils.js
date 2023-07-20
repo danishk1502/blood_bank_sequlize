@@ -2,6 +2,13 @@ const jwt = require('jsonwebtoken');
 const secretKey = "ThisismysecretKey"
 const fetchId = require("../services/userServices")
 
+
+
+
+/*****************************************************
+* JWT Token Generation
+* ****************************************************/
+
 exports.loginJwt= async (userData)=>{
         const dataId = await fetchId.findUsername(userData.username);
         if(dataId==null){
@@ -13,6 +20,12 @@ exports.loginJwt= async (userData)=>{
         }
     }
 
+
+
+
+/*****************************************************
+* JWT Token Verification
+* ****************************************************/
 
 exports.verifyToken = (userToken)=>{
     try {
