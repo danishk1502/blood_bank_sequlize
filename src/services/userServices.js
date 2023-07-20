@@ -17,16 +17,16 @@ const sequelizeModel = require('../models/userModels')
  * (This function also used in login)
 *******************************************************************/
 
-const findId = async (id) => {
+const findId = async (uniqueID) => {
     try {
         const users = await  sequelizeModel.findOne({
             where: {
-                id: id
+                id: uniqueID
             }
         })
         return users;
     } catch (e) {
-        throw Error('Error while Paginating Users')
+        throw e ;
     }
 };
 
@@ -174,24 +174,6 @@ const userUpdation = async (updateData, id) => {
 
 
 
-
-/*******************************************************************
- * get all Data
- * @param {*}  
- * @returns : Used for getting all Data 
- * @description : This function used to get all Data
-*******************************************************************/
-
-const usersGetData = async () => {
-    try {
-        const users = await sequelizeModel.findAll({})
-        return users;
-    } catch (e) {
-        throw e;
-    }
-};
-
-
 /*******************************************************************
  * get all Data of a specific role
  * @param {*}  role
@@ -214,4 +196,4 @@ const userRoleFilter = async (role) => {
 
        
 
-module.exports = { userRegistrationData, findEmail, userDeletion, usersGetData, findUsername, userAuthentication, findId, userRoleFilter, userUpdation };  
+module.exports = { userRegistrationData, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation };  

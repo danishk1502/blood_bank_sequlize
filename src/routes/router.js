@@ -57,7 +57,7 @@ Users Data Routes
  * ****************************************************/
 
 
-router.get("/", userDataRoute.userGetRoute);
+router.get("/", usermiddelware.jwtVerification, userDataRoute.userGetRoute);
 
 
 

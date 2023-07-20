@@ -130,7 +130,6 @@ exports.userDeletion = (async (req, res) => {
 exports.userUpdation = (async(req, res) => {
     const tokenData = req.data.id;
     const dataId =await service.findId(tokenData);
-    // const tokenUsername = req.data.username;
     const updateData = req.body;
     updateData.updated_by = dataId.username;
     if(updateData.password){
@@ -152,7 +151,15 @@ exports.userUpdation = (async(req, res) => {
  * @description creating user data routes
  * ****************************************************/
 
-
+/**
+ * userGet   
+ * Get single data from db
+ * @Response : res.status(200)
+ */
+exports.userUniqueGet = (async (req, res) => {
+    const userUnique = await service.findId(req.data.id)
+    return res.status(200).json({ status: 200, data: userUnique, message: "All Data" });
+});
 
 
 /**

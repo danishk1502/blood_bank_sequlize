@@ -8,7 +8,7 @@ const userController = require("../controllers/userController")
 * @description * route-Controller connection for get all data
 * ****************************************************/
 
-exports.userGetRoute = userController.userGet;
+exports.userGetRoute = userController.userUniqueGet;
 
 
 
