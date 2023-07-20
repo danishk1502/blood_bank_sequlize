@@ -185,7 +185,8 @@ const userRoleFilter = async (role) => {
     try {
         const users = await sequelizeModel.findAll({
             where : {
-                role : role
+                role : role,
+                user_status:"Active"
             }
         })
         return users;

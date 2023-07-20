@@ -38,7 +38,7 @@ exports.userRegister = (async (req, res) => {
                     user_status: userStatus
                 }
                 const saveData = await service.userRegistrationData(userInfo);
-                return res.status(200).json({ status: 200, data: saveData, message: "Succesfully User created"});
+                return res.status(200).json({ status: 200, data: saveData, message: "Succesfully User created" });
             }
             else {
                 return res.status(403).json({ status: 403, data: null, message: "Email already exist" });
@@ -73,7 +73,7 @@ exports.userAuthentication = (async (req, res) => {
             if (users.password == md5(req.body.password)) {
                 const username = req.body.username;
                 const loginData = await service.userAuthentication(username);
-                return res.status(200).json({ status: 200, data: users, message: "User logged in", token:req.token});
+                return res.status(200).json({ status: 200, data: users, message: "User logged in", token: req.token });
             }
             else {
                 return res.status(403).json({ status: 403, data: null, message: "Password Incorrect" });
@@ -128,16 +128,16 @@ exports.userDeletion = (async (req, res) => {
 */
 
 
-exports.userUpdation = (async(req, res) => {
+exports.userUpdation = (async (req, res) => {
     const tokenData = req.data.id;
-    const dataId =await service.findId(tokenData);
+    const dataId = await service.findId(tokenData);
     const updateData = req.body;
     updateData.updated_by = dataId.username;
-    if(updateData.password){
+    if (updateData.password) {
         updateData.password = md5(updateData.password);
         console.log(updateData.password);
     }
-    const updationData =await service.userUpdation(updateData, tokenData)
+    const updationData = await service.userUpdation(updateData, tokenData)
     res.json(updationData);
 
 })
@@ -184,10 +184,10 @@ exports.userGet = (async (req, res) => {
 
 
 exports.userRoleFilter = (async (req, res) => {
-    if(req.body.role=="user" || req.body.role == "superuser"){
-        return res.status(403).json({ status: 403, data: null, message: "You are not able to watch list" });
+    if (req.body.role == "user" || req.body.role == "superuser") {
+        return res.status(403).json({ status: 403, data: null, message: "we cant show you the list" });
     }
-    else if(req.body.role == "blood_bank"){
+    else if (req.body.role == "blood_bank") {
         const dataRole = await service.userRoleFilter(req.body.role);
         if (dataRole != null) {
             return res.status(200).json({ status: 200, data: dataRole, message: "Data of role :" + req.body.role });
@@ -196,10 +196,10 @@ exports.userRoleFilter = (async (req, res) => {
             return res.status(404).json({ status: 404, data: data, message: "Data Not Found" });
         }
     }
-    else{
+    else {
         return res.status(403).json({ status: 403, data: null, message: "Please make Valid request" });
     }
-   
+
 
 });
 
@@ -213,15 +213,97 @@ exports.userRoleFilter = (async (req, res) => {
 \****************************************************************************************************************************************************************/
 
 
-exports.pendingRequest =async(req, res)=>{
+/* 
+/**
+ * blood bank Filter Controller 
+ * @Request role 
+ * @Response : res.status(200, 404)
+ * @description : provide data of blood banks those registration request is pending
+ */
+
+
+exports.pendingRequest = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
-    if(userData.role == "user" || userData.role=="blood_bank"){
-        res.json({msg : "you are not eligible to view Data"});
+    if (userData.role == "user" || userData.role == "blood_bank") {
+        res.json({ msg: "you are not eligible to view Data" });
     }
-    else{
-        const bloodBankList = await service.bloodBankPending("blood_bank");
-        res.json(bloodBankList);
+    else {
+
+        const updationData = await service.userUpdation(updateData, tokenData)
+    }
 }
+
+
+
+/**
+ * blood bank request Decline Controller 
+ * @description This controller for blood banks request rejection
+ */
+
+exports.requestDecline = async (req, res) => {
+    const id = req.data.id;
+    const userData = await service.findId(id);
+    if (userData.role == "user" || userData.role == "blood_bank") {
+        res.json({ msg: "You are not able to make request" });
+    }
+    else {
+        if (req.body.request == "Decline") {
+            const user = await service.findId(req.body.id)
+            if (user != null) {
+                if(user.role == "blood_bank"){
+                    const userDelete = await service.userDeletion(user.username);
+                    res.json({msg : "Blood Banks Request rejected Successfully"});
+                }
+                else{
+                    res.json("you can only update data of Blood Banks");
+                }
+            }
+            else {
+                res.json({ message: "user not exist on this id" });
+            }
+        }
+        else {
+            res.json({ msg: "Invalid Request" });
+        }
+    }
+
+
+}
+
+
+/**
+ * blood bank request Acception Controller 
+ * @description This controller for blood banks request Acception
+ */
+
+exports.requestAcception = async(req, res) => {
+    const id = req.data.id;
+    const userData = await service.findId(id);
+    if (userData.role == "user" || userData.role == "blood_bank") {
+        res.json({ msg: "You are not able to make request" });
+    }
+    else {
+        if (req.body.request == "Accept") {
+            const user = await service.findId(req.body.id)
+            if (user != null) {
+                if(user.role == "blood_bank"){
+                    const updateData = {user_status: "Active"};
+                    const updationData = await service.userUpdation(updateData, req.body.id);
+                    res.json({msg : "Blood Bank Activated Successfully", data:updationData});
+                }
+                else{
+                    res.json("you can only update data of Blood Banks");
+                }
+            }
+            else {
+                res.json({ message: "user not exist on this id" });
+            }
+        }
+        else {
+            res.json({ msg: "Invalid Request" });
+        }
+    }
+
 }
 
