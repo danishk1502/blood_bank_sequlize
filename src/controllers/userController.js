@@ -206,4 +206,22 @@ exports.userRoleFilter = (async (req, res) => {
 
 
 
+/*************************************************************************************************************************************************************
+
+*******************************************************************Creating Superusers controllers**************************************************************
+
+\****************************************************************************************************************************************************************/
+
+
+exports.pendingRequest =async(req, res)=>{
+    const id = req.data.id;
+    const userData = await service.findId(id);
+    if(userData.role == "user" || userData.role=="blood_bank"){
+        res.json({msg : "you are not eligible to view Data"});
+    }
+    else{
+        const bloodBankList = await service.bloodBankPending("blood_bank");
+        res.json(bloodBankList);
+}
+}
 

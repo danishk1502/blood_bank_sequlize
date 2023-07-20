@@ -194,6 +194,29 @@ const userRoleFilter = async (role) => {
     }
 };
 
+
+
+/*******************************************************************
+ * get Data of blood banks whose request for registration are not completed
+ * @param {*}  role user_status
+ * @returns : get all Data of a specific role
+ * @description : This function used to get all Data of a specific role
+*******************************************************************/
+
+const bloodBankPending = async (role) => {
+    try {
+        const users = await sequelizeModel.findAll({
+            where : {
+                role : role,
+                user_status : "Deactivate"
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e;
+    }
+};
+
        
 
-module.exports = { userRegistrationData, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation };  
+module.exports = { userRegistrationData, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation, bloodBankPending };  
