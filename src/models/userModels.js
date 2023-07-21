@@ -64,10 +64,5 @@ const user = sequelizeDb.define("users_blood_bank", {
 });
 
 
-sequelizeDb.sync().then(() => {
-    console.log(' users_blood_bank table created successfully!');
- }).catch((error) => {
-    console.error('Unable to create table : ', error);
- });
 module.exports = user;
 

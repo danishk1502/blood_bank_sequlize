@@ -1,5 +1,7 @@
 
-const sequelizeModel = require('../models/userModels')
+const userModel = require('../models/models');
+
+const sequelizeModel = userModel.userModel;
 
 
 
