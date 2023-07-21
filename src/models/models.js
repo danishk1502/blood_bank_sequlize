@@ -1,17 +1,13 @@
-
+const relationFunctions = require('./modelRelations')
 const sequelizeDb = require('../config/dbConfig')
 const userModel = require('./userModels');
 const bloodBankDetails = require('./blood_bank_detail');
 
-//one to one relation
 
 
-userModel.hasOne(bloodBankDetails, {
-    foreignKey: 
-        'userId'
-    
-  });
-  bloodBankDetails.belongsTo(userModel);
+const bankDetailRelation = relationFunctions.bloodBankDetailRelation(bloodBankDetails, userModel);
+
+
 
 
 exports.userModel = userModel;

@@ -79,7 +79,6 @@ const loginMiddelware = async (req, res, next) => {
 
 const jwtVerification = async (req, res, next) => {
     userToken = req.headers['authorization']
-
     if (typeof userToken == undefined) {
         res.json({
             message: "Invalid Token here"
