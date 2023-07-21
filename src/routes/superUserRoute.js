@@ -1,4 +1,4 @@
-const superuserController = require('../controllers/userController') 
+const superuserController = require('../controllers/controller') 
 
 
 

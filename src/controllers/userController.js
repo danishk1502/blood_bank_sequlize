@@ -1,6 +1,5 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
-const jwt = require('jsonwebtoken');
 const responseJson = require("../utils/responseUtils")
 
 
@@ -307,5 +306,7 @@ exports.requestAcception = async(req, res) => {
     }
 
 }
+
+
 
 
