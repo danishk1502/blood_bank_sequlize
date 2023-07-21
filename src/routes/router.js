@@ -101,9 +101,6 @@ router.patch("/pending/blood_bank/request", usermiddelware.jwtVerification, supe
 router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, superUserRoute.requestDecline);
 
 
-module.exports = router;
-
-
 
 
 
@@ -117,3 +114,10 @@ router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRout
 
 
 router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
+
+
+
+
+
+
+module.exports = router;

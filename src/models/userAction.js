@@ -2,22 +2,22 @@ const sequelizeDb = require('../config/dbConfig')
 const DataTypes = require("sequelize");
 
 
-const bloodBankDetails = sequelizeDb.define("blood_bank_details", {
+const userActions = sequelizeDb.define("user_actions", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    numberOfSales: {
-        type: DataTypes.INTEGER,
+    Action: {
+        type: DataTypes.ENUM("Request", "Donation"),
     },
-    totalDonation: {
-        type: DataTypes.INTEGER,
+    blood_group: {
+        type: DataTypes.STRING,
         defaultValue:0
     },
-    totalBloodUnitAvailable: {
+    number_of_blood_unit: {
         type: DataTypes.INTEGER,
-        defaultValue:0
+        defaultValue: null,
     },
     created_by: {
         type: DataTypes.STRING,
@@ -34,5 +34,5 @@ const bloodBankDetails = sequelizeDb.define("blood_bank_details", {
 
 
  
-module.exports = bloodBankDetails;
+module.exports = userActions;
 

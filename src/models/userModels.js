@@ -39,10 +39,6 @@ const user = sequelizeDb.define("users_blood_bank", {
         type: DataTypes.STRING,
 
     },
-    is_deleted: {
-        type: DataTypes.ENUM("true", "false"),
-        defaultValue: "false",
-    },
     created_by: {
         type: DataTypes.STRING,
         

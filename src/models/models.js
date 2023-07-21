@@ -3,13 +3,13 @@ const sequelizeDb = require('../config/dbConfig')
 const userModel = require('./userModels');
 const bloodBankDetails = require('./bloodBankDetails');
 const bloodBankInventory = require('./bloodInventory');
+const userActions = require('./userAction');
 
 
 
 const bankDetailRelation = relationFunctions.bloodBankDetailRelation(bloodBankDetails, userModel);
-
-
 const bloodInventory = relationFunctions.bloodBankInventoryRelation(bloodBankInventory, userModel);
+const userActionRelation = relationFunctions.userActionRelation(userActions, userModel);
 
 
 
@@ -18,6 +18,7 @@ const bloodInventory = relationFunctions.bloodBankInventoryRelation(bloodBankInv
 exports.userModel = userModel;
 exports.bloodBankDetails = bloodBankDetails;
 exports.bloodBankInventory = bloodBankInventory;
+exports.userActions = userActions;
 
 
 

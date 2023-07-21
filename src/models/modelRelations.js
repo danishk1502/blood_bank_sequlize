@@ -25,3 +25,14 @@ exports.bloodBankInventoryRelation=(bloodBankInventory, userModel)=>{
       bloodBankInventory.belongsTo(userModel);
     
 }
+
+
+
+exports.userActionRelation=(userAction, userModel)=>{
+    userModel.hasOne(userAction, {
+        foreignKey: 
+            'userId'
+      });
+      userAction.belongsTo(userModel);
+    
+}

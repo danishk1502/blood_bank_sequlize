@@ -40,10 +40,6 @@ const bloodBankInventory = sequelizeDb.define("blood_banks_inventory", {
         type: DataTypes.INTEGER,
         defaultValue:0
     },
-    is_deleted: {
-        type: DataTypes.ENUM("true", "false"),
-        defaultValue: "false",
-    },
     created_by: {
         type: DataTypes.STRING,
         
