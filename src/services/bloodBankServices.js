@@ -8,10 +8,7 @@ const blood_bank_detail = userModel.bloodBankDetails;
 
 /*******************************************************************
  * findId
- * @param {*} username 
- * @returns : return data if id exist or not
- * @description : This function check about id in database
- * (This function also used in login)
+ * @param {*} id 
 *******************************************************************/
 
 const bloodDetailById = async (uniqueID) => {
@@ -27,7 +24,10 @@ const bloodDetailById = async (uniqueID) => {
     }
 };
 
-
+/*******************************************************************
+ * Adding Details on blood bank details table
+ * @param {*} bloodbankDetails 
+*******************************************************************/
 
 const addBloodBankDetails = async(data)=>{
     try {
@@ -42,5 +42,22 @@ const addBloodBankDetails = async(data)=>{
 }
 
 
+/*******************************************************************
+ * creating blood Inventory
+ * @param {*} Inventory Data
+*******************************************************************/
 
-module.exports = {addBloodBankDetails, bloodDetailById}
+const bloodInventoryCreation = async(inventoryData)=>{
+    try {
+        const bloodBankDetails = await userModel.bloodBankInventory.create(
+            inventoryData
+        )
+        return bloodBankDetails;
+    } catch (e) {
+        console.log("error occur"+ e);
+    }
+
+}
+
+
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation}

@@ -288,7 +288,7 @@ exports.requestAcception = async(req, res) => {
             const user = await service.findId(req.body.id)
             if (user != null) {
                 if(user.role == "blood_bank"){
-                    const updateData = {user_status: "Active"};
+                    const updateData = {user_status: "Active", updated_by:"userData.username"};
                     const updationData = await service.userUpdation(updateData, req.body.id);
                     res.json({msg : "Blood Bank Activated Successfully", data:updationData});
                 }

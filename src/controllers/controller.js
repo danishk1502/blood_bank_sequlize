@@ -48,3 +48,4 @@ exports.requestDecline = userController.requestDecline
 
 
 exports.createBankDetails = bloodBankController.bloodBankDetails;
+exports.bloodBankInventory = bloodBankController.bloodBankInventory;

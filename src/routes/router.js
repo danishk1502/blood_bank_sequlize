@@ -114,3 +114,6 @@ module.exports = router;
 
 
 router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);
+
+
+router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
