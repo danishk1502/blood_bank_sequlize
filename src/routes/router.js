@@ -3,6 +3,7 @@ const userRoute = require("./userRoute")
 const userDataRoute = require("./userDataRoute")
 const superUserRoute = require("./superUserRoute")
 const usermiddelware = require("../middelware/userMiddelware")
+const bloodBankRoute = require("./bloodBankRoute");
 
 
 
@@ -101,3 +102,15 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 module.exports = router;
+
+
+
+
+
+/**************************************************************************************************************
+***************************************************** Blood Banks Routes ***************************************************
+****************************************************************************************************************/ 
+
+
+
+router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);

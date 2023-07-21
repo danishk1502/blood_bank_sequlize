@@ -1,4 +1,5 @@
 const userController = require('./userController');
+const bloodBankController = require('./bloodBankController');
 
 
 
@@ -42,6 +43,8 @@ exports.requestDecline = userController.requestDecline
 
 
 /*******************************************************************************************************************************************
- ************************************** blood bank Details Controllers from bloodBankServices.js ********************************************
+************************************** blood bank Details Controllers from bloodBankServices.js ********************************************
 ********************************************************************************************************************************************/
 
+
+exports.createBankDetails = bloodBankController.bloodBankDetails;

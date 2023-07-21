@@ -5,8 +5,14 @@ const bloodBankDetails = require('./blood_bank_detail');
 
 //one to one relation
 
-userModel.hasOne(bloodBankDetails, {foreignKey: 'id'});
-bloodBankDetails.belongsTo(userModel, {foreignKey : 'userId'});
+
+userModel.hasOne(bloodBankDetails, {
+    foreignKey: 
+        'userId'
+    
+  });
+  bloodBankDetails.belongsTo(userModel);
+
 
 exports.userModel = userModel;
 exports.bloodBankDetails = bloodBankDetails;

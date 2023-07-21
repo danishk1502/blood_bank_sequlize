@@ -12,13 +12,8 @@ const blood_bank_details = sequelizeDb.define("blood_bank_details", {
         type: DataTypes.INTEGER,
     },
     totalDonation: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
-    created: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.INTEGER,
+        defaultValue:0
     },
     is_deleted: {
         type: DataTypes.ENUM("true", "false"),
