@@ -15,7 +15,7 @@ const bloodDetailById = async (uniqueID) => {
     try {
         const users = await  blood_bank_detail.findOne({
             where: {
-                userId: uniqueID
+                usersBloodBankId : uniqueID
             }
         })
         return users;
@@ -60,4 +60,24 @@ const bloodInventoryCreation = async(inventoryData)=>{
 }
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation}
+/*******************************************************************
+ * findId for 
+ * inventory
+ * @param {*} id 
+*******************************************************************/
+
+const bloodInventoryById = async (uniqueID) => {
+    try {
+        const users = await  userModel.bloodBankInventory.findOne({
+            where: {
+                usersBloodBankId : uniqueID
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e ;
+    }
+};
+
+
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodInventoryById}

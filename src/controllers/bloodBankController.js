@@ -55,7 +55,7 @@ exports.bloodBankInventory = async(req, res)=>{
             req.body.created_by = req.data.username;
             req.body.updated_by = req.data.username;
 
-            const findUserData = await bloodBankService.bloodDetailById(checkId.id);
+            const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
             if(findUserData==null){
 
                 const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
