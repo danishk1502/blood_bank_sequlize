@@ -17,7 +17,7 @@ const userActions = sequelizeDb.define("user_actions", {
     },
     number_of_blood_unit: {
         type: DataTypes.INTEGER,
-        defaultValue: null,
+        defaultValue: null
     },
     created_by: {
         type: DataTypes.STRING,
@@ -33,6 +33,6 @@ const userActions = sequelizeDb.define("user_actions", {
 
 
 
- 
+
 module.exports = userActions;
 

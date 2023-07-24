@@ -4,6 +4,7 @@ const userDataRoute = require("./userDataRoute")
 const superUserRoute = require("./superUserRoute")
 const usermiddelware = require("../middelware/userMiddelware")
 const bloodBankRoute = require("./bloodBankRoute");
+const bloodbank = require("../controllers/userActionController")
 
 
 
@@ -75,8 +76,8 @@ router.get("/filter/role", userDataRoute.userRoleFilter);
 
 
 /**************************************************************************************************************
-**********************************************************Superuser Routes****************************************
-****************************************************************************************************************/ 
+**********************************************************Superuser Routes*************************************
+***************************************************************************************************************/ 
 
 
 /*********************************************************
@@ -105,8 +106,8 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 /**************************************************************************************************************
-***************************************************** Blood Banks Routes ***************************************************
-****************************************************************************************************************/ 
+***************************************************** Blood Banks Routes **************************************
+***************************************************************************************************************/ 
 
 
 
@@ -115,6 +116,8 @@ router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRout
 
 router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 
+
+router.get("/mbank", bloodbank.userRequestAction)
 
 
 

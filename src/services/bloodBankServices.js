@@ -25,6 +25,25 @@ const bloodDetailById = async (uniqueID) => {
 };
 
 /*******************************************************************
+ * find by username
+ * @param {*} username
+*******************************************************************/
+
+const bloodDetailByUsername = async (username) => {
+    try {
+        const users = await  blood_bank_detail.findOne({
+            where: {
+                username : username
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e ;
+    }
+};
+
+
+/*******************************************************************
  * Adding Details on blood bank details table
  * @param {*} bloodbankDetails 
 *******************************************************************/
@@ -80,4 +99,4 @@ const bloodInventoryById = async (uniqueID) => {
 };
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodInventoryById}
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById}
