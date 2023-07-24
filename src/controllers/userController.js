@@ -251,11 +251,11 @@ exports.requestDecline = async (req, res) => {
         if (req.body.request == "Decline") {
             const user = await service.findId(req.body.id)
             if (user != null) {
-                if(user.role == "blood_bank"){
+                if (user.role == "blood_bank") {
                     const userDelete = await service.userDeletion(user.username);
-                    res.json({msg : "Blood Banks Request rejected Successfully"});
+                    res.json({ msg: "Blood Banks Request rejected Successfully" });
                 }
-                else{
+                else {
                     res.json("you can only update data of Blood Banks");
                 }
             }
@@ -277,7 +277,7 @@ exports.requestDecline = async (req, res) => {
  * @description This controller for blood banks request Acception
  */
 
-exports.requestAcception = async(req, res) => {
+exports.requestAcception = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
@@ -287,12 +287,12 @@ exports.requestAcception = async(req, res) => {
         if (req.body.request == "Accept") {
             const user = await service.findId(req.body.id)
             if (user != null) {
-                if(user.role == "blood_bank"){
-                    const updateData = {user_status: "Active", updated_by:"userData.username"};
+                if (user.role == "blood_bank") {
+                    const updateData = { user_status: "Active", updated_by: userData.username };
                     const updationData = await service.userUpdation(updateData, req.body.id);
-                    res.json({msg : "Blood Bank Activated Successfully", data:updationData});
+                    res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
                 }
-                else{
+                else {
                     res.json("you can only update data of Blood Banks");
                 }
             }

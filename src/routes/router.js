@@ -4,7 +4,8 @@ const userDataRoute = require("./userDataRoute")
 const superUserRoute = require("./superUserRoute")
 const usermiddelware = require("../middelware/userMiddelware")
 const bloodBankRoute = require("./bloodBankRoute");
-const bloodbank = require("../controllers/userActionController")
+// const bloodbank = require("../controllers/userActionController")
+const usersAction = require("./userActionRoutes");
 
 
 
@@ -117,7 +118,7 @@ router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRout
 router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 
 
-router.post("/users/action/request", usermiddelware.jwtVerification, bloodbank.userRequestAction);
+router.post("/users/action/request", usermiddelware.jwtVerification, usersAction.usersActionRequest);
 
 
 
