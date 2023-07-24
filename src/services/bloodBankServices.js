@@ -99,4 +99,28 @@ const bloodInventoryById = async (uniqueID) => {
 };
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById}
+
+
+/*******************************************************************
+ * Users request Acception 
+ * @param {*} id 
+*******************************************************************/
+
+
+const usersRequestAcception = async (uniqueID, data) => {
+    try {
+        const users = await  userModel.userActions.update(
+            data,
+            {
+            where: {
+                id : uniqueID
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e ;
+    }
+};
+
+
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, usersRequestAcception}

@@ -123,5 +123,13 @@ router.post("/users/action/request", usermiddelware.jwtVerification, usersAction
 
 
 
+router.get("/blood_bank/request", usermiddelware.jwtVerification, usersAction.usersActionList);
+
+/**************************************************************************************************************
+***************************************************** User Request Acception Request***************************
+***************************************************************************************************************/ 
+
+router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.userRequestAcception);
+
 
 module.exports = router;

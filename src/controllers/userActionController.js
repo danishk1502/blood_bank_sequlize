@@ -6,6 +6,10 @@ const userActionServices = require("../services/userAction")
 
 
 
+/********************************************************
+* Controller*
+* @description * creating users blood request controller
+* ******************************************************/
 
 exports.userRequestAction = async (req, res) => {
     const username = req.body.blood_bank_username;
@@ -44,11 +48,44 @@ exports.userRequestAction = async (req, res) => {
         else {
             res.send("sorry choose correct bank");
         }
-
-
     }
     else {
         res.send("you dont have access to request");
     }
+}
 
+
+/*********************************************************************************
+* Controller *
+* @description * list of users blood request 
+* ********************************************************************************/
+
+exports.userRequestList = async (req, res) => {
+    const bankId = req.data.id;
+    const findRequest = await userActionServices.userRequestData(bankId);
+    if (findRequest == null) {
+        res.send("No data Available here")
+    }
+    else {
+        res.send(findRequest);
+    }
+}
+
+/*********************************************************************************
+* Controller*
+* @description * creating users blood request Acception by blood Bank controller
+* ********************************************************************************/
+
+exports.userRequestAcception = async(req, res) => {
+    const bankId = req.data.id;
+    const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
+    if(findRequest == null){
+        res.send("no request here may be cancel by user");
+    }
+    else{
+        const dataUpdate = {status : "Accepted"}
+        const requestAcception = bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
+        res.json(requestAcception);
+        console.log(findRequest.blood_group);
+    }
 }

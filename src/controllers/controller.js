@@ -59,3 +59,12 @@ exports.bloodBankInventory = bloodBankController.bloodBankInventory;
 
 
 exports.userActionRequest = userAction.userRequestAction;
+exports.userActionList = userAction.userRequestList;
+
+
+
+/*******************************************************************************************************************************************
+************************************** Users Request Acception Controllers  ********************************************
+********************************************************************************************************************************************/
+
+exports.userRequestAcception = userAction.userRequestAcception;
