@@ -8,8 +8,11 @@ const userActions = sequelizeDb.define("user_actions", {
         autoIncrement: true,
         primaryKey: true
     },
-    Action: {
+    action: {
         type: DataTypes.ENUM("Request", "Donation"),
+    },
+    status: {
+        type: DataTypes.ENUM("Accepted", "Reject"),
     },
     blood_group: {
         type: DataTypes.STRING,
@@ -30,7 +33,6 @@ const userActions = sequelizeDb.define("user_actions", {
 {
     paranoid: true
 });
-
 
 
 

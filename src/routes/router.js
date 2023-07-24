@@ -117,7 +117,7 @@ router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRout
 router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 
 
-router.get("/mbank", bloodbank.userRequestAction)
+router.post("/users/action/request", usermiddelware.jwtVerification, bloodbank.userRequestAction);
 
 
 
