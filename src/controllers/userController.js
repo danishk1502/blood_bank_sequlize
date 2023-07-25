@@ -62,11 +62,12 @@ exports.userRegister = (async (req, res) => {
  * Creating Authentication controller 
  * @Response : res.status(200, 403, 202)
  * @Request : password, username
- */
+ */ 
 
 
 exports.userAuthentication = (async (req, res) => {
     const users = await service.findUsername(req.body.username)
+    console.log(users);
     if (users != null) {
         if (users.user_status == "Active") {
             if (users.password == md5(req.body.password)) {

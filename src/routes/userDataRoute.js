@@ -18,4 +18,4 @@ exports.userGetRoute = userController.userUniqueGet;
 * @description * route-Controller connection for get all data using role filter 
 * ****************************************************/
 
-exports.userRoleFilter=userController.userRoleFilter
+exports.userRoleFilter=userController.userRoleFilter;
