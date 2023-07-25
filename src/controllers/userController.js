@@ -2,6 +2,7 @@ const service = require("../services/userServices");
 const md5 = require('md5');
 const responseJson = require("../utils/responseUtils")
 const RESPONSE = require('../utils/responseUtils')
+const mailer = require('../utils/mailUtils')
 
 
 
@@ -38,7 +39,9 @@ exports.userRegister = (async (req, res) => {
                     user_status: userStatus
                 }
                 const saveData = await service.userRegistrationData(userInfo);
+                // const sendMail =  mailer(userInfo.email, "your account successfully created");
                 return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
+               
             }
             else {
                 return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
