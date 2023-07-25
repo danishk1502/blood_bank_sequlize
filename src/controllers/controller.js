@@ -6,7 +6,7 @@ const userAction = require("./userActionController")
 
 
 /*******************************************************************************************************************************************
- ************************************************** User Controllers from userController.js ************************************************
+************************************************** User Controllers from userController.js *************************************************
 ********************************************************************************************************************************************/
 
 
@@ -50,6 +50,8 @@ exports.requestDecline = userController.requestDecline
 
 exports.createBankDetails = bloodBankController.bloodBankDetails;
 exports.bloodBankInventory = bloodBankController.bloodBankInventory;
+exports.bloodBankPriceInventory = bloodBankController.priceBloodInventory;
+
 
 
 

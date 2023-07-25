@@ -132,4 +132,11 @@ router.get("/blood_bank/request", usermiddelware.jwtVerification, usersAction.us
 router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.userRequestAcception);
 
 
+/**************************************************************************************************************
+***************************************************** User Request Acception Request***************************
+***************************************************************************************************************/ 
+
+router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
+
+
 module.exports = router;

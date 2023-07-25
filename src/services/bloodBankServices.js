@@ -123,4 +123,44 @@ const usersRequestAcception = async (uniqueID, data) => {
 };
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, usersRequestAcception}
+
+/*******************************************************************
+ * findId for 
+ * inventory
+ * @param {*} id 
+*******************************************************************/
+
+const bloodPriceInventoryById = async (uniqueID) => {
+    try {
+        const users = await  userModel.priceBloodInventory.findOne({
+            where: {
+                usersBloodBankId : uniqueID
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e ;
+    }
+};
+
+
+
+/*******************************************************************
+ * creating blood price Inventory
+ * @param {*} Inventory Data
+*******************************************************************/
+
+const bloodPriceInventoryCreation = async(inventoryData)=>{
+    try {
+        const bloodBankDetails = await userModel.priceBloodInventory.create(
+            inventoryData
+        )
+        return bloodBankDetails;
+    } catch (e) {
+        console.log("error occur"+ e);
+    }
+
+}
+
+
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, bloodPriceInventoryCreation, usersRequestAcception}

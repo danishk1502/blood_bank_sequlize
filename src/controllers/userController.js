@@ -1,6 +1,7 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
 const responseJson = require("../utils/responseUtils")
+const RESPONSE = require('../utils/responseUtils')
 
 
 
@@ -37,14 +38,14 @@ exports.userRegister = (async (req, res) => {
                     user_status: userStatus
                 }
                 const saveData = await service.userRegistrationData(userInfo);
-                return res.status(200).json({ status: 200, data: saveData, message: "Succesfully User created" });
+                return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
             }
             else {
-                return res.status(403).json({ status: 403, data: null, message: "Email already exist" });
+                return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
             }
         }
         else {
-            return res.status(403).json(responseJson.responseData("username already Exist"));
+            return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST });
         }
 
     } catch (e) {
@@ -73,18 +74,18 @@ exports.userAuthentication = (async (req, res) => {
             if (users.password == md5(req.body.password)) {
                 const username = req.body.username;
                 const loginData = await service.userAuthentication(username);
-                return res.status(200).json({ status: 200, data: users, message: "User logged in", token: req.token });
+                return res.status(200).json({ status: 200, data: users, message: RESPONSE.LOGIN_SUCCESSFULLY, token: req.token });
             }
             else {
-                return res.status(403).json({ status: 403, data: null, message: "Password Incorrect" });
+                return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT });
             }
         }
         else {
-            return res.status(202).json({ status: 202, data: null, message: "your bank's registration application is under progress" })
+            return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN })
         }
     }
     else {
-        return res.status(403).json({ status: 403, data: users, message: "Username Incorrect" });
+        return res.status(403).json({ status: 403, data: users, message: RESPONSE.USERNAME_NOT_VALID });
     }
 });
 
@@ -103,18 +104,18 @@ exports.userDeletion = (async (req, res) => {
             if (user.password == md5(req.body.password)) {
                 const username = req.body.username;
                 const userDelete = await service.userDeletion(username);
-                return res.status(202).json({ status: 204, data: null, message: "Account Deleted" });
+                return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE});
             }
             else {
-                return res.status(403).json({ status: 403, data: null, message: "Password Incorrect" });
+                return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT });
             }
         }
         else {
-            return res.status(202).json({ status: 202, data: null, message: "your bank's registration application is under progress" })
+            return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN})
         }
     }
     else {
-        return res.status(403).json({ status: 403, data: user, message: "Username Incorrect" });
+        return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID });
     }
 });
 
@@ -135,10 +136,9 @@ exports.userUpdation = (async (req, res) => {
     updateData.updated_by = dataId.username;
     if (updateData.password) {
         updateData.password = md5(updateData.password);
-        console.log(updateData.password);
     }
-    const updationData = await service.userUpdation(updateData, tokenData)
-    res.json(updationData);
+    const updationData = await service.userUpdation(updateData, tokenData);
+    return res.status(202).json({ status: 202, message: RESPONSE.DATA_UPDATED });
 
 })
 
@@ -159,7 +159,7 @@ exports.userUpdation = (async (req, res) => {
  */
 exports.userUniqueGet = (async (req, res) => {
     const userUnique = await service.findId(req.data.id)
-    return res.status(200).json({ status: 200, data: userUnique, message: "All Data" });
+    return res.status(200).json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
 });
 
 
@@ -171,7 +171,7 @@ exports.userUniqueGet = (async (req, res) => {
 
 exports.userGet = (async (req, res) => {
     const users = await service.usersGetData()
-    return res.status(200).json({ status: 200, data: users, message: "All Data" });
+    return res.status(200).json({ status: 200, data: users, message:  RESPONSE.DATA_GET });
 });
 
 
@@ -184,20 +184,20 @@ exports.userGet = (async (req, res) => {
 
 
 exports.userRoleFilter = (async (req, res) => {
-    if (req.body.role == "user" || req.body.role == "superuser") {
-        return res.status(403).json({ status: 403, data: null, message: "we cant show you the list" });
+    if (req.body.role == "user" || req.body.role == "superuser"){
+        return res.status(403).json({ status: 403, data: null, message: RESPONSE.PERMISSSION_DENIED});
     }
     else if (req.body.role == "blood_bank") {
         const dataRole = await service.userRoleFilter(req.body.role);
         if (dataRole != null) {
-            return res.status(200).json({ status: 200, data: dataRole, message: "Data of role :" + req.body.role });
+            return res.status(200).json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET });
         }
         else {
-            return res.status(404).json({ status: 404, data: data, message: "Data Not Found" });
+            return res.status(404).json({ status: 404, data: data, message: RESPONSE.DATA_NOT_FOUND});
         }
     }
     else {
-        return res.status(403).json({ status: 403, data: null, message: "Please make Valid request" });
+        return res.status(403).json({ status: 403, data: null, message: NOT_VALID_REQUEST});
     }
 
 
@@ -226,7 +226,7 @@ exports.pendingRequest = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
-        res.json({ msg: "you are not eligible to view Data" });
+        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
     else {
 
@@ -268,12 +268,12 @@ exports.requestDecline = async (req, res) => {
             res.json({ msg: "Invalid Request" });
         }
     }
-
-
 }
 
 
-/**
+
+
+/*
  * blood bank request Acception Controller 
  * @description This controller for blood banks request Acception
  */
@@ -307,6 +307,9 @@ exports.requestAcception = async (req, res) => {
     }
 
 }
+
+
+
 
 
 

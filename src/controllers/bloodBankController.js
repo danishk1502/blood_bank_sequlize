@@ -74,3 +74,42 @@ exports.bloodBankInventory = async(req, res)=>{
         res.send("You are not eligible to make thhis request");
     }
 }
+
+
+
+/**
+ * blood price Inventory Controller
+ * Creating blood banks price Inventory controller
+*/
+
+exports.priceBloodInventory = async(req, res)=>{
+    const authId = req.data.id;
+    const checkId = await service.findId(authId);
+    if(checkId.role == "blood_bank"){
+        if(checkId.user_status == "Active"){
+            req.body.usersBloodBankId = req.data.id;
+            req.body.created_by = req.data.username;
+            req.body.updated_by = req.data.username;
+
+            const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
+            if(findUserData==null){
+
+                const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
+
+                res.json(createInventory);
+            }
+            else{
+                res.send("you cant regenarate it but you can update it..")
+            }
+        }
+        else{
+            res.send("Your Blood Bank is not regisster Yet");
+        }
+    }
+    else{
+        res.send("You are not eligible to make thhis request");
+    }
+}
+
+
+
