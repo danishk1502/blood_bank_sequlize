@@ -4,26 +4,43 @@ const userModel = require('../models/models');
 
 
 
-const bloodInventorySearch = async(bankId)=>{
+const bloodInventorySearch = async (bankId) => {
     try {
         const bloodBankDetails = await userModel.bloodBankInventory.findOne(
             {
-                where:{
-                    usersBloodBankId : bankId
+                where: {
+                    usersBloodBankId: bankId
                 }
             }
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur"+ e);
+        console.log("error occur" + e);
     }
 }
 
 
-const bloodInventoryCreation2 = ()=>{
-   
+/*
+Inventory changes while request acception  
+ */
+
+const bloodInventoryChange = async (bankId, data) => {
+    try {
+        const bloodBankDetails = await userModel.bloodBankInventory.update(
+            data,
+            {
+                where: {
+                    usersBloodBankId: bankId
+                }
+            }
+        )
+        return bloodBankDetails;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+
 }
 
 
 
-module.exports={bloodInventorySearch, bloodInventoryCreation2}
+module.exports = { bloodInventorySearch, bloodInventoryChange }

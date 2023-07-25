@@ -15,42 +15,50 @@ exports.userRequestAction = async (req, res) => {
     const username = req.body.blood_bank_username;
     const bloodBankDetails = await service.findUsername(username);
     const findUserData = await service.findId(req.data.id);
-    if (findUserData.role == "user") {
-        if (bloodBankDetails.role == "blood_bank") {
-            const bloodBankInventory = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
-            const totalBloodUnits = { units: bloodBankInventory[req.body.blood_group] }
-            if (totalBloodUnits.units > 0) {
-                if (req.body.number_of_blood_unit <= 0) {
-                    res.send("Enter valid number of blood unit");
-                }
-                else {
-                    if (req.body.number_of_blood_unit > 3) {
-                        res.send("you only make request for less than 4 units");
-                    } else {
-                        if (totalBloodUnits.units < req.body.number_of_blood_unit) {
-                            res.send("blood is available but requirement not satisfied");
+    const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
+    console.log(bloodInventoryFind)
+
+    if (bloodInventoryFind==null) {
+        res.send("blood is not available inn this blood bank");
+    }
+    else {
+        if (findUserData.role == "user") {
+            if (bloodBankDetails.role == "blood_bank") {
+                const bloodBankInventory = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
+                const totalBloodUnits = { units: bloodBankInventory[req.body.blood_group] }
+                if (totalBloodUnits.units > 0) {
+                    if (req.body.number_of_blood_unit <= 0) {
+                        res.send("Enter valid number of blood unit");
+                    }
+                    else {
+                        if (req.body.number_of_blood_unit > 3) {
+                            res.send("you only make request for less than 4 units");
                         } else {
-                            req.body.userId = req.data.id;
-                            req.body.usersBloodBankId = bloodBankDetails.id;
-                            req.body.action = "request";
-                            req.body.created_by = req.data.username;
-                            req.body.updated_by = req.data.username;
-                            const usersAction = await userActionServices.userRequestAction(req.body);
-                            res.json(usersAction);
+                            if (totalBloodUnits.units < req.body.number_of_blood_unit) {
+                                res.send("blood is available but requirement not satisfied");
+                            } else {
+                                req.body.userId = req.data.id;
+                                req.body.usersBloodBankId = bloodBankDetails.id;
+                                req.body.action = "request";
+                                req.body.created_by = req.data.username;
+                                req.body.updated_by = req.data.username;
+                                const usersAction = await userActionServices.userRequestAction(req.body);
+                                res.json(usersAction);
+                            }
                         }
                     }
                 }
+                else {
+                    res.send("Sorry Blood unit are not available");
+                }
             }
             else {
-                res.send("Sorry Blood unit are not available");
+                res.send("sorry choose correct bank");
             }
         }
         else {
-            res.send("sorry choose correct bank");
+            res.send("you dont have access to request");
         }
-    }
-    else {
-        res.send("you dont have access to request");
     }
 }
 
@@ -76,16 +84,34 @@ exports.userRequestList = async (req, res) => {
 * @description * creating users blood request Acception by blood Bank controller
 * ********************************************************************************/
 
-exports.userRequestAcception = async(req, res) => {
+exports.userRequestAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
-    if(findRequest == null){
+    // const blood_here = findRequest.blood_group;
+    if (findRequest == null) {
         res.send("no request here may be cancel by user");
     }
-    else{
-        const dataUpdate = {status : "Accepted"}
-        const requestAcception = bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
-        res.json(requestAcception);
-        console.log(findRequest.blood_group);
+    else {
+        const dataInventory={}
+        const dataUpdate = { status: "Accepted" }
+        const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
+        const blood_group = findRequest.blood_group;
+        // console.log(blood_group);
+        // const dataInventory = await bloo
+        // const blood_group = {findRequest.blood_group : findRequest.}
+        
+       
+        const findInventory = await bloodInventory.bloodInventorySearch(bankId);
+        const blood_units = findInventory[findRequest.blood_group]-findRequest.number_of_blood_unit;
+        console.log(blood_units);
+       
+        const inventoryUpdate = await bloodInventory.bloodInventoryChange(bankId, {[findRequest.blood_group]:blood_units})
+        res.json(inventoryUpdate);
     }
 }
+
+
+/*********************************************************************************
+* Controller*
+* @description * creating users blood request Acception by blood Bank controller
+* ********************************************************************************/
