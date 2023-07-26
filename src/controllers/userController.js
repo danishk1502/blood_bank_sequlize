@@ -1,6 +1,5 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
-const responseJson = require("../utils/responseUtils")
 const RESPONSE = require('../utils/responseUtils')
 const mailer = require('../utils/mailUtils')
 
@@ -232,7 +231,10 @@ exports.pendingRequest = async (req, res) => {
     else {
 
         const bloodBankList = await service.bloodBankPending("blood_bank");
-        res.json(bloodBankList);
+        res.json({
+            msg : RESPONSE.DATA_GET,
+            data : bloodBankList
+        });
     }
 }
 
@@ -247,7 +249,7 @@ exports.requestDecline = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
-        res.json({ msg: "You are not able to make request" });
+        res.json({ msg: RESPONSE.PERMISSSION_DENIED});
     }
     else {
         if (req.body.request == "Decline") {
@@ -262,11 +264,13 @@ exports.requestDecline = async (req, res) => {
                 }
             }
             else {
-                res.json({ message: "user not exist on this id" });
+                res.json({status:404,
+                    message: RESPONSE.DATA_NOT_FOUND
+                    });
             }
         }
         else {
-            res.json({ msg: "Invalid Request" });
+            res.json({  msg:  RESPONSE.NOT_VALID_REQUEST });
         }
     }
 }
@@ -283,7 +287,7 @@ exports.requestAcception = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
-        res.json({ msg: "You are not able to make request" });
+        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
     else {
         if (req.body.request == "Accept") {
@@ -299,11 +303,13 @@ exports.requestAcception = async (req, res) => {
                 }
             }
             else {
-                res.json({ message: "user not exist on this id" });
+                res.json({status:404,
+                     message: RESPONSE.DATA_NOT_FOUND
+                     });
             }
         }
         else {
-            res.json({ msg: "Invalid Request" });
+            res.json({ msg:  RESPONSE.NOT_VALID_REQUEST });
         }
     }
 

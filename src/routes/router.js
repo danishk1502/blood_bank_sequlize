@@ -115,6 +115,8 @@ router.post("/users/action/request", usermiddelware.jwtVerification, usersAction
 router.patch("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.updateBloodInventory);
 
 router.patch("/blood_bank/inventory/increment", usermiddelware.jwtVerification, bloodBankRoute.incrementBloodInventory);
+router.patch("/blood_bank/inventory/decrement", usermiddelware.jwtVerification, bloodBankRoute.decrementBloodInventory);
+
 
 
 

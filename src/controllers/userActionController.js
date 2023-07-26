@@ -1,6 +1,6 @@
 const service = require("../services/userServices");
 const bloodBankService = require("../services/bloodBankServices");
-const responseJson = require("../utils/responseUtils");
+const RESPONSE = require("../utils/responseUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
 const userPayments = require("../services/paymentServices")
@@ -138,6 +138,10 @@ exports.userPaymentCompleteion = async (req, res) => {
 
 exports.userPaymentDetails = async (req, res) => {
     const pendingPaymentData =  await userPayments.findPaymentData(req.data.id);
-    res.json(pendingPaymentData);
+    res.json({
+        data:pendingPaymentData,
+        msg : RESPONSE.DATA_GET
+    });
 
 }
+

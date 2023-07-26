@@ -35,4 +35,6 @@ exports.createBloodBankPriceInventory = bloodBankController.bloodBankPriceInvent
 
 exports.updateBloodInventory = bloodBankController.bloodInventoryUpdate;
 exports.incrementBloodInventory = bloodBankController.bloodInventoryIncrement;
+exports.decrementBloodInventory = bloodBankController.bloodInventoryDecrement;
+
 
