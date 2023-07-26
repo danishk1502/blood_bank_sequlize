@@ -44,8 +44,7 @@ exports.userRequestAction = async (req, res) => {
                                 req.body.created_by = req.data.username;
                                 req.body.updated_by = req.data.username;
                                 const usersAction = await userActionServices.userRequestAction(req.body);
-                                //payment data here 
-                                const paymentData = { userActionId: usersAction.id };
+                                const paymentData = { userActionId: usersAction.id, userId: req.data.id };
                                 const paymentDetails = await userPayments.createPaymentData(paymentData);
                                 res.json(usersAction);
                             }
@@ -112,21 +111,33 @@ exports.userRequestAcception = async (req, res) => {
                 const inventoryUpdate = await bloodInventory.bloodInventoryChange(bankId, { [findRequest.blood_group]: blood_units })
                 const paymentData = {
                     total_amount: priceDetails[findRequest.blood_group] * findRequest.number_of_blood_unit,
-                    payment_complete: "Incomplete",
+                    payment: "Pending",
                 }
                 const paymentDataUpdate = await userPayments.updatePaymentData(paymentData, findRequest.id);
                 res.json(inventoryUpdate);
             }
         }
-        
+
     }
 }
 
 
 /*********************************************************************************
 * Controller*
-* @description * creating users blood request Acception by blood Bank controller
+* @description * creating users payment complete by user
 * ********************************************************************************/
-exports.paymentDetails = async (req, res) => {
-    // const userRequests = await 
+
+exports.userPaymentCompleteion = async (req, res) => {
+
+}
+
+/*********************************************************************************
+* Controller*
+* @description * creating users payment Details show
+* ********************************************************************************/
+
+exports.userPaymentDetails = async (req, res) => {
+    const pendingPaymentData =  await userPayments.findPaymentData(req.data.id);
+    res.json(pendingPaymentData);
+
 }

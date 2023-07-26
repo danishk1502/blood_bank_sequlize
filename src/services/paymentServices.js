@@ -31,3 +31,23 @@ exports.updatePaymentData = async(data, requestId)=>{
     }
 
 }
+
+
+
+exports.findPaymentData = async(userId)=>{
+    try {
+        const paymentDetails = await userModel.userPayments.findAll(
+            {
+                where:{
+                    userId : userId,
+                    payment : "Pending"
+
+                }
+            }
+        )
+        return paymentDetails;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+
+}

@@ -50,6 +50,9 @@ exports.priceBloodInventoryRelation=(priceInventory, userModel)=>{
 
 
 exports.userPaymentRelation=(userPaymentInfo, userActions)=>{
-    userActions.hasOne(userPaymentInfo);
+    userActions.hasOne(userPaymentInfo, {
+        foreignKey: 
+            'userId'
+      });
       userPaymentInfo.belongsTo(userActions);
 }

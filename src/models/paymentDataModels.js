@@ -13,7 +13,7 @@ const userPaymentDetails = sequelizeDb.define("paymentDetailTable", {
         defaultValue:0
     },
     payment: {
-        type: DataTypes.ENUM("Incomplete", "complete")
+        type: DataTypes.ENUM("Incomplete", "Complete", "Pending")
     },
     transaction_id: {
         type: DataTypes.STRING,

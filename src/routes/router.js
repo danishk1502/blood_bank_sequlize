@@ -139,4 +139,15 @@ router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.
 router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 
 
+
+/**************************************************************************************************************
+***************************************************** User Request Acception Request***************************
+***************************************************************************************************************/ 
+
+router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);
+
+
+
+
+
 module.exports = router;
