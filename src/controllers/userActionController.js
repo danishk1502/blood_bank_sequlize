@@ -3,6 +3,7 @@ const bloodBankService = require("../services/bloodBankServices");
 const responseJson = require("../utils/responseUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
+const userPayments = require("../services/paymentServices")
 
 
 
@@ -18,7 +19,7 @@ exports.userRequestAction = async (req, res) => {
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
     console.log(bloodInventoryFind)
 
-    if (bloodInventoryFind==null) {
+    if (bloodInventoryFind == null) {
         res.send("blood is not available inn this blood bank");
     }
     else {
@@ -43,6 +44,9 @@ exports.userRequestAction = async (req, res) => {
                                 req.body.created_by = req.data.username;
                                 req.body.updated_by = req.data.username;
                                 const usersAction = await userActionServices.userRequestAction(req.body);
+                                //payment data here 
+                                const paymentData = { userActionId: usersAction.id };
+                                const paymentDetails = await userPayments.createPaymentData(paymentData);
                                 res.json(usersAction);
                             }
                         }
@@ -87,26 +91,34 @@ exports.userRequestList = async (req, res) => {
 exports.userRequestAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
-    // const blood_here = findRequest.blood_group;
     if (findRequest == null) {
         res.send("no request here may be cancel by user");
     }
     else {
-        const dataInventory={}
         const dataUpdate = { status: "Accepted" }
         const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
         const blood_group = findRequest.blood_group;
-        // console.log(blood_group);
-        // const dataInventory = await bloo
-        // const blood_group = {findRequest.blood_group : findRequest.}
-        
-       
         const findInventory = await bloodInventory.bloodInventorySearch(bankId);
-        const blood_units = findInventory[findRequest.blood_group]-findRequest.number_of_blood_unit;
-        console.log(blood_units);
-       
-        const inventoryUpdate = await bloodInventory.bloodInventoryChange(bankId, {[findRequest.blood_group]:blood_units})
-        res.json(inventoryUpdate);
+
+        //payment table update here 
+
+        if (findRequest.action == "Request") {
+            const priceDetails = await bloodBankService.bloodPriceInventoryById(bankId);
+            if (priceDetails == null) {
+                res.send("First Create Price Inventory");
+            }
+            else {
+                const blood_units = findInventory[findRequest.blood_group] - findRequest.number_of_blood_unit;
+                const inventoryUpdate = await bloodInventory.bloodInventoryChange(bankId, { [findRequest.blood_group]: blood_units })
+                const paymentData = {
+                    total_amount: priceDetails[findRequest.blood_group] * findRequest.number_of_blood_unit,
+                    payment_complete: "Incomplete",
+                }
+                const paymentDataUpdate = await userPayments.updatePaymentData(paymentData, findRequest.id);
+                res.json(inventoryUpdate);
+            }
+        }
+        
     }
 }
 
@@ -115,3 +127,6 @@ exports.userRequestAcception = async (req, res) => {
 * Controller*
 * @description * creating users blood request Acception by blood Bank controller
 * ********************************************************************************/
+exports.paymentDetails = async (req, res) => {
+    // const userRequests = await 
+}

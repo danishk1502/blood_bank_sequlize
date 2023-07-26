@@ -45,3 +45,11 @@ exports.priceBloodInventoryRelation=(priceInventory, userModel)=>{
       });
       priceInventory.belongsTo(userModel);
 }
+
+
+
+
+exports.userPaymentRelation=(userPaymentInfo, userActions)=>{
+    userActions.hasOne(userPaymentInfo);
+      userPaymentInfo.belongsTo(userActions);
+}
