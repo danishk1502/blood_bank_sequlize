@@ -27,3 +27,12 @@ exports.createBloodBankInventory = bloodBankController.bloodBankInventory;
 
 exports.createBloodBankPriceInventory = bloodBankController.bloodBankPriceInventory;
 
+
+/**********************************************************************************
+* route-Controller*
+* @description * route-Controller connection for updating blood bank blood inventory
+* **********************************************************************************/
+
+exports.updateBloodInventory = bloodBankController.bloodInventoryUpdate;
+exports.incrementBloodInventory = bloodBankController.bloodInventoryIncrement;
+

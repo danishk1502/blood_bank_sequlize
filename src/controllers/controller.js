@@ -52,6 +52,10 @@ exports.createBankDetails = bloodBankController.bloodBankDetails;
 exports.bloodBankInventory = bloodBankController.bloodBankInventory;
 exports.bloodBankPriceInventory = bloodBankController.priceBloodInventory;
 
+exports.bloodInventoryUpdate = bloodBankController.bloodBankInventoryUpdate;
+exports.bloodInventoryIncrement = bloodBankController.bloodInventoryIncrement;
+
+
 
 
 
@@ -74,7 +78,8 @@ exports.userRequestAcception = userAction.userRequestAcception;
 
 
 /*******************************************************************************************************************************************
-************************************** Users pending payments Controllers  ********************************************
+*********************************************** Users pending payments Controllers  ********************************************************
 ********************************************************************************************************************************************/
 
 exports.pendingPayments = userAction.userPaymentDetails;
+

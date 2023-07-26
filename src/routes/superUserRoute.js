@@ -3,7 +3,6 @@ const superuserController = require('../controllers/controller')
 
 
 
-
 /**********************************************************************************
 * route-Controller*
 * @description * route-Controller connection for get all data of pending blood banks

@@ -2,7 +2,7 @@ const sequelizeDb = require('../config/dbConfig')
 const DataTypes = require("sequelize");
 
 
-const userPaymentDetails = sequelizeDb.define("paymentDetailTable", {
+const userPaymentDetails = sequelizeDb.define("payment_detail_table", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

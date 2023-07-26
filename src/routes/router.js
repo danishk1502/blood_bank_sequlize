@@ -50,7 +50,7 @@ router.delete("/delete", usermiddelware.jwtVerification, userRoute.userDeletionR
 
 
 
-/**************************************************
+/****************************************************
 Users Data Routes
 *****************************************************/ 
 
@@ -104,21 +104,19 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 
-
-
 /**************************************************************************************************************
 ***************************************************** Blood Banks Routes **************************************
 ***************************************************************************************************************/ 
 
 
-
 router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);
-
-
 router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
-
-
 router.post("/users/action/request", usermiddelware.jwtVerification, usersAction.usersActionRequest);
+router.patch("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.updateBloodInventory);
+
+router.patch("/blood_bank/inventory/increment", usermiddelware.jwtVerification, bloodBankRoute.incrementBloodInventory);
+
+
 
 
 
