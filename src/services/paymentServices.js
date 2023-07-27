@@ -1,6 +1,11 @@
 const userModel = require('../models/models');
 
 
+
+/*****************************************
+payment Data Creation
+********************************************/
+
 exports.createPaymentData = async(data)=>{
     try {
         const paymentDetails = await userModel.userPayments.create(
@@ -14,6 +19,9 @@ exports.createPaymentData = async(data)=>{
 }
 
 
+/***************************************************
+update payment Data Creation (while request accept)
+****************************************************/
 
 exports.updatePaymentData = async(data, requestId)=>{
     try {
@@ -33,6 +41,10 @@ exports.updatePaymentData = async(data, requestId)=>{
 }
 
 
+/**********************************************
+ * @param {*} userId 
+ * @returns showing data about payment to user
+ ***********************************************/
 
 exports.findPaymentData = async(userId)=>{
     try {

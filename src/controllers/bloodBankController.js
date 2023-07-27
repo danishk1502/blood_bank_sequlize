@@ -8,10 +8,10 @@ const RESPONSE = require("../utils/responseUtils")
 
 
 
-/**
+/********************************************
  * blood Bank Detail Controller
  * Creating blood banks details controller
-*/
+*********************************************/
 
 exports.bloodBankDetails = async (req, res) => {
     const authId = req.data.id;
@@ -51,10 +51,10 @@ exports.bloodBankDetails = async (req, res) => {
 
 
 
-/**
+/*********************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller
-*/
+***********************************************/
 
 exports.bloodBankInventory = async (req, res) => {
     const authId = req.data.id;
@@ -95,10 +95,11 @@ exports.bloodBankInventory = async (req, res) => {
 
 
 
-/**
+/***********************************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller to update Data 
-*/
+************************************************************/
+
 exports.bloodBankInventoryUpdate = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
@@ -125,11 +126,11 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
 
 
 
-/**
+/**************************************************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller to Increment Blood unit Data 
  * * @description : This function to add a number of blood unit 
-*/
+*****************************************************************************/
 
 exports.bloodInventoryIncrement = async (req, res) => {
     const bankId = req.data.id;
@@ -174,11 +175,11 @@ exports.bloodInventoryIncrement = async (req, res) => {
 
 
 
-/**
+/*************************************************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller to decrement Blood unit Data 
  * @description : This function to decrease a number of blood unit 
-*/
+***************************************************************************/
 
 exports.bloodInventoryDecrement = async (req, res) => {
     const bankId = req.data.id;
@@ -237,10 +238,10 @@ exports.bloodInventoryDecrement = async (req, res) => {
 
 
 
-/**
+/***************************************************
  * blood price Inventory Controller
  * Creating blood banks price Inventory controller
-*/
+*****************************************************/
 
 exports.priceBloodInventory = async (req, res) => {
     const authId = req.data.id;

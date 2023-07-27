@@ -73,6 +73,20 @@ router.get("/", usermiddelware.jwtVerification, userDataRoute.userGetRoute);
 router.get("/filter/role", userDataRoute.userRoleFilter);
 
 
+/*********************************************************
+ * User Data Routes *
+ * @description Shows about Pending payments 
+ * *********************************************************/
+
+router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);
+
+
+
+
+
+
+
+
 
 
 
@@ -104,47 +118,53 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 
+
+
+
+
+
+
+
+
+
 /**************************************************************************************************************
 ***************************************************** Blood Banks Routes **************************************
 ***************************************************************************************************************/ 
 
 
 router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);
-router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 router.post("/users/action/request", usermiddelware.jwtVerification, usersAction.usersActionRequest);
-router.patch("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.updateBloodInventory);
 
+
+/*********************************************************
+* Blood Banks blood Inventory  Routes 
+*********************************************************/ 
+
+router.patch("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.updateBloodInventory);
+router.post("/blood_bank/inventory", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
 router.patch("/blood_bank/inventory/increment", usermiddelware.jwtVerification, bloodBankRoute.incrementBloodInventory);
 router.patch("/blood_bank/inventory/decrement", usermiddelware.jwtVerification, bloodBankRoute.decrementBloodInventory);
 
 
-
-
-
-
-
+/*********************************************************
+* user Request list for blood bank
+*********************************************************/ 
 router.get("/blood_bank/request", usermiddelware.jwtVerification, usersAction.usersActionList);
 
-/**************************************************************************************************************
-***************************************************** User Request Acception Request***************************
-***************************************************************************************************************/ 
-
+/*********************************************************
+* user Request Acception route for blood bank
+*********************************************************/ 
 router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.userRequestAcception);
 
-
-/**************************************************************************************************************
-***************************************************** User Request Acception Request***************************
-***************************************************************************************************************/ 
-
-router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankInventory);
+/*********************************************************
+* create blood price Inventory
+*********************************************************/ 
+router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankPriceInventory);
 
 
 
-/**************************************************************************************************************
-***************************************************** User Request Acception Request***************************
-***************************************************************************************************************/ 
 
-router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);
+
 
 
 

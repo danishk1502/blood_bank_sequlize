@@ -122,14 +122,7 @@ exports.userRequestAcception = async (req, res) => {
 }
 
 
-/*********************************************************************************
-* Controller*
-* @description * creating users payment complete by user
-* ********************************************************************************/
 
-exports.userPaymentCompleteion = async (req, res) => {
-
-}
 
 /*********************************************************************************
 * Controller*
@@ -145,3 +138,11 @@ exports.userPaymentDetails = async (req, res) => {
 
 }
 
+/*********************************************************************************
+* Controller*
+* @description * creating users payment complete by user
+* ********************************************************************************/
+
+exports.userPaymentCompleteion = async (req, res) => {
+
+}

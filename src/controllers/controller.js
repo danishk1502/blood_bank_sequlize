@@ -26,7 +26,6 @@ exports.userUpdation = userController.userUpdation
  * Baasic Data controllers
 *******************************************************************/
 
-
 exports.userRoleFilter =userController.userRoleFilter
 exports.userUniqueGet = userController.userUniqueGet;
 
@@ -44,14 +43,13 @@ exports.requestDecline = userController.requestDecline
 
 
 /*******************************************************************************************************************************************
-************************************** blood bank Details Controllers from bloodBankServices.js ********************************************
+************************************** blood bank Details Controllers from bloodBankController.js ********************************************
 ********************************************************************************************************************************************/
 
 
 exports.createBankDetails = bloodBankController.bloodBankDetails;
 exports.bloodBankInventory = bloodBankController.bloodBankInventory;
 exports.bloodBankPriceInventory = bloodBankController.priceBloodInventory;
-
 exports.bloodInventoryUpdate = bloodBankController.bloodBankInventoryUpdate;
 exports.bloodInventoryIncrement = bloodBankController.bloodInventoryIncrement;
 exports.bloodInventoryDecrement = bloodBankController.bloodInventoryDecrement;
@@ -62,26 +60,17 @@ exports.bloodInventoryDecrement = bloodBankController.bloodInventoryDecrement;
 
 
 /*******************************************************************************************************************************************
-************************************** Users Action Controllers  ********************************************
+************************************** Users Action Controllers from userActionController.js  ********************************************
 ********************************************************************************************************************************************/
 
 
 exports.userActionRequest = userAction.userRequestAction;
 exports.userActionList = userAction.userRequestList;
-
-
-
-/*******************************************************************************************************************************************
-************************************** Users Request Acception Controllers  ********************************************
-********************************************************************************************************************************************/
-
 exports.userRequestAcception = userAction.userRequestAcception;
-
-
-
-/*******************************************************************************************************************************************
-*********************************************** Users pending payments Controllers  ********************************************************
-********************************************************************************************************************************************/
-
 exports.pendingPayments = userAction.userPaymentDetails;
+
+
+
+
+
 

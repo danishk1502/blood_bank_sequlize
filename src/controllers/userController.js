@@ -5,12 +5,12 @@ const mailer = require('../utils/mailUtils')
 
 
 
-/**
+/*************************************************************************************************************************************
  * userRegister Controller 
  * Creating Registration controller 
  * Response : res.status(200, 400, 403)
  * Request : name, lname, email, password, role, username, state, distt, is_deleted, created_by, updated_by, is_active, user_status
- */
+ **************************************************************************************************************************************/
 
 exports.userRegister = (async (req, res) => {
     try {
@@ -60,12 +60,12 @@ exports.userRegister = (async (req, res) => {
 
 
 
-/**
+/*****************************************
  * userAuthentication Controller 
  * Creating Authentication controller 
  * @Response : res.status(200, 403, 202)
  * @Request : password, username
- */ 
+ ******************************************/ 
 
 
 exports.userAuthentication = (async (req, res) => {
@@ -92,12 +92,12 @@ exports.userAuthentication = (async (req, res) => {
 });
 
 
-/**
+/************************************************
  * userDeletion Controller 
  * Creating soft Deletion controller 
  * @Response : res.status(202, 204, 403, )
  * @Request : password, username
- */
+ ************************************************/
 
 exports.userDeletion = (async (req, res) => {
     const user = await service.findUsername(req.body.username)
@@ -123,12 +123,12 @@ exports.userDeletion = (async (req, res) => {
 
 
 
-/**
+/***********************************************
 * userUpdation Controller 
 * Creating update controller 
 * @Response : res.status(202, 204, 403, )
 * @Request : password, username
-*/
+***************************************************/
 
 
 exports.userUpdation = (async (req, res) => {
@@ -165,11 +165,11 @@ exports.userUniqueGet = (async (req, res) => {
 });
 
 
-/**
+/************************************
  * userGet   
  * Get all data from db
  * @Response : res.status(200)
- */
+ ************************************/
 
 exports.userGet = (async (req, res) => {
     const users = await service.usersGetData()
@@ -177,12 +177,12 @@ exports.userGet = (async (req, res) => {
 });
 
 
-/**
+/***************************************************
  * user role Filter Controller 
  * @Request role 
  * @Response : res.status(200, 404)
  * @description : provide data on a specific role
- */
+ ***************************************************/
 
 
 exports.userRoleFilter = (async (req, res) => {
@@ -213,13 +213,12 @@ exports.userRoleFilter = (async (req, res) => {
 \****************************************************************************************************************************************************************/
 
 
-/* 
-/**
+/* ***********************************************************************************
  * blood bank Filter Controller 
  * @Request role 
  * @Response : res.status(200, 404)
  * @description : provide data of blood banks those registration request is pending
- */
+ **************************************************************************************/
 
 
 exports.pendingRequest = async (req, res) => {
@@ -240,10 +239,10 @@ exports.pendingRequest = async (req, res) => {
 
 
 
-/**
+/*****************************************************************
  * blood bank request Decline Controller 
  * @description This controller for blood banks request rejection
- */
+ *****************************************************************/
 
 exports.requestDecline = async (req, res) => {
     const id = req.data.id;
@@ -278,10 +277,10 @@ exports.requestDecline = async (req, res) => {
 
 
 
-/*
+/*****************************************************************
  * blood bank request Acception Controller 
  * @description This controller for blood banks request Acception
- */
+ ******************************************************************/
 
 exports.requestAcception = async (req, res) => {
     const id = req.data.id;
