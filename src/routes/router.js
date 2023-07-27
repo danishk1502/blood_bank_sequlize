@@ -4,7 +4,6 @@ const userDataRoute = require("./userDataRoute")
 const superUserRoute = require("./superUserRoute")
 const usermiddelware = require("../middelware/userMiddelware")
 const bloodBankRoute = require("./bloodBankRoute");
-// const bloodbank = require("../controllers/userActionController")
 const usersAction = require("./userActionRoutes");
 
 
@@ -87,6 +86,13 @@ router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.
 
 router.patch("/user/request/cancel", usermiddelware.jwtVerification, usersAction.userCancelRequest);
 
+
+/*********************************************************
+ * User Payment Routes *
+ * @description user pay completion 
+ * *********************************************************/
+
+router.patch("/user/request/payment", usermiddelware.jwtVerification, usersAction.userPaymentRoute);
 
 
 

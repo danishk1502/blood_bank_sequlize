@@ -17,8 +17,7 @@ exports.userRequestAction = async (req, res) => {
     const bloodBankDetails = await service.findUsername(username);
     const findUserData = await service.findId(req.data.id);
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
-    console.log(bloodInventoryFind)
-
+    // console.log(bloodInventoryFind)
     if (bloodInventoryFind == null) {
         res.send("blood is not available inn this blood bank");
     }
@@ -117,15 +116,15 @@ exports.userRequestAcception = async (req, res) => {
                             payment: "Pending",
                         }
                         const paymentDataUpdate = await userPayments.updatePaymentData(paymentData, findRequest.id);
-                        res.json(inventoryUpdate);
+                        const dataUpdate = { status: "Accepted" }
+                        const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
+                        const blood_group = findRequest.blood_group;
+                        res.json({ msg: RESPONSE.CREATED_SUCCESS });
                     }
                 }
                 else {
                     res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
                 }
-                const dataUpdate = { status: "Accepted" }
-                const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
-                const blood_group = findRequest.blood_group;
             }
             else {
                 res.send("Request may be rejected by user or accepted by bank");
@@ -140,6 +139,7 @@ exports.userRequestAcception = async (req, res) => {
             else {
                 const dataUpdate = { status: "Reject", rejected_by: "blood_bank" }
                 const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
+                const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
                 res.json({ msg: "Request Rejected Successfully" });
             }
         }
@@ -163,7 +163,7 @@ exports.userRequestAcception = async (req, res) => {
 
 /********************************************************************************
  * User Request Cancel for blood Donation 
- ********************************************************************************/
+*********************************************************************************/
 
 exports.userCancelRequest = async (req, res) => {
     const userId = req.data.id;
@@ -172,6 +172,7 @@ exports.userCancelRequest = async (req, res) => {
     if (findRequest.status == null) {
         const data = { status: "Reject", rejected_by: "user" };
         const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, data);
+        const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
         res.json({
             msg: "Request is rejected",
             data: requestAcception
@@ -179,35 +180,30 @@ exports.userCancelRequest = async (req, res) => {
     }
     else if (findRequest.status == "Accepted") {
         const checkPayment = await userPayments.findPaymentOneData(findRequest.id);
-        // res.send(checkPayment);
         if (checkPayment.payment != "Complete") {
             const findInventory = await bloodInventory.bloodInventorySearch(findRequest.usersBloodBankId);
             const blood_units = findInventory[findRequest.blood_group] + findRequest.number_of_blood_unit;
             const inventoryUpdate = await bloodInventory.bloodInventoryChange(findRequest.usersBloodBankId, { [findRequest.blood_group]: blood_units })
             const data = { status: "Reject", rejected_by: "user" };
             const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, data);
-            const paymentUpdate = await userPayments.updatePaymentData({payment:"Incomplete"}, findRequest.id);
-            res.json({ msg: "Request Rejected successfully", data: requestAcception});
+            const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
+            res.json({ msg: "Request Rejected successfully", data: requestAcception });
         }
-        else{
+        else {
             res.json(
                 {
-                    msg : "your payment already completed you need too contact with blood bank"
+                    msg: "your payment already completed you need too contact with blood bank"
                 }
             )
         }
-
     }
     else if (findRequest.status == "Reject" && findRequest.rejected_by == "blood_bank") {
         res.send("your request already rejected by blood bank");
-
     }
     else {
         res.send("your blood banks request already rejected");
     }
-
 }
-
 
 
 
@@ -220,12 +216,19 @@ exports.userCancelRequest = async (req, res) => {
 
 exports.userPaymentDetails = async (req, res) => {
     const pendingPaymentData = await userPayments.findPaymentData(req.data.id);
-    res.json({
-        data: pendingPaymentData,
-        msg: RESPONSE.DATA_GET
-    });
-}
+    if (pendingPaymentData.payment == "Pending") {
+        res.json({
+            data: pendingPaymentData,
+            msg: RESPONSE.DATA_GET
+        });
+    }
+    else {
+        res.json({
+            msg: "There is no pending payments"
+        })
+    }
 
+}
 
 
 
@@ -237,5 +240,39 @@ exports.userPaymentDetails = async (req, res) => {
 * ********************************************************************************/
 
 exports.userPaymentCompleteion = async (req, res) => {
+    const actionId = req.body.requestId;
+    const paymentFind = await userPayments.findPaymentOneData(actionId);
+    // res.send(paymentFind);
+    if (paymentFind.payment == "Pending") {
+        if (req.body.paid_amount === paymentFind.total_amount) {
+            const data = {
+                payment : "Complete",
+                transaction_id : req.body.transaction_id,
+                updated_by : req.data.username
+            }
+        const dataUpdation = await userPayments.updatePaymentData(data, actionId);
+        const findUser = await service.findId(req.data.id);
+        const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, req.data.id);
+        const findBloodBank = await service.findId(findRequest.usersBloodBankId);
+        const receipt = {
+            name:findUser.name,
+            blood_bank:findBloodBank.name,
+          transactionId : req.body.transaction_id,
+          total_amount_paid : req.body.paid_amount
+
+
+        }
+        // console.log(receipt);
+        res.json({payment_receipt:receipt})
+        }
+        else {
+            res.send("Please Pay complete amount");
+        }
+    }
+    else{
+        res.send("Request is rejected or may be amount paid.....")
+    }
+
+
 
 }

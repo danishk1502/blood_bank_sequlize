@@ -21,8 +21,7 @@ exports.usersActionList = actionController.userActionList;
 exports.userRequestAcception = actionController.userRequestAcception;
 exports.userPaymentPending = actionController.pendingPayments;
 exports.userCancelRequest = actionController.userRequestCancelation;
-
-
+exports.userPaymentRoute = actionController.paymentController;
 
 
 

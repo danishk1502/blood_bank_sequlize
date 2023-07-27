@@ -69,6 +69,8 @@ exports.userActionList = userAction.userRequestList;
 exports.userRequestAcception = userAction.userRequestAcception;
 exports.userRequestCancelation = userAction.userCancelRequest;
 exports.pendingPayments = userAction.userPaymentDetails;
+exports.paymentController = userAction.userPaymentCompleteion;
+
 
 
 
