@@ -37,5 +37,9 @@ exports.userPaymentRoute = actionController.paymentController;
 
 /**********************************************************************************
 * route-Controller*
-* @description * route-Controller for users donor for blood
+* @description * route-Controller for users donation request for blood
 * **********************************************************************************/
+
+exports.userDonationApply = actionController.donationRequest;
+
+

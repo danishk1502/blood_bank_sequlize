@@ -64,6 +64,11 @@ exports.bloodInventoryDecrement = bloodBankController.bloodInventoryDecrement;
 ********************************************************************************************************************************************/
 
 
+
+/*******************************************************************
+ * Basic user Request action controllers
+*******************************************************************/
+
 exports.userActionRequest = userAction.userRequestAction;
 exports.userActionList = userAction.userRequestList;
 exports.userRequestAcception = userAction.userRequestAcception;
@@ -72,6 +77,13 @@ exports.pendingPayments = userAction.userPaymentDetails;
 exports.paymentController = userAction.userPaymentCompleteion;
 
 
+
+
+/*******************************************************************
+ * Basic user donation action controllers
+*******************************************************************/
+
+exports.donationRequest = userAction.donationRequest;
 
 
 

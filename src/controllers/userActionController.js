@@ -7,6 +7,13 @@ const userPayments = require("../services/paymentServices")
 
 
 
+
+/*****************************************************************************************************************************************************************
+*******************************************************************User Action for Blood Request******************************************************************
+\****************************************************************************************************************************************************************/
+
+
+
 /********************************************************
 * Controller*
 * @description * creating users blood request controller
@@ -246,33 +253,72 @@ exports.userPaymentCompleteion = async (req, res) => {
     if (paymentFind.payment == "Pending") {
         if (req.body.paid_amount === paymentFind.total_amount) {
             const data = {
-                payment : "Complete",
-                transaction_id : req.body.transaction_id,
-                updated_by : req.data.username
+                payment: "Complete",
+                transaction_id: req.body.transaction_id,
+                updated_by: req.data.username
             }
-        const dataUpdation = await userPayments.updatePaymentData(data, actionId);
-        const findUser = await service.findId(req.data.id);
-        const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, req.data.id);
-        const findBloodBank = await service.findId(findRequest.usersBloodBankId);
-        const receipt = {
-            name:findUser.name,
-            blood_bank:findBloodBank.name,
-          transactionId : req.body.transaction_id,
-          total_amount_paid : req.body.paid_amount
-
-
-        }
-        // console.log(receipt);
-        res.json({payment_receipt:receipt})
+            const dataUpdation = await userPayments.updatePaymentData(data, actionId);
+            const findUser = await service.findId(req.data.id);
+            const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, req.data.id);
+            const findBloodBank = await service.findId(findRequest.usersBloodBankId);
+            const receipt = {
+                name: findUser.name,
+                blood_bank: findBloodBank.name,
+                transactionId: req.body.transaction_id,
+                total_amount_paid: req.body.paid_amount
+            }
+            res.json({ payment_receipt: receipt })
         }
         else {
             res.send("Please Pay complete amount");
         }
     }
-    else{
+    else {
         res.send("Request is rejected or may be amount paid.....")
     }
+}
 
 
+
+/*****************************************************************************************************************************************************************
+*******************************************************************User Action for Blood Donation******************************************************************
+\****************************************************************************************************************************************************************/
+
+
+/********************************************************
+* Controller*
+* @description * creating users donation controller
+* ******************************************************/
+
+exports.donationRequest = async (req, res) => {
+    const userId = req.data.id;
+    const findUser = await service.findId(userId);
+    const date1 = new Date();
+    const date = date1.getDate();
+    const month = date1.getMonth() + 1;
+    const year = date1.getFullYear();
+    const presentDate = date - month - year;
+    const bloodBankDetails = await service.findUsername(req.body.blood_bank_username);
+    if (bloodBankDetails.role == "blood_bank") {
+        if (findUser.able_to_donate ==null || findUser.able_to_donate < presentDate) {
+            const data = {
+                action: "Donation",
+                blood_group: req.body.blood_group,
+                userId: req.data.id,
+                usersBloodBankId: bloodBankDetails.id,
+                created_by:req.data.username,
+                updated_by :req.data.username
+            }
+        const usersAction = await userActionServices.userRequestAction(data);
+        res.send(usersAction);
+        }
+        else {
+            res.send("you are not able to donate blood yet")
+        }
+    }
+    else{
+        res.send("you choose wrong blood bank");
+    }
 
 }
+

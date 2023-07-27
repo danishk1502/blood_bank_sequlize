@@ -19,7 +19,7 @@ const userActions = sequelizeDb.define("user_actions", {
     },
     blood_group: {
         type: DataTypes.STRING,
-        defaultValue:0
+        defaultValue:null
     },
     number_of_blood_unit: {
         type: DataTypes.INTEGER,

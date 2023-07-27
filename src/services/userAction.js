@@ -7,10 +7,10 @@ const userModel = require('../models/models');
 * @description * Services for user Request and Donation
 * ****************************************************/
 
-const userRequestAction = async (requetData) => {
+const userRequestAction = async (requestData) => {
     try {
         const actionDetails = await userModel.userActions.create(
-            requetData
+            requestData
         )
         return actionDetails;
     } catch (e) {

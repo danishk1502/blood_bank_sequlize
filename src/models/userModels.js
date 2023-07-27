@@ -53,11 +53,21 @@ const user = sequelizeDb.define("users_blood_bank", {
     user_status: {
         type: DataTypes.ENUM("Active", "Deactivate"),
         defaultValue: "Active",
+    },
+    last_donation: {
+        type: DataTypes.DATE,
+        defaultValue: null
+    },
+    able_to_donate: {
+        type: DataTypes.DATE,
+        defaultValue: null
     }
 }, 
 {
     paranoid: true
 });
+
+
 
 
 module.exports = user;

@@ -95,7 +95,12 @@ router.patch("/user/request/cancel", usermiddelware.jwtVerification, usersAction
 router.patch("/user/request/payment", usermiddelware.jwtVerification, usersAction.userPaymentRoute);
 
 
+/*********************************************************
+ * User Donation Routes *
+ * @description user donnation Apply
+ * *********************************************************/
 
+router.post("/user/donation/request", usermiddelware.jwtVerification, usersAction.userDonationApply);
 
 
 
