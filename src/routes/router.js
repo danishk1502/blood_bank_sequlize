@@ -102,7 +102,7 @@ router.patch("/user/request/payment", usermiddelware.jwtVerification, usersActio
 
 router.post("/user/donation/request", usermiddelware.jwtVerification, usersAction.userDonationApply);
 
-
+router.patch("/blood_bank/donation/", usermiddelware.jwtVerification, usersAction.userDonationAccept);
 
 
 
@@ -178,8 +178,6 @@ router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.
 * create blood price Inventory
 *********************************************************/ 
 router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankPriceInventory);
-
-
 
 
 

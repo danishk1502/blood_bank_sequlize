@@ -319,6 +319,47 @@ exports.donationRequest = async (req, res) => {
     else{
         res.send("you choose wrong blood bank");
     }
-
 }
 
+
+
+
+/****************************************************************************************************************
+ * users donation Request Handling
+ * Creating users donation request acception controller
+********************************************************************************************************************/
+
+exports.donationAcception = async (req, res)=>{
+    const bankId = req.data.id;
+    const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
+    if(req.body.requestId == findRequest.id){
+     
+        if(req.body.request == "Accepted"){
+            console.log(req.body.requestId + "   ajfndsk##############################333       "+ findRequest.id)
+            const data = {
+                status : "Accepted",
+                date : new Date()
+            }
+            const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
+            res.json({data : donationAcception});
+        }
+        else{
+            const data = {
+                status : "Reject",
+                rejected_by:"blood_bank",
+                date : new Date(),
+            }
+            const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
+            res.json({data : donationAcception});
+        }
+        
+    }
+    else{
+        res.json({
+            msg : RESPONSE.NOT_VALID_REQUEST
+        })
+    }
+    
+
+
+}

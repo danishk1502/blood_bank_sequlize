@@ -40,6 +40,27 @@ const userRequestData = async (bankId) => {
 
 
 /*****************************************************
+* User Donation rquest list*
+* @description * Services for user Request list 
+* ****************************************************/
+const userDonationData = async (bankId) => {
+    try {
+        const actionList = await userModel.userActions.findAll({
+            where: {
+                usersBloodBankId: bankId,
+                action: "Donation",
+                status: null
+            }
+        })
+        return actionList;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
+
+/*****************************************************
 * User Request find*
 * @description * Services for user Request find by blood bank
 * ****************************************************/
@@ -79,4 +100,4 @@ const userRequestFindByUser = async (requestId, userId) => {
 
 
 
-module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser}
+module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser, userDonationData}

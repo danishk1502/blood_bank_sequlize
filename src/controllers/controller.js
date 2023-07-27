@@ -86,6 +86,11 @@ exports.paymentController = userAction.userPaymentCompleteion;
 exports.donationRequest = userAction.donationRequest;
 
 
+/*******************************************************************
+ * Basic user donation aception controllers
+*******************************************************************/
+
+exports.donationAccept = userAction.donationAcception;
 
 
 
