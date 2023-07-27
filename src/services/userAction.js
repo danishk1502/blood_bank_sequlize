@@ -40,8 +40,8 @@ const userRequestData = async (bankId) => {
 
 
 /*****************************************************
-* User Request list*
-* @description * Services for user Request 
+* User Request find*
+* @description * Services for user Request find by blood bank
 * ****************************************************/
 const userRequestFind = async (requestId, bankId) => {
     try {
@@ -59,5 +59,24 @@ const userRequestFind = async (requestId, bankId) => {
 
 
 
+/*****************************************************
+* User Request find*
+* @description * Services for user Request find by user
+* ******************************************* *********/
+const userRequestFindByUser = async (requestId, userId) => {
+    try {
+        const userRequest = await userModel.userActions.findOne({
+            where: {
+                id: requestId,
+                userId:userId
+            }
+        })
+        return userRequest;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
 
-module.exports = {userRequestAction, userRequestData, userRequestFind}
+
+
+module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser}

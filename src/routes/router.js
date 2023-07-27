@@ -80,6 +80,13 @@ router.get("/filter/role", userDataRoute.userRoleFilter);
 
 router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);
 
+/*********************************************************
+ * User Request cancelation Routes *
+ * @description user cancel request 
+ * *********************************************************/
+
+router.patch("/user/request/cancel", usermiddelware.jwtVerification, usersAction.userCancelRequest);
+
 
 
 

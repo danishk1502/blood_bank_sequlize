@@ -1,7 +1,6 @@
 const service = require("../services/userServices");
 const bloodBankService = require("../services/bloodBankServices");
 const bloodInventoryServices = require('../services/bloodInventoryServices')
-// const responseJson = require("../utils/responseUtils");
 const RESPONSE = require("../utils/responseUtils")
 
 
@@ -37,7 +36,6 @@ exports.bloodBankDetails = async (req, res) => {
         else {
             res.json({
                 msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
-                // data:null
             });
         }
     }
@@ -210,19 +208,16 @@ exports.bloodInventoryDecrement = async (req, res) => {
                 updateKeys.forEach((element, index) => {
                     updateObject[element] = keysTotal[index];
                 });
-
                 const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
                 res.json({
                     msg: RESPONSE.DATA_UPDATED
                 });
             }
             else {
-                // console.log("data")
                 res.json({
                     msg: RESPONSE.NOT_VALID_REQUEST
                 });
             }
-
         }
         else {
             res.send("you need to create inventory first");
@@ -251,12 +246,9 @@ exports.priceBloodInventory = async (req, res) => {
             req.body.usersBloodBankId = req.data.id;
             req.body.created_by = req.data.username;
             req.body.updated_by = req.data.username;
-
             const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
             if (findUserData == null) {
-
                 const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
-
                 res.json({
                     msg: RESPONSE.CREATED_SUCCESS,
                     data: createInventory
@@ -267,11 +259,11 @@ exports.priceBloodInventory = async (req, res) => {
             }
         }
         else {
-            res.send("Your Blood Bank is not regisster Yet");
+            res.json({msg : RESPONSE.NOT_PERMISION_TO_LOGIN});
         }
     }
     else {
-        res.send("You are not eligible to make thhis request");
+        res.json({msg : RESPONSE.PERMISSSION_DENIED});
     }
 }
 

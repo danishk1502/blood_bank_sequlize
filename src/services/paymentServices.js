@@ -63,3 +63,25 @@ exports.findPaymentData = async(userId)=>{
     }
 
 }
+
+
+/**********************************************
+ * @param {*} by id 
+ * @returns showing data about payment to user
+ ***********************************************/
+
+exports.findPaymentOneData = async(actionId)=>{
+    try {
+        const paymentDetails = await userModel.userPayments.findOne(
+            {
+                where:{
+                    userActionId : actionId
+                }
+            }
+        )
+        return paymentDetails;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+
+}

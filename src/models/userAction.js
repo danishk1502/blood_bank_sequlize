@@ -11,6 +11,9 @@ const userActions = sequelizeDb.define("user_actions", {
     action: {
         type: DataTypes.ENUM("Request", "Donation"),
     },
+    rejected_by:{
+        type: DataTypes.ENUM("user", "blood_bank"),
+    },
     status: {
         type: DataTypes.ENUM("Accepted", "Reject"),
     },

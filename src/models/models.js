@@ -5,7 +5,7 @@ const bloodBankDetails = require('./bloodBankDetails');
 const bloodBankInventory = require('./bloodInventory');
 const userActions = require('./userAction');
 const priceInventory = require('./priceBloodInventory');
-const userPaymentInfo = require('./paymentDataModels')
+const userPaymentDetails = require('./paymentDataModels')
 
 
 
@@ -13,7 +13,7 @@ const bankDetailRelation = relationFunctions.bloodBankDetailRelation(bloodBankDe
 const bloodInventory = relationFunctions.bloodBankInventoryRelation(bloodBankInventory, userModel);
 const userActionRelation = relationFunctions.userActionRelation(userActions, userModel);
 const priceBloodInventory = relationFunctions.priceBloodInventoryRelation(priceInventory, userModel);
-const paymentRelation = relationFunctions.userPaymentRelation(userPaymentInfo, userActions);
+const paymentRelation = relationFunctions.userPaymentRelation(userPaymentDetails, userActions);
 
 
 exports.userModel = userModel;
@@ -21,7 +21,7 @@ exports.bloodBankDetails = bloodBankDetails;
 exports.bloodBankInventory = bloodBankInventory;
 exports.userActions = userActions;
 exports.priceBloodInventory = priceInventory;
-exports.userPayments = userPaymentInfo;
+exports.userPayments = userPaymentDetails;
 
 
 
