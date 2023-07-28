@@ -398,20 +398,20 @@ exports.donationConfirmation = async (req, res) => {
                 const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
                 const date = new Date();
                 let day = date.getDate();
-                let month = date.getMonth()+1;
+                let month = date.getMonth() + 1;
                 let year = date.getFullYear();
                 console.log(date);
-                if (month+3 > 12){
-                    const updateMonth = (month+3)-12;
-                    year = year+1;
+                if (month + 3 > 12) {
+                    const updateMonth = (month + 3) - 12;
+                    year = year + 1;
                 }
-                else{
-                    updateMonth = month+3;
+                else {
+                    updateMonth = month + 3;
                 }
-                const updateDate = year+"-"+updateMonth+"-"+day;
+                const updateDate = year + "-" + updateMonth + "-" + day;
                 // console.log(updateDate);
                 updateData = {
-                    last_donation : year+"-"+month+"-"+day,
+                    last_donation: year + "-" + month + "-" + day,
                     able_to_donate: updateDate
                 }
                 const updateUser = await service.userUpdation(updateData, findRequest.userId);
@@ -432,6 +432,36 @@ exports.donationConfirmation = async (req, res) => {
 
 
 /************************************************************************************************************************
-*************************************** Donation Rejection By User************************************************************
+*************************************** Donation Rejection By User*******************************************************
 ***************************** Donation Confirmation on Donation Completion***********************************************
 *************************************************************************************************************************/
+
+exports.donationCancel = async (req, res) => {
+    const userId = req.data.id;
+    const requestId = req.body.requestId;
+    const userData = await service.findId(userId);
+    const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
+    if (userData.role == "user") {
+        if(requestData.donation != done){
+            if(requestData.rejected_by==null){
+                const data = {
+                    rejected_by : "user",
+                    donation:"Incomplete"
+                }
+                donationAcception = await bloodBankService.usersRequestAcception(req.body.id, data);
+                
+            }
+            else{
+                res.send("Request is already rejected")
+            }
+        }
+        else{
+
+        }
+    }
+    else {
+        res.send({ msg: RESPONSE.PERMISSSION_DENIED })
+    }
+
+
+}

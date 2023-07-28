@@ -95,5 +95,9 @@ exports.donationAccept = userAction.donationAcception;
 
 exports.donationConfirmation = userAction.donationConfirmation;
 
+exports.donationReject = userAction.donationCancel;
+
+
+
 
 

@@ -96,6 +96,15 @@ router.patch("/user/request/payment", usermiddelware.jwtVerification, usersActio
 
 
 /*********************************************************
+ * User donation request cancel Routes *
+ * @description user cancel his request
+ * *********************************************************/
+router.patch("/user/donation/cancel", usermiddelware.jwtVerification, usersAction.userDonationCancel);
+
+
+
+
+/*********************************************************
  * User Donation Routes *
  * @description user donnation Apply
  * *********************************************************/
