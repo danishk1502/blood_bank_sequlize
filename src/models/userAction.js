@@ -22,7 +22,7 @@ const userActions = sequelizeDb.define("user_actions", {
         defaultValue:null
     },
     date:{
-        type: DataTypes.DATE
+        type: DataTypes.DATEONLY
     },
     number_of_blood_unit: {
         type: DataTypes.INTEGER,

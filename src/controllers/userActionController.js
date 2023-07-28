@@ -300,23 +300,23 @@ exports.donationRequest = async (req, res) => {
     const presentDate = date - month - year;
     const bloodBankDetails = await service.findUsername(req.body.blood_bank_username);
     if (bloodBankDetails.role == "blood_bank") {
-        if (findUser.able_to_donate ==null || findUser.able_to_donate < presentDate) {
+        if (findUser.able_to_donate == null || findUser.able_to_donate < presentDate) {
             const data = {
                 action: "Donation",
                 blood_group: req.body.blood_group,
                 userId: req.data.id,
                 usersBloodBankId: bloodBankDetails.id,
-                created_by:req.data.username,
-                updated_by :req.data.username
+                created_by: req.data.username,
+                updated_by: req.data.username
             }
-        const usersAction = await userActionServices.userRequestAction(data);
-        res.send(usersAction);
+            const usersAction = await userActionServices.userRequestAction(data);
+            res.send(usersAction);
         }
         else {
             res.send("you are not able to donate blood yet")
         }
     }
-    else{
+    else {
         res.send("you choose wrong blood bank");
     }
 }
@@ -329,37 +329,55 @@ exports.donationRequest = async (req, res) => {
  * Creating users donation request acception controller
 ********************************************************************************************************************/
 
-exports.donationAcception = async (req, res)=>{
+exports.donationAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
-    if(req.body.requestId == findRequest.id){
-     
-        if(req.body.request == "Accepted"){
-            console.log(req.body.requestId + "   ajfndsk##############################333       "+ findRequest.id)
-            const data = {
-                status : "Accepted",
-                date : new Date()
+    if (req.body.requestId == findRequest.id) {
+        if (findRequest.status == null) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const acceptionDate = year + "-" + month + "-" + day;
+            if (acceptionDate >= req.body.date_schedule) {
+                res.send("change schedule date ")
             }
-            const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
-            res.json({data : donationAcception});
-        }
-        else{
-            const data = {
-                status : "Reject",
-                rejected_by:"blood_bank",
-                date : new Date(),
+            else {
+                if (req.body.request == "Accepted") {
+                    const data = {
+                        status: "Accepted",
+                        date: req.body.date_schedule
+                    }
+                    const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
+                    res.json({ data: donationAcception });
+                }
+                else {
+                    const data = {
+                        status: "Reject",
+                        rejected_by: "blood_bank",
+                        date: new Date()
+                    }
+                    const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
+                    res.json({ data: donationAcception });
+                }
             }
-            const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
-            res.json({data : donationAcception});
+
+        } else {
+
+
+            // Rejection by check --------------Pending
+
+
+            res.send("This request may be accepted or rejected");
         }
-        
+
     }
-    else{
+    else {
         res.json({
-            msg : RESPONSE.NOT_VALID_REQUEST
+            msg: RESPONSE.NOT_VALID_REQUEST
         })
     }
-    
+
 
 
 }
