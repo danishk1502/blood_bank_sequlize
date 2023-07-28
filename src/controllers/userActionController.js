@@ -363,10 +363,19 @@ exports.donationAcception = async (req, res) => {
             }
 
         } else {
-            // Rejection by check --------------Pending
-            res.send("This request may be accepted or rejected");
-        }
+            if(findRequest.rejected_by=="user"){
+                res.json({
+                    msg:"Request is Rejected By User"
+                });
+            }
+            else if (findRequest.rejected_by="blood_bank"){
+                res.json({
+                    msg : "Blood bank already Rejct the request"
+                })
 
+            }
+            
+        }
     }
     else {
         res.json({
@@ -456,12 +465,10 @@ exports.donationCancel = async (req, res) => {
             }
         }
         else{
-
+            res.json({msg: RESPONSE.PERMISSSION_DENIED});
         }
     }
     else {
         res.send({ msg: RESPONSE.PERMISSSION_DENIED })
     }
-
-
 }
