@@ -396,6 +396,25 @@ exports.donationConfirmation = async (req, res) => {
                 const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
                 const inventoryUpdate = await bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues });
                 const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
+                const date = new Date();
+                let day = date.getDate();
+                let month = date.getMonth()+1;
+                let year = date.getFullYear();
+                console.log(date);
+                if (month+3 > 12){
+                    const updateMonth = (month+3)-12;
+                    year = year+1;
+                }
+                else{
+                    updateMonth = month+3;
+                }
+                const updateDate = year+"-"+updateMonth+"-"+day;
+                // console.log(updateDate);
+                updateData = {
+                    last_donation : year+"-"+month+"-"+day,
+                    able_to_donate: updateDate
+                }
+                const updateUser = await service.userUpdation(updateData, findRequest.userId);
                 res.send("Donation Complete Thankyou");
             }
             else {
@@ -410,3 +429,9 @@ exports.donationConfirmation = async (req, res) => {
         res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
 }
+
+
+/************************************************************************************************************************
+*************************************** Donation Rejection By User************************************************************
+***************************** Donation Confirmation on Donation Completion***********************************************
+*************************************************************************************************************************/
