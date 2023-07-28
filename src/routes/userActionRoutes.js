@@ -38,5 +38,7 @@ exports.userPaymentRoute = actionController.paymentController;
 * **********************************************************************************/
 
 exports.userDonationApply = actionController.donationRequest;
-
 exports.userDonationAccept = actionController.donationAccept;
+exports.userDonationConfirmation = actionController.donationConfirmation;
+
+

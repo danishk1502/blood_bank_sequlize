@@ -363,11 +363,7 @@ exports.donationAcception = async (req, res) => {
             }
 
         } else {
-
-
             // Rejection by check --------------Pending
-
-
             res.send("This request may be accepted or rejected");
         }
 
@@ -377,7 +373,32 @@ exports.donationAcception = async (req, res) => {
             msg: RESPONSE.NOT_VALID_REQUEST
         })
     }
+}
 
+
+/************************************************************************************************************************
+*************************************** Donation Confirmation************************************************************
+***************************** Donation Confirmation on Donation Completion***********************************************
+*************************************************************************************************************************/
+
+exports.donationConfirmation = async (req, res) => {
+    const requestId = req.body.requestId;
+    const bankId = req.data.id;
+    const findRequest = await userActionServices.userRequestFind(requestId, bankId);
+    // res.send(findRequest);
+    if (findRequest.action == "Donation") {
+        if (findRequest.status == "Accepted") {
+            if(findRequest.donation ==null){
+                const donationData = {
+                    donation : "Done",
+                }
+                // const inventoryUpdation = working here //
+                const donationAcception = await bloodBankService.usersRequestAcception(findRequest.is, donationData);
+                res.send("Donation Complete Thankyou");
+
+            }
+        }
+    }
 
 
 }

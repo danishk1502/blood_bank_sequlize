@@ -21,6 +21,9 @@ const userActions = sequelizeDb.define("user_actions", {
         type: DataTypes.STRING,
         defaultValue:null
     },
+    donation:{
+        type: DataTypes.ENUM("Done", "Incomplete"),
+    },
     date:{
         type: DataTypes.DATEONLY
     },

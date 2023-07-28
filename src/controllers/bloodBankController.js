@@ -266,6 +266,3 @@ exports.priceBloodInventory = async (req, res) => {
         res.json({msg : RESPONSE.PERMISSSION_DENIED});
     }
 }
-
-
-

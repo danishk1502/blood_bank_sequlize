@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const userRoute = require("./userRoute")
-const userDataRoute = require("./userDataRoute")
-const superUserRoute = require("./superUserRoute")
-const usermiddelware = require("../middelware/userMiddelware")
+const userRoute = require("./userRoute");
+const userDataRoute = require("./userDataRoute");
+const superUserRoute = require("./superUserRoute");
+const usermiddelware = require("../middelware/userMiddelware");
 const bloodBankRoute = require("./bloodBankRoute");
 const usersAction = require("./userActionRoutes");
 
@@ -51,10 +51,10 @@ router.delete("/delete", usermiddelware.jwtVerification, userRoute.userDeletionR
 
 /****************************************************
 Users Data Routes
-*****************************************************/ 
+*****************************************************/
 
 
-/*****************************************************
+/******************************************************
  * User Data Routes *
  * @description Getting all Data of users
  * ****************************************************/
@@ -101,9 +101,8 @@ router.patch("/user/request/payment", usermiddelware.jwtVerification, usersActio
  * *********************************************************/
 
 router.post("/user/donation/request", usermiddelware.jwtVerification, usersAction.userDonationApply);
-
 router.patch("/blood_bank/donation/", usermiddelware.jwtVerification, usersAction.userDonationAccept);
-
+router.patch("/blood_bank/donation/action", usermiddelware.jwtVerification, usersAction.userDonationConfirmation);
 
 
 
@@ -116,7 +115,7 @@ router.patch("/blood_bank/donation/", usermiddelware.jwtVerification, usersActio
 /*********************************************************
  * blood bank pending request data *
  * @description Getting all filtered Data of users by role
- * *********************************************************/
+ **********************************************************/
 
 router.get("/pending/blood_bank", usermiddelware.jwtVerification, superUserRoute.pendingRequest);
 
@@ -124,21 +123,15 @@ router.get("/pending/blood_bank", usermiddelware.jwtVerification, superUserRoute
 
 /*********************************************************
  * blood bank pending request accepttion *
- * *********************************************************/
-
+**********************************************************/
 router.patch("/pending/blood_bank/request", usermiddelware.jwtVerification, superUserRoute.requestAcception);
+
 
 
 /*********************************************************
  * blood bank pending request decline *
  * *********************************************************/
 router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, superUserRoute.requestDecline);
-
-
-
-
-
-
 
 
 

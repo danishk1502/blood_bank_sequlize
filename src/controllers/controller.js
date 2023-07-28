@@ -1,6 +1,7 @@
 const userController = require('./userController');
 const bloodBankController = require('./bloodBankController');
-const userAction = require("./userActionController")
+const userAction = require("./userActionController");
+const { use } = require('../routes/router');
 
 
 
@@ -91,6 +92,8 @@ exports.donationRequest = userAction.donationRequest;
 *******************************************************************/
 
 exports.donationAccept = userAction.donationAcception;
+
+exports.donationConfirmation = userAction.donationConfirmation;
 
 
 
