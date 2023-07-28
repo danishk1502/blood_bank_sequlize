@@ -388,17 +388,25 @@ exports.donationConfirmation = async (req, res) => {
     // res.send(findRequest);
     if (findRequest.action == "Donation") {
         if (findRequest.status == "Accepted") {
-            if(findRequest.donation ==null){
+            if (findRequest.donation == null) {
                 const donationData = {
-                    donation : "Done",
+                    donation: "Done",
                 }
-                // const inventoryUpdation = working here //
-                const donationAcception = await bloodBankService.usersRequestAcception(findRequest.is, donationData);
+                const bloodInventoryFind = await bloodBankService.bloodInventoryById(bankId);
+                const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
+                const inventoryUpdate = await bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues });
+                const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
                 res.send("Donation Complete Thankyou");
-
+            }
+            else {
+                res.json({ msg: "Donation may be rejected by user or accepted" });
             }
         }
+        else {
+            res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
+        }
     }
-
-
+    else {
+        res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
+    }
 }
