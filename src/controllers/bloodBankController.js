@@ -65,14 +65,25 @@ exports.bloodBankInventory = async (req, res) => {
 
             const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
             if (findUserData == null) {
+                let updatevalues = Object.values(req.body);
+                const dataFilter = updatevalues.filter((value, index) => {
+                    return value < 0;
+                })
+                // console.log(dataFilter.length);
+                if (dataFilter.length == 0) {
 
-                const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
+                    const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
 
-                res.json({
-                    msg: RESPONSE.CREATED_SUCCESS,
-                    data: createInventory
-                });
+                    res.json({
+                        msg: RESPONSE.CREATED_SUCCESS,
+                        data: createInventory
+                    });
+                }
+                else {
+                    res.send("you entered negative values");
+                }
             }
+           
             else {
                 res.send("you cant regenarate it but you can update it..")
             }
@@ -241,7 +252,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
                     });
                 }
             }
-            else{
+            else {
                 res.send("Negative values are not allowed ");
             }
         }
@@ -274,12 +285,23 @@ exports.priceBloodInventory = async (req, res) => {
             req.body.updated_by = req.data.username;
             const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
             if (findUserData == null) {
-                const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
-                res.json({
-                    msg: RESPONSE.CREATED_SUCCESS,
-                    data: createInventory
+                let updatevalues = Object.values(req.body);
+                const dataFilter = updatevalues.filter((value, index) => {
+                    return value < 0;
                 });
-            }
+                if (dataFilter.length == 0) {
+                    const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
+                    res.json({
+                        msg: RESPONSE.CREATED_SUCCESS,
+                        data: createInventory
+                    });
+                }
+                else{
+                    res.send("Enter negative values")
+                }
+                }
+    
+               
             else {
                 res.send("you cant regenarate it but you can update it..")
             }
