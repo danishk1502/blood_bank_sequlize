@@ -140,24 +140,39 @@ exports.bloodInventoryIncrement = async (req, res) => {
             let updateKeys = Object.keys(req.body);
             let valuesInventory = Object.values(bloodInventory.dataValues);
             let updatevalues = Object.values(req.body);
-            const keysTotal = []
-            const updateObject = {};
-            for (let i = 0; i < keysInventory.length; i++) {
-                for (let j = 0; j < updateKeys.length; j++) {
-                    if (keysInventory[i] == updateKeys[j]) {
-                        const totalValue = valuesInventory[i] + updatevalues[j];
-                        keysTotal.push(totalValue);
+
+            //Filter for negative 
+
+            const dataFilter = updatevalues.filter((value, index) => {
+                return value < 0;
+            })
+            // console.log(dataFilter.length);
+            if (dataFilter.length == 0) {
+                const keysTotal = []
+                const updateObject = {};
+                for (let i = 0; i < keysInventory.length; i++) {
+                    for (let j = 0; j < updateKeys.length; j++) {
+                        if (keysInventory[i] == updateKeys[j]) {
+                            const totalValue = valuesInventory[i] + updatevalues[j];
+                            keysTotal.push(totalValue);
+                        }
                     }
                 }
-            }
-            updateKeys.forEach((element, index) => {
-                updateObject[element] = keysTotal[index];
-            });
+                updateKeys.forEach((element, index) => {
+                    updateObject[element] = keysTotal[index];
+                });
 
-            const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-            res.json({
-                msg: RESPONSE.DATA_UPDATED
-            });
+                const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
+                res.json({
+                    msg: RESPONSE.DATA_UPDATED
+                });
+
+            }
+            else {
+                res.send("Negative values are not allow");
+            }
+
+
         }
         else {
             res.send("you need to create inventory first");
@@ -189,34 +204,45 @@ exports.bloodInventoryDecrement = async (req, res) => {
             let updateKeys = Object.keys(req.body);
             let valuesInventory = Object.values(bloodInventory.dataValues);
             let updatevalues = Object.values(req.body);
-            let keysTotal = []
-            const updateObject = {};
-            for (let i = 0; i < keysInventory.length; i++) {
-                for (let j = 0; j < updateKeys.length; j++) {
-                    if (keysInventory[i] == updateKeys[j]) {
-                        const totalValue = valuesInventory[i] - updatevalues[j];
-                        if (totalValue >= 0) {
-                            keysTotal.push(totalValue);
-                        }
-                        else {
-                            keysTotal = [];
+            const dataFilter = updatevalues.filter((value, index) => {
+                return value < 0;
+            })
+            // console.log(dataFilter.length);
+            if (dataFilter.length == 0) {
+
+
+                let keysTotal = []
+                const updateObject = {};
+                for (let i = 0; i < keysInventory.length; i++) {
+                    for (let j = 0; j < updateKeys.length; j++) {
+                        if (keysInventory[i] == updateKeys[j]) {
+                            const totalValue = valuesInventory[i] - updatevalues[j];
+                            if (totalValue >= 0) {
+                                keysTotal.push(totalValue);
+                            }
+                            else {
+                                keysTotal = [];
+                            }
                         }
                     }
                 }
+                if (updateKeys.length == keysTotal.length) {
+                    updateKeys.forEach((element, index) => {
+                        updateObject[element] = keysTotal[index];
+                    });
+                    const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
+                    res.json({
+                        msg: RESPONSE.DATA_UPDATED
+                    });
+                }
+                else {
+                    res.json({
+                        msg: RESPONSE.NOT_VALID_REQUEST
+                    });
+                }
             }
-            if (updateKeys.length == keysTotal.length) {
-                updateKeys.forEach((element, index) => {
-                    updateObject[element] = keysTotal[index];
-                });
-                const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-                res.json({
-                    msg: RESPONSE.DATA_UPDATED
-                });
-            }
-            else {
-                res.json({
-                    msg: RESPONSE.NOT_VALID_REQUEST
-                });
+            else{
+                res.send("Negative values are not allowed ");
             }
         }
         else {
@@ -259,10 +285,10 @@ exports.priceBloodInventory = async (req, res) => {
             }
         }
         else {
-            res.json({msg : RESPONSE.NOT_PERMISION_TO_LOGIN});
+            res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
         }
     }
     else {
-        res.json({msg : RESPONSE.PERMISSSION_DENIED});
+        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
 }

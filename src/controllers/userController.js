@@ -199,7 +199,7 @@ exports.userRoleFilter = (async (req, res) => {
         }
     }
     else {
-        return res.status(403).json({ status: 403, data: null, message: NOT_VALID_REQUEST});
+        return res.status(403).json({ status: 403, data: null, message:RESPONSE.NOT_VALID_REQUEST});
     }
 
 
