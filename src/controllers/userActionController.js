@@ -13,7 +13,6 @@ const userPayments = require("../services/paymentServices")
 \****************************************************************************************************************************************************************/
 
 
-
 /********************************************************
 * Controller*
 * @description * creating users blood request controller
@@ -175,7 +174,6 @@ exports.userRequestAcception = async (req, res) => {
 exports.userCancelRequest = async (req, res) => {
     const userId = req.data.id;
     const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, userId);
-    // res.send(findRequest);
     if (findRequest.status == null) {
         const data = { status: "Reject", rejected_by: "user" };
         const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, data);
@@ -208,7 +206,7 @@ exports.userCancelRequest = async (req, res) => {
         res.send("your request already rejected by blood bank");
     }
     else {
-        res.send("your blood banks request already rejected");
+        res.send("your request already rejected");
     }
 }
 

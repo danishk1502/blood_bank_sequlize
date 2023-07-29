@@ -3,6 +3,9 @@ const userModel = require('../models/models');
 
 
 
+/*****************************************
+blood bank's inventory find using banks id
+********************************************/
 
 const bloodInventorySearch = async (bankId) => {
     try {
@@ -20,9 +23,9 @@ const bloodInventorySearch = async (bankId) => {
 }
 
 
-/*
+/*****************************************
 Inventory changes while request acception  
- */
+********************************************/
 
 const bloodInventoryChange = async (bankId, data) => {
     try {

@@ -38,7 +38,6 @@ const updateMiddelware = async (req, res, next) => {
     }
     else {
         userToken = req.headers['authorization'];
-
         if (typeof userToken == 'undefined') {
             res.json({
                 message: "Invalid Token"
