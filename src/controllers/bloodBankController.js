@@ -69,9 +69,7 @@ exports.bloodBankInventory = async (req, res) => {
                 const dataFilter = updatevalues.filter((value, index) => {
                     return value < 0;
                 })
-                // console.log(dataFilter.length);
                 if (dataFilter.length == 0) {
-
                     const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
 
                     res.json({
@@ -151,13 +149,9 @@ exports.bloodInventoryIncrement = async (req, res) => {
             let updateKeys = Object.keys(req.body);
             let valuesInventory = Object.values(bloodInventory.dataValues);
             let updatevalues = Object.values(req.body);
-
-            //Filter for negative 
-
             const dataFilter = updatevalues.filter((value, index) => {
                 return value < 0;
             })
-            // console.log(dataFilter.length);
             if (dataFilter.length == 0) {
                 const keysTotal = []
                 const updateObject = {};
@@ -218,10 +212,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
             const dataFilter = updatevalues.filter((value, index) => {
                 return value < 0;
             })
-            // console.log(dataFilter.length);
             if (dataFilter.length == 0) {
-
-
                 let keysTotal = []
                 const updateObject = {};
                 for (let i = 0; i < keysInventory.length; i++) {
@@ -270,6 +261,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
 
 
 
+
 /***************************************************
  * blood price Inventory Controller
  * Creating blood banks price Inventory controller
@@ -300,8 +292,6 @@ exports.priceBloodInventory = async (req, res) => {
                     res.send("Enter negative values")
                 }
                 }
-    
-               
             else {
                 res.send("you cant regenarate it but you can update it..")
             }

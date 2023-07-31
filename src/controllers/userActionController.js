@@ -184,7 +184,7 @@ exports.userCancelRequest = async (req, res) => {
     }
     else if (findRequest.status == "Accepted") {
         const checkPayment = await userPayments.findPaymentOneData(findRequest.id);
-        if (checkPayment.payment != "Complete") {
+        if (checkPayment.payment != "Complete"){
             const findInventory = await bloodInventory.bloodInventorySearch(findRequest.usersBloodBankId);
             const blood_units = findInventory[findRequest.blood_group] + findRequest.number_of_blood_unit;
             const inventoryUpdate = await bloodInventory.bloodInventoryChange(findRequest.usersBloodBankId, { [findRequest.blood_group]: blood_units })
@@ -448,13 +448,13 @@ exports.donationCancel = async (req, res) => {
     const userData = await service.findId(userId);
     const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
     if (userData.role == "user") {
-        if(requestData.donation != done){
+        if(requestData.donation != "Done"){
             if(requestData.rejected_by==null){
                 const data = {
                     rejected_by : "user",
                     donation:"Incomplete"
                 }
-                donationAcception = await bloodBankService.usersRequestAcception(req.body.id, data);
+                donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data);
                 
             }
             else{
