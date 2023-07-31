@@ -53,6 +53,24 @@ router.delete("/delete", usermiddelware.jwtVerification, userRoute.userDeletionR
 Users Data Routes
 *****************************************************/
 
+/**************************************************************
+ * User Data Routes *
+ * @description Getting all Data of users request no accepted
+ * ************************************************************/
+
+
+
+/****************************************************
+All Requests 
+*****************************************************/
+
+router.get('/users/requests', usermiddelware.jwtVerification, userRoute.userAllRequests)
+
+router.get('/users/requests/pending', usermiddelware.jwtVerification, userRoute.userPendingRequests)
+
+
+
+
 
 /******************************************************
  * User Data Routes *
@@ -123,7 +141,7 @@ router.patch("/blood_bank/donation/action", usermiddelware.jwtVerification, user
 
 /*********************************************************
  * blood bank pending request data *
- * @description Getting all filtered Data of users by role
+ * @description Getting all filtered Data of pending blood by role
  **********************************************************/
 
 router.get("/pending/blood_bank", usermiddelware.jwtVerification, superUserRoute.pendingRequest);

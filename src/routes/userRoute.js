@@ -31,6 +31,10 @@ exports.userUpdationRoute = userController.userUpdation;
 
 
 
+exports.userAllRequests = userController.userAllRequests;
+
+exports.userPendingRequests = userController.userPendingRequests;
+
 
 
 

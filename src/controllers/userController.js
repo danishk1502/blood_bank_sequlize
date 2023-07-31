@@ -1,7 +1,8 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
-const RESPONSE = require('../utils/responseUtils')
-const mailer = require('../utils/mailUtils')
+const RESPONSE = require('../utils/responseUtils');
+// const mailer = require('../utils/mailUtils')
+const userActionRoutes = require('../services/userAction');
 
 
 
@@ -313,5 +314,38 @@ exports.requestAcception = async (req, res) => {
     }
 
 }
+
+
+/*****************************************************************
+ * Showing all requests 
+ * **************************************************************/
+
+exports.userAllRequests = async (req, res)=>{
+   const findData = await userActionRoutes.userRequestUser(req.data.id);
+    // return findData;
+    res.send(findData);
+}
+
+
+
+/*****************************************************************
+ * Showing all requests for blood request
+ * **************************************************************/
+
+exports.userPendingRequests = async (req, res)=>{
+    const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
+     res.send(findData);
+ }
+
+
+
+/*****************************************************************
+ * Showing all requests which are accepted blood request
+ * **************************************************************/
+
+exports.userAcceptedRequests = async (req, res)=>{
+    const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
+     res.send(findData);
+ }
 
 

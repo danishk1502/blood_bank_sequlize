@@ -100,4 +100,65 @@ const userRequestFindByUser = async (requestId, userId) => {
 
 
 
-module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser, userDonationData}
+
+
+const userRequestUser = async (userId) => {
+    try {
+        const userRequest = await userModel.userActions.findOne({
+            where: {
+                userId:userId
+            }
+        })
+        return userRequest;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
+
+/*****************************************************
+* User Request list*
+* @description * Services for user Request list 
+* ****************************************************/
+const userRequestsForBlood = async (myId) => {
+    try {
+        const actionList = await userModel.userActions.findAll({
+            where: {
+                userId: myId,
+                action: "Request",
+                status: null
+            }
+        })
+        return actionList;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
+
+/*****************************************************
+* User Request list*
+* @description * Services for user Request Accepted list 
+* ****************************************************/
+
+const userRequestsAccepted = async (myId) => {
+    try {
+        const actionList = await userModel.userActions.findAll({
+            where: {
+                userId: myId,
+                action: "Request",
+                status: "Accepted"
+            }
+        })
+        return actionList;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
+
+
+module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser, userDonationData, userRequestUser, userRequestsForBlood, userRequestsAccepted}

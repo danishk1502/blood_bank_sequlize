@@ -101,3 +101,13 @@ exports.donationReject = userAction.donationCancel;
 
 
 
+//user Request Data 
+
+
+exports.userAllRequests=userController.userAllRequests;
+
+exports.userPendingRequests=userController.userPendingRequests;
+
+
+
+exports.userAcceptedRequests=userController.userAcceptedRequests;

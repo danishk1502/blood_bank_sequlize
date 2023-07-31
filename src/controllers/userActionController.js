@@ -23,7 +23,6 @@ exports.userRequestAction = async (req, res) => {
     const bloodBankDetails = await service.findUsername(username);
     const findUserData = await service.findId(req.data.id);
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
-    // console.log(bloodInventoryFind)
     if (bloodInventoryFind == null) {
         res.send("blood is not available inn this blood bank");
     }
