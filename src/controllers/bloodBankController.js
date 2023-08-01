@@ -13,8 +13,6 @@ const RESPONSE = require("../utils/responseUtils")
 exports.bloodBankDetails = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
-
-
     if (checkId.role != "blood_bank") {
         res.json({
             msg: RESPONSE.PERMISSSION_DENIED
@@ -103,25 +101,23 @@ exports.bloodBankInventory = async (req, res) => {
 exports.bloodBankInventoryUpdate = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
-        const findInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (findInventory == null) {
-            res.send("you need to create inventory first");//**************************Edit case*********************8 */
-        }
-        else {
-            const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
-            res.json({
-                msg: RESPONSE.DATA_UPDATED,
-                data: updateData
-            });
-        }
-    }
-    else {
+    if (verifyBank.role != "blood_bank") {
         res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
+    const findInventory = await bloodBankService.bloodInventoryById(bankId);
+    if (findInventory == null) {
+        res.send("you need to create inventory first");//**************************Edit case*********************8 */
+    }
+
+    const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
+    res.json({
+        msg: RESPONSE.DATA_UPDATED,
+        data: updateData
+    });
 }
+
 
 
 
@@ -134,52 +130,47 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
 exports.bloodInventoryIncrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
-        const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (bloodInventory != null) {//**************************Edit case*********************8 */
-            let keysInventory = Object.keys(bloodInventory.dataValues);
-            let updateKeys = Object.keys(req.body);
-            let valuesInventory = Object.values(bloodInventory.dataValues);
-            let updatevalues = Object.values(req.body);
-            const dataFilter = updatevalues.filter((value, index) => {
-                return value < 0;
-            })
-            if (dataFilter.length == 0) {//**************************Edit case*********************8 */
-                const keysTotal = []
-                const updateObject = {};
-                for (let i = 0; i < keysInventory.length; i++) {
-                    for (let j = 0; j < updateKeys.length; j++) {
-                        if (keysInventory[i] == updateKeys[j]) {
-                            const totalValue = valuesInventory[i] + updatevalues[j];
-                            keysTotal.push(totalValue);
-                        }
-                    }
-                }
-                updateKeys.forEach((element, index) => {
-                    updateObject[element] = keysTotal[index];
-                });
-
-                const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-                res.json({
-                    msg: RESPONSE.DATA_UPDATED
-                });
-
-            }
-            else {
-                res.send("Negative values are not allow");
-            }
-
-
-        }
-        else {
-            res.send("you need to create inventory first");
-        }
-    }
-    else {
+    if (verifyBank.role != "blood_bank") {
         res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
+
     }
+    const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
+
+    if (bloodInventory == null) {
+        res.send("you need to create inventory first");
+    }
+
+    let keysInventory = Object.keys(bloodInventory.dataValues);
+    let updateKeys = Object.keys(req.body);
+    let valuesInventory = Object.values(bloodInventory.dataValues);
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+        return value < 0;
+    });
+
+    if (dataFilter.length == 0) {
+        res.send("Negative values are not allow");
+    }
+    const keysTotal = []
+    const updateObject = {};
+    for (let i = 0; i < keysInventory.length; i++) {
+        for (let j = 0; j < updateKeys.length; j++) {
+            if (keysInventory[i] == updateKeys[j]) {
+                const totalValue = valuesInventory[i] + updatevalues[j];
+                keysTotal.push(totalValue);
+            }
+        }
+    }
+    updateKeys.forEach((element, index) => {
+        updateObject[element] = keysTotal[index];
+    });
+
+    const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
+    res.json({
+        msg: RESPONSE.DATA_UPDATED
+    });
 }
 
 
@@ -193,60 +184,53 @@ exports.bloodInventoryIncrement = async (req, res) => {
 exports.bloodInventoryDecrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
-        const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (bloodInventory != null) {
-            let keysInventory = Object.keys(bloodInventory.dataValues);
-            let updateKeys = Object.keys(req.body);
-            let valuesInventory = Object.values(bloodInventory.dataValues);
-            let updatevalues = Object.values(req.body);
-            const dataFilter = updatevalues.filter((value, index) => {
-                return value < 0;
-            })
-            if (dataFilter.length == 0) {//**************************Edit case*********************8 */
-                let keysTotal = []
-                const updateObject = {};
-                for (let i = 0; i < keysInventory.length; i++) {
-                    for (let j = 0; j < updateKeys.length; j++) {
-                        if (keysInventory[i] == updateKeys[j]) {
-                            const totalValue = valuesInventory[i] - updatevalues[j];
-                            if (totalValue >= 0) {
-                                keysTotal.push(totalValue);
-                            }
-                            else {
-                                keysTotal = [];
-                            }
-                        }
-                    }
-                }
-                if (updateKeys.length == keysTotal.length) {//**************************Edit case*********************8 */
-                    updateKeys.forEach((element, index) => {
-                        updateObject[element] = keysTotal[index];
-                    });
-                    const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-                    res.json({
-                        msg: RESPONSE.DATA_UPDATED
-                    });
-                }
-                else {
-                    res.json({
-                        msg: RESPONSE.NOT_VALID_REQUEST
-                    });
-                }
-            }
-            else {
-                res.send("Negative values are not allowed ");
-            }
-        }
-        else {
-            res.send("you need to create inventory first");
-        }
-    }
-    else {
+    if (verifyBank.role != "blood_bank") {
         res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
+    const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
+    if (bloodInventory == null) {
+        res.send("you need to create inventory first");
+    }
+    let keysInventory = Object.keys(bloodInventory.dataValues);
+    let updateKeys = Object.keys(req.body);
+    let valuesInventory = Object.values(bloodInventory.dataValues);
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+        return value < 0;
+    })
+
+    if (dataFilter.length != 0) {
+        res.send("Negative values are not allowed ");
+    }
+    let keysTotal = []
+    const updateObject = {};
+    for (let i = 0; i < keysInventory.length; i++) {
+        for (let j = 0; j < updateKeys.length; j++) {
+            if (keysInventory[i] == updateKeys[j]) {
+                const totalValue = valuesInventory[i] - updatevalues[j];
+                if (totalValue >= 0) {
+                    keysTotal.push(totalValue);
+                }
+                else {
+                    keysTotal = [];
+                }
+            }
+        }
+    }
+    if (updateKeys.length != keysTotal.length) {
+        res.json({
+            msg: RESPONSE.NOT_VALID_REQUEST
+        });
+    }
+    updateKeys.forEach((element, index) => {
+        updateObject[element] = keysTotal[index];
+    });
+    const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
+    res.json({
+        msg: RESPONSE.DATA_UPDATED
+    });
 }
 
 
@@ -260,37 +244,32 @@ exports.bloodInventoryDecrement = async (req, res) => {
 exports.priceBloodInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
-    if (checkId.role == "blood_bank") {//**************************Edit case*********************8 */
-        if (checkId.user_status == "Active") {//**************************Edit case*********************8 */
-            req.body.usersBloodBankId = req.data.id;
-            req.body.created_by = req.data.username;
-            req.body.updated_by = req.data.username;
-            const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
-            if (findUserData == null) {
-                let updatevalues = Object.values(req.body);
-                const dataFilter = updatevalues.filter((value, index) => {
-                    return value < 0;
-                });
-                if (dataFilter.length == 0) {
-                    const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
-                    res.json({
-                        msg: RESPONSE.CREATED_SUCCESS,
-                        data: createInventory
-                    });
-                }
-                else {
-                    res.send("Enter negative values")
-                }
-            }
-            else {
-                res.send("you cant regenarate it but you can update it..")
-            }
-        }
-        else {
-            res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
-        }
-    }
-    else {
+    if (checkId.role != "blood_bank") {
         res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
+    if (checkId.user_status != "Active") {
+        res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
+    }
+    req.body.usersBloodBankId = req.data.id;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
+
+
+    if (findUserData != null) {
+        res.send("you cant regenarate it but you can update it..")
+    }
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+        return value < 0;
+    });
+    if (dataFilter.length != 0) {
+        res.send("Enter negative values")
+    }
+
+    const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
+    res.json({
+        msg: RESPONSE.CREATED_SUCCESS,
+        data: createInventory
+    });
 }
