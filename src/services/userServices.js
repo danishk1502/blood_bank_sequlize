@@ -1,7 +1,7 @@
 
-const userModel = require('../models/models');
+const userModel = require('../models/index');
 
-const sequelizeModel = userModel.userModel;
+const sequelizeModel = userModel.user;
 
 
 

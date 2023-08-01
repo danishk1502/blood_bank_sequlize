@@ -12,7 +12,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "generate-readme": "^0.3.1",
+    "generate-readme": "^0.0.4",
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.1",
     "md5": "^2.3.0",
@@ -21,5 +21,8 @@
     "nodemailer": "^6.9.4",
     "nodemon": "^3.0.1",
     "sequelize": "^6.11.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.1"
   }
 }

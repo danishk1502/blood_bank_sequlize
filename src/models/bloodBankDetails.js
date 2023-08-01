@@ -1,38 +1,45 @@
-const sequelizeDb = require('../config/dbConfig')
-const DataTypes = require("sequelize");
-
-
-const bloodBankDetails = sequelizeDb.define("blood_bank_details", {
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class bloodBankDetails extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  bloodBankDetails.init({
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     numberOfSales: {
-        type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
     },
     totalDonation: {
-        type: DataTypes.INTEGER,
-        defaultValue:0
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
     totalBloodUnitAvailable: {
-        type: DataTypes.INTEGER,
-        defaultValue:0
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     },
     created_by: {
-        type: DataTypes.STRING,
-        
+      type: DataTypes.STRING,
+
     },
     updated_by: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     }
-}, 
-{
-    paranoid: true
-});
-
-
-
- 
-module.exports = bloodBankDetails;
-
+  }, {
+    sequelize,
+    modelName: 'bloodBankDetails',
+  });
+  return bloodBankDetails;
+};

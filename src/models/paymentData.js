@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class userAction extends Model {
+  class paymentDataModel extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,47 +13,34 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  userAction.init({
-
+  paymentDataModel.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
-  },
-  action: {
-      type: DataTypes.ENUM("Request", "Donation"),
-  },
-  rejected_by:{
-      type: DataTypes.ENUM("user", "blood_bank"),
-  },
-  status: {
-      type: DataTypes.ENUM("Accepted", "Reject"),
-  },
-  blood_group: {
-      type: DataTypes.STRING,
-      defaultValue:null
-  },
-  donation:{
-      type: DataTypes.ENUM("Done", "Incomplete"),
-  },
-  date:{
-      type: DataTypes.DATEONLY
-  },
-  number_of_blood_unit: {
+    },
+    total_amount: {
       type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    payment: {
+      type: DataTypes.ENUM("Incomplete", "Complete", "Pending")
+    },
+    transaction_id: {
+      type: DataTypes.STRING,
       defaultValue: null
-  },
-  created_by: {
+    },
+    created_by: {
       type: DataTypes.STRING,
-      
-  },
-  updated_by: {
+
+    },
+    updated_by: {
       type: DataTypes.STRING,
-  }
+    }
   }, {
     sequelize,
-    modelName: 'userAction',
+    modelName: 'paymentDataModel',
     paranoid: true
   });
-  return userAction;
+  return paymentDataModel;
 };
