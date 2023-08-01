@@ -10,33 +10,41 @@ $ npm install or npm i
 ```
 
 ### Express
+```sh
 $ npm install express
-
+```
 ### mysql2
-
+```sh
 $ npm install mysql2
-
+```
 ### sequalize
+```sh
 $ npm install sequalize
-
+```
 ### joivalidation
+```sh
 $ npm install joi
-
+```
 ### nodemon
+```sh
 $ npm install nodemon
-
+```
 ### dotenv
+```sh
 $ npm install dotenv
-
+```
 ### md5
+```sh
 $ npm install md5
-
+```
 ### JWT
+```sh
 $ npm install jsonwebtoken
-
+```
 ### bcrypt
+```sh
 $ npm install bcrypts
-
+```
 
 
 ## Dependencies
