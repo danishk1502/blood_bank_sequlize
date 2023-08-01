@@ -7,18 +7,19 @@
 ```sh
 
 $ npm install or npm i
-
+```
 
 ### Express
 $ npm install express
 
 ### mysql2
+
 $ npm install mysql2
 
 ### sequalize
 $ npm install sequalize
 
-### joi
+### joivalidation
 $ npm install joi
 
 ### nodemon
@@ -35,7 +36,7 @@ $ npm install jsonwebtoken
 
 ### bcrypt
 $ npm install bcrypts
-```
+
 
 
 ## Dependencies
