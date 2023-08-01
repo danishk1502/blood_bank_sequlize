@@ -6,14 +6,33 @@
 
 ```sh
 $ npm install  and npm i
+
+
+// Express
 $ npm install express
+
+//mysql2
 $ npm install mysql2
+
+//sequalize
 $ npm install sequalize
+
+//joi
 $ npm install joi
+
+//nodemon
 $ npm install nodemon
+
+//dotenv
 $ npm install dotenv
+
+//md5
 $ npm install md5
+
+//JWT
 $ npm install jsonwebtoken
+
+//bcrypt
 $ npm install bcrypts
 ```
 
