@@ -17,30 +17,28 @@ exports.bloodBankDetails = async (req, res) => {
 
     if (checkId.role != "blood_bank") {
         res.json({
-                    msg: RESPONSE.PERMISSSION_DENIED
-                });
+            msg: RESPONSE.PERMISSSION_DENIED
+        });
     }
-
-        if (checkId.user_status != "Active") {
-                    res.json({
-                        msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
-                    });
-        }
-
-            req.body.usersBloodBankId = req.data.id;
-            req.body.created_by = req.data.username;
-            req.body.updated_by = req.data.username;
-            const findUserData = await bloodBankService.bloodDetailById(checkId.id);
-            if (findUserData == null) {
-                const createDetails = await bloodBankService.addBloodBankDetails(req.body);
-                res.json({
-                    msg: RESPONSE.CREATED_SUCCESS,
-                    data: createDetails
-                });
-            }
-            else {
-                res.send("you cant regenarate it but you can update it..")
-            }
+    if (checkId.user_status != "Active") {
+        res.json({
+            msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
+        });
+    }
+    req.body.usersBloodBankId = req.data.id;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    const findUserData = await bloodBankService.bloodDetailById(checkId.id);
+    if (findUserData == null) {
+        const createDetails = await bloodBankService.addBloodBankDetails(req.body);
+        res.json({
+            msg: RESPONSE.CREATED_SUCCESS,
+            data: createDetails
+        });
+    }
+    else {
+        res.send("you cant regenarate it but you can update it..")
+    }
 }
 
 
@@ -54,47 +52,45 @@ exports.bloodBankDetails = async (req, res) => {
 exports.bloodBankInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
-    if (checkId.role == "blood_bank") {
-        if (checkId.user_status == "Active") {
-            req.body.usersBloodBankId = req.data.id;
-            req.body.created_by = req.data.username;
-            req.body.updated_by = req.data.username;
+    if (checkId.role != "blood_bank") {
 
-            const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
-            if (findUserData == null) {
-                let updatevalues = Object.values(req.body);
-                const dataFilter = updatevalues.filter((value, index) => {
-                    return value < 0;
-                })
-                if (dataFilter.length == 0) {
-                    const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
-
-                    res.json({
-                        msg: RESPONSE.CREATED_SUCCESS,
-                        data: createInventory
-                    });
-                }
-                else {
-                    res.send("you entered negative values");
-                }
-            }
-           
-            else {
-                res.send("you cant regenarate it but you can update it..")
-            }
-        }
-        else {
-            res.json({
-                msg: RESPONSE.NOT_PERMISION_TO_LOGIN
-            });
-        }
-    }
-    else {
         res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
+    if (checkId.user_status == "Active") {
+        res.json({
+            msg: RESPONSE.NOT_PERMISION_TO_LOGIN
+        });
+
+    }
+    req.body.usersBloodBankId = req.data.id;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+
+    const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
+    if (findUserData != null) {
+        res.send("you cant regenarate it but you can update it..")
+
+    }
+
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+        return value < 0;
+    })
+
+    if (dataFilter.length != 0) {
+        res.send("you entered negative values");
+
+    }
+    const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
+
+    res.json({
+        msg: RESPONSE.CREATED_SUCCESS,
+        data: createInventory
+    });
 }
+
 
 
 
@@ -107,10 +103,10 @@ exports.bloodBankInventory = async (req, res) => {
 exports.bloodBankInventoryUpdate = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {
+    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
         const findInventory = await bloodBankService.bloodInventoryById(bankId);
         if (findInventory == null) {
-            res.send("you need to create inventory first");
+            res.send("you need to create inventory first");//**************************Edit case*********************8 */
         }
         else {
             const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
@@ -138,9 +134,9 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
 exports.bloodInventoryIncrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {
+    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
         const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (bloodInventory != null) {
+        if (bloodInventory != null) {//**************************Edit case*********************8 */
             let keysInventory = Object.keys(bloodInventory.dataValues);
             let updateKeys = Object.keys(req.body);
             let valuesInventory = Object.values(bloodInventory.dataValues);
@@ -148,7 +144,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
             const dataFilter = updatevalues.filter((value, index) => {
                 return value < 0;
             })
-            if (dataFilter.length == 0) {
+            if (dataFilter.length == 0) {//**************************Edit case*********************8 */
                 const keysTotal = []
                 const updateObject = {};
                 for (let i = 0; i < keysInventory.length; i++) {
@@ -197,7 +193,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
 exports.bloodInventoryDecrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
-    if (verifyBank.role == "blood_bank") {
+    if (verifyBank.role == "blood_bank") {//**************************Edit case*********************8 */
         const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
         if (bloodInventory != null) {
             let keysInventory = Object.keys(bloodInventory.dataValues);
@@ -207,7 +203,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
             const dataFilter = updatevalues.filter((value, index) => {
                 return value < 0;
             })
-            if (dataFilter.length == 0) {
+            if (dataFilter.length == 0) {//**************************Edit case*********************8 */
                 let keysTotal = []
                 const updateObject = {};
                 for (let i = 0; i < keysInventory.length; i++) {
@@ -223,7 +219,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
                         }
                     }
                 }
-                if (updateKeys.length == keysTotal.length) {
+                if (updateKeys.length == keysTotal.length) {//**************************Edit case*********************8 */
                     updateKeys.forEach((element, index) => {
                         updateObject[element] = keysTotal[index];
                     });
@@ -264,8 +260,8 @@ exports.bloodInventoryDecrement = async (req, res) => {
 exports.priceBloodInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
-    if (checkId.role == "blood_bank") {
-        if (checkId.user_status == "Active") {
+    if (checkId.role == "blood_bank") {//**************************Edit case*********************8 */
+        if (checkId.user_status == "Active") {//**************************Edit case*********************8 */
             req.body.usersBloodBankId = req.data.id;
             req.body.created_by = req.data.username;
             req.body.updated_by = req.data.username;
@@ -282,10 +278,10 @@ exports.priceBloodInventory = async (req, res) => {
                         data: createInventory
                     });
                 }
-                else{
+                else {
                     res.send("Enter negative values")
                 }
-                }
+            }
             else {
                 res.send("you cant regenarate it but you can update it..")
             }
