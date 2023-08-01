@@ -5,8 +5,6 @@ const RESPONSE = require("../utils/responseUtils")
 
 
 
-
-
 /********************************************
  * blood Bank Detail Controller
  * Creating blood banks details controller
@@ -15,12 +13,23 @@ const RESPONSE = require("../utils/responseUtils")
 exports.bloodBankDetails = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
-    if (checkId.role == "blood_bank") {
-        if (checkId.user_status == "Active") {
+
+
+    if (checkId.role != "blood_bank") {
+        res.json({
+                    msg: RESPONSE.PERMISSSION_DENIED
+                });
+    }
+
+        if (checkId.user_status != "Active") {
+                    res.json({
+                        msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
+                    });
+        }
+
             req.body.usersBloodBankId = req.data.id;
             req.body.created_by = req.data.username;
             req.body.updated_by = req.data.username;
-
             const findUserData = await bloodBankService.bloodDetailById(checkId.id);
             if (findUserData == null) {
                 const createDetails = await bloodBankService.addBloodBankDetails(req.body);
@@ -32,18 +41,6 @@ exports.bloodBankDetails = async (req, res) => {
             else {
                 res.send("you cant regenarate it but you can update it..")
             }
-        }
-        else {
-            res.json({
-                msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
-            });
-        }
-    }
-    else {
-        res.json({
-            msg: RESPONSE.PERMISSSION_DENIED
-        });
-    }
 }
 
 
@@ -138,7 +135,6 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
  * Creating blood banks Inventory controller to Increment Blood unit Data 
  * * @description : This function to add a number of blood unit 
 *****************************************************************************/
-
 exports.bloodInventoryIncrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
@@ -198,7 +194,6 @@ exports.bloodInventoryIncrement = async (req, res) => {
  * Creating blood banks Inventory controller to decrement Blood unit Data 
  * @description : This function to decrease a number of blood unit 
 ***************************************************************************/
-
 exports.bloodInventoryDecrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
@@ -266,7 +261,6 @@ exports.bloodInventoryDecrement = async (req, res) => {
  * blood price Inventory Controller
  * Creating blood banks price Inventory controller
 *****************************************************/
-
 exports.priceBloodInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
