@@ -35,7 +35,9 @@ exports.bloodBankDetails = async (req, res) => {
         });
     }
     else {
-        res.send("you cant regenarate it but you can update it..")
+        res.json({
+            msg : RESPONSE.REGENERATE_INVENTORY
+        })
     }
 }
 
@@ -65,7 +67,9 @@ exports.bloodBankInventory = async (req, res) => {
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
     if (findUserData != null) {
-        res.send("you cant regenarate it but you can update it..")
+        res.json({
+            msg: RESPONSE.REGENERATE_INVENTORY
+        });
 
     }
     let updatevalues = Object.values(req.body);
@@ -74,7 +78,9 @@ exports.bloodBankInventory = async (req, res) => {
     })
 
     if (dataFilter.length != 0) {
-        res.send("you entered negative values");
+        res.json({
+            msg: RESPONSE.NEGATIVE_VALUES
+        });
 
     }
     const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
@@ -104,7 +110,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
     }
     const findInventory = await bloodBankService.bloodInventoryById(bankId);
     if (findInventory == null) {
-        res.send("you need to create inventory first");
+        res.send("");
     }
     const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
     res.json({
@@ -132,7 +138,9 @@ exports.bloodInventoryIncrement = async (req, res) => {
     }
     const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
     if (bloodInventory == null) {
-        res.send("you need to create inventory first");
+        res.JSON({
+            msg: RESPONSE.CREATE_INVENTORY
+        });
     }
     let keysInventory = Object.keys(bloodInventory.dataValues);
     let updateKeys = Object.keys(req.body);
@@ -142,7 +150,9 @@ exports.bloodInventoryIncrement = async (req, res) => {
         return value < 0;
     });
     if (dataFilter.length == 0) {
-        res.send("Negative values are not allow");
+        res.json({
+            msg:RESPONSE.NEGATIVE_VALUES
+        });
     }
     const keysTotal = []
     const updateObject = {};
@@ -181,7 +191,9 @@ exports.bloodInventoryDecrement = async (req, res) => {
     }
     const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
     if (bloodInventory == null) {
-        res.send("you need to create inventory first");
+        res.JSON({
+            msg:RESPONSE.CREATE_INVENTORY
+        });
     }
     let keysInventory = Object.keys(bloodInventory.dataValues);
     let updateKeys = Object.keys(req.body);
@@ -191,7 +203,9 @@ exports.bloodInventoryDecrement = async (req, res) => {
         return value < 0;
     })
     if (dataFilter.length != 0) {
-        res.send("Negative values are not allowed ");
+        res.json({
+            msg:RESPONSE.NEGATIVE_VALUES
+        });
     }
     let keysTotal = []
     const updateObject = {};
@@ -239,14 +253,18 @@ exports.priceBloodInventory = async (req, res) => {
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
     if (findUserData != null) {
-        res.send("you cant regenarate it but you can update it..")
+        res.json({
+            msg: RESPONSE.REGENERATE_INVENTORY
+        });
     }
     let updatevalues = Object.values(req.body);
     const dataFilter = updatevalues.filter((value, index) => {
         return value < 0;
     });
     if (dataFilter.length != 0) {
-        res.send("Enter negative values")
+        res.json({
+            msg: RESPONSE.NEGATIVE_VALUES
+        });
     }
     const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
     res.json({

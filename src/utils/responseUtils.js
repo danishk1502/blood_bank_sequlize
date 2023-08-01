@@ -15,7 +15,10 @@ const RESPONSE = {
     DATA_NOT_FOUND:"Data not found",
     NOT_VALID_REQUEST:"Please make Valid request",
     CREATED_SUCCESS:"Creation success",
-    VALID_DECREMENT_ERROR:"You add wrong number of blood units...."
+    VALID_DECREMENT_ERROR:"You add wrong number of blood units....",
+    CREATE_INVENTORY:"you need to create inventory first",
+    NEGATIVE_VALUES:"Negative values are not allow"
+
 
 
 

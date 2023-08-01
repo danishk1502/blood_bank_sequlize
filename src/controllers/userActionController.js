@@ -24,27 +24,42 @@ exports.userRequestAction = async (req, res) => {
     const findUserData = await service.findId(req.data.id);
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
     if (bloodInventoryFind == null) {
-        res.send("blood is not available in this blood bank");
+        res.json({
+            msg:RESPONSE.BLOOD_NOT_AVAILABLE
+        })
     }
     if (findUserData.role != "user") {
-        res.send("you dont have access to request");
+        res.json({
+            msg:RESPONSE.DONT_HAVE_ACCEES
+        })
     }
     if (bloodBankDetails.role != "blood_bank") {
-        res.send("sorry choose correct bank");
+        res.json({
+            msg:RESPONSE.INVALID_BANK
+        })
     }
     const bloodBankInventory = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
     const totalBloodUnits = { units: bloodBankInventory[req.body.blood_group] }
     if (!totalBloodUnits.units > 0) {
-        res.send("Sorry Blood unit are not available");
+        res.json({
+            msg:RESPONSE.BLOOD_NOT_AVAILABLE
+        })
     }
     if (req.body.number_of_blood_unit <= 0) {
-        res.send("Enter valid number of blood unit");
+        res.json({
+            msg:RESPONSE.VALID_NUMBER_OF_BLOOD_UNIT
+        })
+
     }
     if (req.body.number_of_blood_unit > 3) {
-        res.send("you only make request for less than 4 units");
+        res.json({
+            msg:RESPONSE.REQUEST_LIMIT_EXCEDED_FOR_BLOOD
+        })
     }
     if (totalBloodUnits.units < req.body.number_of_blood_unit) {
-        res.send("blood is available but requirement not satisfied");
+        res.json({
+            msg:RESPONSE.BLOOD_LESS_THAN_REQUIREMENT
+        })
     }
     req.body.userId = req.data.id;
     req.body.usersBloodBankId = bloodBankDetails.id;
@@ -69,7 +84,7 @@ exports.userRequestAction = async (req, res) => {
 exports.userRequestList = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestData(bankId);
-    const requestCheck = findRequest == null ? res.send("No data Available here") : res.send(findRequest);
+    const requestCheck = findRequest == null ? res.json({msg :RESPONSE.DATA_NOT_FOUND}) : res.json({data: findRequest});
 }
 
 
@@ -86,25 +101,25 @@ exports.userRequestAcception = async (req, res) => {
     if (req.body.status != "Accept") {
         if (findRequest.status != null) {
             if (findRequest.rejected_by == null) {
-                res.send("Request already Accepted");
+                res.json({msg: RESPONSE.PREACCEPTED_REQUEST})
             }
             else if (findRequest.rejected_by == "user") {
-                res.send("Request may be rejected by user");
+                res.json({msg: RESPONSE.USER_CANCEL_REQUEST})
             }
             else {
-                res.send("Bloodbank already reject the request");
+                res.json({msg: RESPONSE.USER_CANCEL_REQUEST})
             }
         }
         if (findRequest == null) {
-            res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
+            res.json({ msg: RESPONSE.ALREADY_REJECTED_BY_BLOOD_BANK });
         }
         const dataUpdate = { status: "Reject", rejected_by: "blood_bank" }
         const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
         const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
-        res.json({ msg: "Request Rejected Successfully" });
+        res.json({ msg: RESPONSE.REJECTED_REQUEST });
     }
     if (findRequest == null) {
-        res.send("no request here may be cancel by user");
+         res.json({ msg: RESPONSE.DATA_NOT_FOUND });
     }
     if (findRequest.status != null) { res.send("Request may be rejected by user or accepted by bank"); }
     if (findRequest.action != "Request") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }

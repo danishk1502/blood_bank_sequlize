@@ -1,5 +1,5 @@
 const userModel = require('../models/index');
-const blood_bank_detail = userModel.bloodBankDetails;
+const bloodBankDetail = userModel.bloodBankDetail;
 
 
 
@@ -13,7 +13,7 @@ const blood_bank_detail = userModel.bloodBankDetails;
 
 const bloodDetailById = async (uniqueID) => {
     try {
-        const users = await  blood_bank_detail.findOne({
+        const users = await  bloodBankDetail.findOne({
             where: {
                 usersBloodBankId : uniqueID
             }
@@ -31,7 +31,7 @@ const bloodDetailById = async (uniqueID) => {
 
 const bloodDetailByUsername = async (username) => {
     try {
-        const users = await  blood_bank_detail.findOne({
+        const users = await  bloodBankDetail.findOne({
             where: {
                 username : username
             }
@@ -50,7 +50,7 @@ const bloodDetailByUsername = async (username) => {
 
 const addBloodBankDetails = async(data)=>{
     try {
-        const bloodBankDetails = await blood_bank_detail.create(
+        const bloodBankDetails = await bloodBankDetail.create(
             data
         )
         return bloodBankDetails;
