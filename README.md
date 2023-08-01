@@ -1,30 +1,20 @@
-<h1 align="center">Welcome to ls 👋</h1>
-<p>
-  <a href="https://www.npmjs.com/package/ls" target="_blank">
-    <img alt="Version" src="https://img.shields.io/npm/v/ls.svg">
-  </a>
-  <a href="#" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
-  </a>
-</p>
+# ls [![NPM version](https://badge.fury.io/js/ls.svg)](https://npmjs.org/package/ls) [![Build Status](https://travis-ci.org/danishk1502/ls.svg?branch=master)](https://travis-ci.org/danishk1502/ls)
 
-## Install
+> 
+
+## Installation
 
 ```sh
-npm install
+$ npm install --save ls
 ```
 
-## Run tests
+## Usage
 
-```sh
-npm run test
+```js
+var ls = require('ls');
+ls();
 ```
 
-## Author
+## License
 
-👤 **Danish**
-
-
-## Show your support
-
-Give a ⭐️ if this project helped you!
+ISC © [Danish]()
