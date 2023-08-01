@@ -5,34 +5,35 @@
 ## Installation
 
 ```sh
-$ npm install  and npm i
+
+$ npm install or npm i
 
 
-// Express
+### Express
 $ npm install express
 
-//mysql2
+### mysql2
 $ npm install mysql2
 
-//sequalize
+### sequalize
 $ npm install sequalize
 
-//joi
+### joi
 $ npm install joi
 
-//nodemon
+### nodemon
 $ npm install nodemon
 
-//dotenv
+### dotenv
 $ npm install dotenv
 
-//md5
+### md5
 $ npm install md5
 
-//JWT
+### JWT
 $ npm install jsonwebtoken
 
-//bcrypt
+### bcrypt
 $ npm install bcrypts
 ```
 
