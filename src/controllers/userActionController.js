@@ -66,14 +66,14 @@ exports.userRequestAction = async (req, res) => {
             msg: RESPONSE.BLOOD_LESS_THAN_REQUIREMENT
         })
     }
-    req.body.userId = req.data.id;
+    req.body.UserId = req.data.id;
     req.body.usersBloodBankId = bloodBankDetails.id;
     req.body.action = "request";
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const usersAction = await userActionServices.userRequestAction(req.body);
     if (usersAction != null) {
-        const paymentData = { userActionId: usersAction.id, userId: req.data.id };
+        const paymentData = { userActionId: usersAction.id, UserId: req.data.id };
         const payDetails = await userPayments.createPaymentData(paymentData);
         return res.json({ data: paymentData });
     }
@@ -87,8 +87,8 @@ exports.userRequestAction = async (req, res) => {
 * ********************************************************************************/
 
 exports.userRequestList = async (req, res) => {
-    const bankId = req.data.id;
-    const findRequest = await userActionServices.userRequestData(bankId);
+    // const bankId = req.data.id;
+    const findRequest = await userActionServices.userRequestData(req.data.id);
     const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
     return requestCheck
 }
@@ -104,6 +104,7 @@ exports.userRequestList = async (req, res) => {
 exports.userRequestAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
+    // console.log( "dsfdfdsfsdfsdfdsf                 dgdfgdf           dfg dfgd         "       + findRequest);
     if (req.body.status != "Accept") {
         if (findRequest.status != null) {
             if (findRequest.rejected_by == null) {
@@ -124,11 +125,12 @@ exports.userRequestAcception = async (req, res) => {
         const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
         return res.json({ msg: RESPONSE.REJECTED_REQUEST });
     }
+
     if (findRequest == null) {
         return res.json({ msg: RESPONSE.DATA_NOT_FOUND });
     }
-    if (findRequest.status != null) { res.send("Request may be rejected by user or accepted by bank"); }
-    if (findRequest.action != "Request") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+    if (findRequest.status != null) { return res.send("Request may be rejected by user or accepted by bank"); }
+    if (findRequest.action != "Request") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
     const priceDetails = await bloodBankService.bloodPriceInventoryById(bankId);
     if (priceDetails == null) {
         return res.send("First Create Price Inventory");
@@ -204,7 +206,7 @@ exports.userCancelRequest = async (req, res) => {
 
 exports.userPaymentDetails = async (req, res) => {
     const pendingPaymentData = await userPayments.findPaymentData(req.data.id);
-    const pendingCondition = pendingPaymentData.payment == "Pending" ? res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET }) : res.json({ msg: "There is no pending payments" })
+    const pendingCondition = pendingPaymentData == null ? res.json({ msg: "There is no pending payments" }) : res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET })
     return pendingCondition;
 }
 

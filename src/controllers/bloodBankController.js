@@ -57,12 +57,12 @@ exports.bloodBankInventory = async (req, res) => {
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
-    if (checkId.user_status == "Active") {
+    if (checkId.user_status != "Active") {
         return res.json({
             msg: RESPONSE.NOT_PERMISION_TO_LOGIN
         });
     }
-    req.body.usersBloodBankId = req.data.id;
+    req.body.UserId = req.data.id;
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
@@ -248,7 +248,7 @@ exports.priceBloodInventory = async (req, res) => {
     if (checkId.user_status != "Active") {
         return   res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
     }
-    req.body.usersBloodBankId = req.data.id;
+    req.body.UserId = req.data.id;
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);

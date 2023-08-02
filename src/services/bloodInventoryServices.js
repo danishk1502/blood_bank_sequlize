@@ -12,7 +12,7 @@ const bloodInventorySearch = async (bankId) => {
         const bloodBankDetails = await userModel.bloodBankInventory.findOne(
             {
                 where: {
-                    usersBloodBankId: bankId
+                    UserId: bankId
                 }
             }
         )

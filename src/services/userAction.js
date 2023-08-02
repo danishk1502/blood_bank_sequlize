@@ -9,7 +9,7 @@ const userModel = require('../models/index');
 
 const userRequestAction = async (requestData) => {
     try {
-        const actionDetails = await userModel.userActions.create(
+        const actionDetails = await userModel.userAction.create(
             requestData
         )
         return actionDetails;
@@ -24,7 +24,7 @@ const userRequestAction = async (requestData) => {
 * ****************************************************/
 const userRequestData = async (bankId) => {
     try {
-        const actionList = await userModel.userActions.findAll({
+        const actionList = await userModel.userAction.findAll({
             where: {
                 usersBloodBankId: bankId,
                 action: "Request",
@@ -45,7 +45,7 @@ const userRequestData = async (bankId) => {
 * ****************************************************/
 const userDonationData = async (bankId) => {
     try {
-        const actionList = await userModel.userActions.findAll({
+        const actionList = await userModel.userAction.findAll({
             where: {
                 usersBloodBankId: bankId,
                 action: "Donation",
@@ -66,7 +66,7 @@ const userDonationData = async (bankId) => {
 * ****************************************************/
 const userRequestFind = async (requestId, bankId) => {
     try {
-        const userRequest = await userModel.userActions.findOne({
+        const userRequest = await userModel.userAction.findOne({
             where: {
                 id: requestId,
                 usersBloodBankId:bankId
@@ -86,7 +86,7 @@ const userRequestFind = async (requestId, bankId) => {
 * ******************************************* *********/
 const userRequestFindByUser = async (requestId, userId) => {
     try {
-        const userRequest = await userModel.userActions.findOne({
+        const userRequest = await userModel.userAction.findOne({
             where: {
                 id: requestId,
                 UserId:userId
@@ -104,7 +104,7 @@ const userRequestFindByUser = async (requestId, userId) => {
 
 const userRequestUser = async (userId) => {
     try {
-        const userRequest = await userModel.userActions.findOne({
+        const userRequest = await userModel.userAction.findOne({
             where: {
                 UserId:userId
             }
@@ -123,7 +123,7 @@ const userRequestUser = async (userId) => {
 * ****************************************************/
 const userRequestsForBlood = async (myId) => {
     try {
-        const actionList = await userModel.userActions.findAll({
+        const actionList = await userModel.userAction.findAll({
             where: {
                 UserId: myId,
                 action: "Request",
@@ -145,7 +145,7 @@ const userRequestsForBlood = async (myId) => {
 
 const userRequestsAccepted = async (myId) => {
     try {
-        const actionList = await userModel.userActions.findAll({
+        const actionList = await userModel.userAction.findAll({
             where: {
                 UserId: myId,
                 action: "Request",

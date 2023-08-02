@@ -89,7 +89,7 @@ const bloodInventoryById = async (uniqueID) => {
     try {
         const users = await  userModel.bloodBankInventory.findOne({
             where: {
-                usersBloodBankId : uniqueID
+                UserId : uniqueID
             }
         })
         return users;
@@ -109,7 +109,7 @@ const bloodInventoryById = async (uniqueID) => {
 
 const usersRequestAcception = async (uniqueID, data) => {
     try {
-        const users = await  userModel.userActions.update(
+        const users = await  userModel.userAction.update(
             data,
             {
             where: {
@@ -140,7 +140,7 @@ const bloodPriceInventoryById = async (uniqueID) => {
     try {
         const users = await  userModel.priceBloodInventory.findOne({
             where: {
-                usersBloodBankId : uniqueID
+                UserId : uniqueID
             }
         })
         return users;
