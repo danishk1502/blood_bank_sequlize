@@ -89,7 +89,7 @@ const userRequestFindByUser = async (requestId, userId) => {
         const userRequest = await userModel.userActions.findOne({
             where: {
                 id: requestId,
-                userId:userId
+                UserId:userId
             }
         })
         return userRequest;
@@ -106,7 +106,7 @@ const userRequestUser = async (userId) => {
     try {
         const userRequest = await userModel.userActions.findOne({
             where: {
-                userId:userId
+                UserId:userId
             }
         })
         return userRequest;
@@ -125,7 +125,7 @@ const userRequestsForBlood = async (myId) => {
     try {
         const actionList = await userModel.userActions.findAll({
             where: {
-                userId: myId,
+                UserId: myId,
                 action: "Request",
                 status: null
             }
@@ -147,7 +147,7 @@ const userRequestsAccepted = async (myId) => {
     try {
         const actionList = await userModel.userActions.findAll({
             where: {
-                userId: myId,
+                UserId: myId,
                 action: "Request",
                 status: "Accepted"
             }

@@ -1,3 +1,5 @@
+const Users = require("./users");
+
 'use strict';
 const {
   Model
@@ -10,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Users.hasOne(bloodBankDetails);
+      bloodBankDetails.belongsTo(models.Users);
+
     }
   }
   bloodBankDetails.init({

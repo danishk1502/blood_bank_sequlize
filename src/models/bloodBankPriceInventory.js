@@ -1,7 +1,8 @@
 'use strict';
 const {
-  Model
+  Model, AccessDeniedError
 } = require('sequelize');
+const { all } = require('../routes/router');
 module.exports = (sequelize, DataTypes) => {
   class bloodBankPriceInventory extends Model {
     /**
@@ -10,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Users.hasOne(bloodBankPriceInventory);
+      bloodBankPriceInventory.belongsTo(models.Users);
     }
   }
   bloodBankPriceInventory.init({
@@ -65,3 +67,4 @@ module.exports = (sequelize, DataTypes) => {
   });
   return bloodBankPriceInventory;
 };
+

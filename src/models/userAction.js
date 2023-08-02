@@ -1,3 +1,5 @@
+// const user =require("./users");
+
 'use strict';
 const {
   Model
@@ -10,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Users.hasMany(userAction, {
+        foreignKey: 'usersBloodBankId'
+      });
+      userAction.belongsTo(models.Users);
     }
   }
   userAction.init({
@@ -19,37 +24,37 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
-  },
-  action: {
+    },
+    action: {
       type: DataTypes.ENUM("Request", "Donation"),
-  },
-  rejected_by:{
+    },
+    rejected_by: {
       type: DataTypes.ENUM("user", "blood_bank"),
-  },
-  status: {
+    },
+    status: {
       type: DataTypes.ENUM("Accepted", "Reject"),
-  },
-  blood_group: {
+    },
+    blood_group: {
       type: DataTypes.STRING,
-      defaultValue:null
-  },
-  donation:{
+      defaultValue: null
+    },
+    donation: {
       type: DataTypes.ENUM("Done", "Incomplete"),
-  },
-  date:{
+    },
+    date: {
       type: DataTypes.DATEONLY
-  },
-  number_of_blood_unit: {
+    },
+    number_of_blood_unit: {
       type: DataTypes.INTEGER,
       defaultValue: null
-  },
-  created_by: {
+    },
+    created_by: {
       type: DataTypes.STRING,
-      
-  },
-  updated_by: {
+
+    },
+    updated_by: {
       type: DataTypes.STRING,
-  }
+    }
   }, {
     sequelize,
     modelName: 'userAction',

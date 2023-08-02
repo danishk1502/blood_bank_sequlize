@@ -51,7 +51,7 @@ exports.findPaymentData = async(userId)=>{
         const paymentDetails = await userModel.userPayments.findAll(
             {
                 where:{
-                    userId : userId,
+                    UserId : userId,
                     payment : "Pending"
 
                 }
