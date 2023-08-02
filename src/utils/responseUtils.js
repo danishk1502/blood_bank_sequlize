@@ -29,7 +29,8 @@ const RESPONSE = {
     USER_CANCEL_REQUEST: "Request may be canceled by user",
     ALREADY_REJECTED_BY_BLOOD_BANK: "Bloodbank already reject the request",
     REJECTED_REQUEST: "Request Rejected Successfully",
-  
+    EXCEPTION_ERROR: "something went wrong please select another bank or try again"
+
 
 
 

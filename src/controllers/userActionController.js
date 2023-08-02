@@ -3,7 +3,8 @@ const bloodBankService = require("../services/bloodBankServices");
 const RESPONSE = require("../utils/responseUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
-const userPayments = require("../services/paymentServices")
+const userPayments = require("../services/paymentServices");
+const { string } = require("joi");
 
 
 
@@ -23,6 +24,11 @@ exports.userRequestAction = async (req, res) => {
     const bloodBankDetails = await service.findUsername(username);
     const findUserData = await service.findId(req.data.id);
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
+    if (typeof bloodInventoryFind == "string") {
+        return res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
     if (bloodInventoryFind == null) {
         return res.json({
             msg: RESPONSE.BLOOD_NOT_AVAILABLE
@@ -268,7 +274,7 @@ exports.donationRequest = async (req, res) => {
         return res.send(usersAction);
     }
     else {
-        return  res.send("you are not able to donate blood yet")
+        return res.send("you are not able to donate blood yet")
     }
 }
 
@@ -284,7 +290,7 @@ exports.donationAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
     if (req.body.requestId != findRequest.id) {
-        return  res.json({
+        return res.json({
             msg: RESPONSE.NOT_VALID_REQUEST
         })
     }
@@ -295,7 +301,7 @@ exports.donationAcception = async (req, res) => {
         const day = today.getDate();
         const acceptionDate = year + "-" + month + "-" + day;
         if (acceptionDate >= req.body.date_schedule) {
-            return   res.send("change schedule date ")
+            return res.send("change schedule date ")
         }
         if (req.body.request == "Accepted") {
             const data = {
@@ -303,7 +309,7 @@ exports.donationAcception = async (req, res) => {
                 date: req.body.date_schedule
             }
             const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
-            return  res.json({ data: donationAcception });
+            return res.json({ data: donationAcception });
         }
         const data = {
             status: "Reject",
@@ -311,7 +317,7 @@ exports.donationAcception = async (req, res) => {
             date: new Date()
         }
         const donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data)
-        return  res.json({ data: donationAcception });
+        return res.json({ data: donationAcception });
 
     } else {
         const rejectionCheck = findRequest.rejected_by == "user" ? res.json({ msg: "Request is Rejected By User" }) : res.json({ msg: "Blood bank already Rejct the request" })
@@ -330,8 +336,8 @@ exports.donationConfirmation = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(requestId, bankId);
     if (findRequest.action != "Donation") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-    if (findRequest.status != "Accepted") {return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-    if (findRequest.donation != null) {return res.json({ msg: "Donation may be rejected by user or accepted" }); }
+    if (findRequest.status != "Accepted") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+    if (findRequest.donation != null) { return res.json({ msg: "Donation may be rejected by user or accepted" }); }
     const donationData = {
         donation: "Done",
     }
@@ -356,7 +362,7 @@ exports.donationConfirmation = async (req, res) => {
         able_to_donate: updateDate
     }
     const updateUser = await service.userUpdation(updateData, findRequest.userId);
-    return  res.send("Donation Complete Thankyou");
+    return res.send("Donation Complete Thankyou");
 }
 
 
@@ -370,9 +376,9 @@ exports.donationCancel = async (req, res) => {
     const requestId = req.body.requestId;
     const userData = await service.findId(userId);
     const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
-    if (userData.role != "user") {return res.send({ msg: RESPONSE.PERMISSSION_DENIED }) }
-    if (requestData.donation != "Done") {return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
-    if (requestData.rejected_by != null) {return res.send("Request is already rejected") }
+    if (userData.role != "user") { return res.send({ msg: RESPONSE.PERMISSSION_DENIED }) }
+    if (requestData.donation != "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
+    if (requestData.rejected_by != null) { return res.send("Request is already rejected") }
     const data = {
         rejected_by: "user",
         donation: "Incomplete"

@@ -60,7 +60,6 @@ exports.userRegister = (async (req, res) => {
 
 exports.userAuthentication = (async (req, res) => {
     const users = await service.findUsername(req.body.username)
-    console.log(users);
     if (users == null) { return res.status(403).json({ status: 403, data: users, message: RESPONSE.USERNAME_NOT_VALID }); }
     if (users.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
     if (users.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
