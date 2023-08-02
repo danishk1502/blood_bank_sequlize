@@ -28,7 +28,8 @@ const findId = async (uniqueID) => {
         })
         return users;
     } catch (e) {
-        throw e ;
+        throw Error("Error while finding Data")
+        
     }
 };
 

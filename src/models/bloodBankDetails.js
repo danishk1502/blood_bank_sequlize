@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Users.hasOne(bloodBankDetails);
       bloodBankDetails.belongsTo(models.Users);
-
     }
   }
   bloodBankDetails.init({

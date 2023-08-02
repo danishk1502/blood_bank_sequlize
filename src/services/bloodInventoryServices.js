@@ -18,7 +18,7 @@ const bloodInventorySearch = async (bankId) => {
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur" + e);
+        return null
     }
 }
 

@@ -65,9 +65,8 @@ All Requests
 *****************************************************/
 
 router.get('/users/requests', usermiddelware.jwtVerification, userRoute.userAllRequests)
-
 router.get('/users/requests/pending', usermiddelware.jwtVerification, userRoute.userPendingRequests)
-
+router.get('/users/requests/accepted', usermiddelware.jwtVerification, userRoute.userAcceptedRequests)
 
 
 
@@ -87,7 +86,7 @@ router.get("/", usermiddelware.jwtVerification, userDataRoute.userGetRoute);
  * @description Getting all filtered Data of users by role
  * *********************************************************/
 
-router.get("/filter/role", userDataRoute.userRoleFilter);
+router.get("/filter/role", usermiddelware.jwtVerification, userDataRoute.userRoleFilter);
 
 
 /*********************************************************
@@ -198,9 +197,6 @@ router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.
 * create blood price Inventory
 *********************************************************/ 
 router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankPriceInventory);
-
-
-
 
 
 

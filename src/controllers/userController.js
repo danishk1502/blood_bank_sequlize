@@ -224,15 +224,15 @@ exports.requestAcception = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
-        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
+        return  res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
-    if (req.body.request != "Accept") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+    if (req.body.request != "Accept") {return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
     const user = await service.findId(req.body.id)
-    if (user != null) { res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-    if (user.role != "blood_bank") { res.json("you can only update data of Blood Banks"); }
+    if (user == null) {return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
+    if (user.role != "blood_bank") {return res.json("you can only update data of Blood Banks"); }
     const updateData = { user_status: "Active", updated_by: userData.username };
     const updationData = await service.userUpdation(updateData, req.body.id);
-    res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
+    return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
 }
 
 
@@ -243,7 +243,7 @@ exports.requestAcception = async (req, res) => {
 exports.userAllRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestUser(req.data.id);
     // return findData;
-    res.send(findData);
+    return  res.send(findData);
 }
 
 
@@ -254,7 +254,7 @@ exports.userAllRequests = async (req, res) => {
 
 exports.userPendingRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
-    res.send(findData);
+    return  res.send(findData);
 }
 
 
@@ -265,7 +265,7 @@ exports.userPendingRequests = async (req, res) => {
 
 exports.userAcceptedRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
-    res.send(findData);
+    return res.send(findData);
 }
 
 

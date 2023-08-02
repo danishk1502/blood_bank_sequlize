@@ -10,8 +10,9 @@ const jwt = require('jsonwebtoken');
 
 const data = (req, res, next) => {
     user = req.body;
-    response = joiValidations.joiUtils(user);
+    const response = joiValidations.joiUtils(user);
     const responseCondition = response.error ? res.json({ status: 412, msg: response.error.details[0].message }) : next();
+    return responseCondition
 }
 
 
@@ -24,7 +25,7 @@ const updateMiddelware = async (req, res, next) => {
     dataUpdate = req.body;
     response = await joiValidations.joiUpdateUtils(dataUpdate);
     if (response.error) {
-        res.json({
+       return res.json({
             status: 412,
             msg: response.error.details[0].message
         });
@@ -32,14 +33,14 @@ const updateMiddelware = async (req, res, next) => {
     else {
         userToken = req.headers['authorization'];
         if (typeof userToken == 'undefined') {
-            res.json({
+            return   res.json({
                 message: "Invalid Token"
             })
         }
         else {
             const verifiedToken = await jwtValidation.verifyToken(userToken);
             if (verifiedToken instanceof jwt.JsonWebTokenError || verifiedToken == undefined) {
-                res.json({
+                return   res.json({
                     "message": "Invalid Token here"
                 })
             }
@@ -72,14 +73,14 @@ const loginMiddelware = async (req, res, next) => {
 const jwtVerification = async (req, res, next) => {
     userToken = req.headers['authorization']
     if (typeof userToken == undefined) {
-        res.json({
+        return   res.json({
             message: "Invalid Token here"
         })
     }
     else {
         const verifiedToken = await jwtValidation.verifyToken(userToken);
         if (verifiedToken instanceof jwt.JsonWebTokenError || verifiedToken == undefined) {
-            res.json({
+            return res.json({
                 "message": "Invalid Token here"
             })
         }

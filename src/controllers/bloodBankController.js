@@ -14,12 +14,12 @@ exports.bloodBankDetails = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
     if (checkId.role != "blood_bank") {
-        res.json({
+        return res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
     if (checkId.user_status != "Active") {
-        res.json({
+        return res.json({
             msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
         });
     }
@@ -29,14 +29,14 @@ exports.bloodBankDetails = async (req, res) => {
     const findUserData = await bloodBankService.bloodDetailById(checkId.id);
     if (findUserData == null) {
         const createDetails = await bloodBankService.addBloodBankDetails(req.body);
-        res.json({
+        return res.json({
             msg: RESPONSE.CREATED_SUCCESS,
             data: createDetails
         });
     }
     else {
-        res.json({
-            msg : RESPONSE.REGENERATE_INVENTORY
+        return res.json({
+            msg: RESPONSE.REGENERATE_INVENTORY
         })
     }
 }
@@ -53,12 +53,12 @@ exports.bloodBankInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
     if (checkId.role != "blood_bank") {
-        res.json({
+        return res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
     if (checkId.user_status == "Active") {
-        res.json({
+        return res.json({
             msg: RESPONSE.NOT_PERMISION_TO_LOGIN
         });
     }
@@ -67,7 +67,7 @@ exports.bloodBankInventory = async (req, res) => {
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodInventoryById(checkId.id);
     if (findUserData != null) {
-        res.json({
+        return res.json({
             msg: RESPONSE.REGENERATE_INVENTORY
         });
 
@@ -78,14 +78,14 @@ exports.bloodBankInventory = async (req, res) => {
     })
 
     if (dataFilter.length != 0) {
-        res.json({
+        return res.json({
             msg: RESPONSE.NEGATIVE_VALUES
         });
 
     }
     const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
 
-    res.json({
+    return res.json({
         msg: RESPONSE.CREATED_SUCCESS,
         data: createInventory
     });
@@ -104,16 +104,16 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
     if (verifyBank.role != "blood_bank") {
-        res.json({
+        return    res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
     const findInventory = await bloodBankService.bloodInventoryById(bankId);
     if (findInventory == null) {
-        res.send("");
+        return   res.send("");
     }
     const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
-    res.json({
+    return res.json({
         msg: RESPONSE.DATA_UPDATED,
         data: updateData
     });
@@ -132,13 +132,13 @@ exports.bloodInventoryIncrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
     if (verifyBank.role != "blood_bank") {
-        res.json({
+        return  res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
     const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
     if (bloodInventory == null) {
-        res.JSON({
+        return res.JSON({
             msg: RESPONSE.CREATE_INVENTORY
         });
     }
@@ -150,8 +150,8 @@ exports.bloodInventoryIncrement = async (req, res) => {
         return value < 0;
     });
     if (dataFilter.length == 0) {
-        res.json({
-            msg:RESPONSE.NEGATIVE_VALUES
+        return  res.json({
+            msg: RESPONSE.NEGATIVE_VALUES
         });
     }
     const keysTotal = []
@@ -168,7 +168,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
         updateObject[element] = keysTotal[index];
     });
     const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-    res.json({
+    return   res.json({
         msg: RESPONSE.DATA_UPDATED
     });
 }
@@ -185,14 +185,14 @@ exports.bloodInventoryDecrement = async (req, res) => {
     const bankId = req.data.id;
     const verifyBank = await service.findId(bankId);
     if (verifyBank.role != "blood_bank") {
-        res.json({
+        return   res.json({
             msg: RESPONSE.PERMISSSION_DENIED
         });
     }
     const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
     if (bloodInventory == null) {
-        res.JSON({
-            msg:RESPONSE.CREATE_INVENTORY
+        return  res.JSON({
+            msg: RESPONSE.CREATE_INVENTORY
         });
     }
     let keysInventory = Object.keys(bloodInventory.dataValues);
@@ -203,8 +203,8 @@ exports.bloodInventoryDecrement = async (req, res) => {
         return value < 0;
     })
     if (dataFilter.length != 0) {
-        res.json({
-            msg:RESPONSE.NEGATIVE_VALUES
+        return   res.json({
+            msg: RESPONSE.NEGATIVE_VALUES
         });
     }
     let keysTotal = []
@@ -218,7 +218,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
         }
     }
     if (updateKeys.length != keysTotal.length) {
-        res.json({
+        return   res.json({
             msg: RESPONSE.NOT_VALID_REQUEST
         });
     }
@@ -226,7 +226,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
         updateObject[element] = keysTotal[index];
     });
     const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-    res.json({
+    return res.json({
         msg: RESPONSE.DATA_UPDATED
     });
 }
@@ -243,17 +243,17 @@ exports.priceBloodInventory = async (req, res) => {
     const authId = req.data.id;
     const checkId = await service.findId(authId);
     if (checkId.role != "blood_bank") {
-        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
+        return   res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
     if (checkId.user_status != "Active") {
-        res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
+        return   res.json({ msg: RESPONSE.NOT_PERMISION_TO_LOGIN });
     }
     req.body.usersBloodBankId = req.data.id;
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const findUserData = await bloodBankService.bloodPriceInventoryById(checkId.id);
     if (findUserData != null) {
-        res.json({
+        return  res.json({
             msg: RESPONSE.REGENERATE_INVENTORY
         });
     }
@@ -262,12 +262,12 @@ exports.priceBloodInventory = async (req, res) => {
         return value < 0;
     });
     if (dataFilter.length != 0) {
-        res.json({
+        return res.json({
             msg: RESPONSE.NEGATIVE_VALUES
         });
     }
     const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
-    res.json({
+    return res.json({
         msg: RESPONSE.CREATED_SUCCESS,
         data: createInventory
     });
