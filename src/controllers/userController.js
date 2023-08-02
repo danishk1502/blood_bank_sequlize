@@ -241,8 +241,7 @@ exports.requestAcception = async (req, res) => {
 
 exports.userAllRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestUser(req.data.id);
-    // return findData;
-    return  res.send(findData);
+    return  res.json({data:findData});
 }
 
 

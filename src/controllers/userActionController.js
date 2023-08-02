@@ -4,8 +4,6 @@ const RESPONSE = require("../utils/responseUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
 const userPayments = require("../services/paymentServices");
-const { string } = require("joi");
-
 
 
 
@@ -22,6 +20,11 @@ const { string } = require("joi");
 exports.userRequestAction = async (req, res) => {
     const username = req.body.blood_bank_username;
     const bloodBankDetails = await service.findUsername(username);
+    if (bloodBankDetails == null) {
+        return res.json({
+            msg: RESPONSE.USERNAME_NOT_VALID
+        })
+    }
     const findUserData = await service.findId(req.data.id);
     const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
     if (typeof bloodInventoryFind == "string") {
@@ -45,7 +48,7 @@ exports.userRequestAction = async (req, res) => {
         })
     }
     const totalBloodUnits = { units: bloodInventoryFind[req.body.blood_group] }
-    if (!totalBloodUnits.units > 0) {
+    if (totalBloodUnits.units <= 0) {
         return res.json({
             msg: RESPONSE.BLOOD_NOT_AVAILABLE
         })
@@ -72,10 +75,11 @@ exports.userRequestAction = async (req, res) => {
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const usersAction = await userActionServices.userRequestAction(req.body);
+    console.log(usersAction);
     if (usersAction != null) {
         const paymentData = { userActionId: usersAction.id, UserId: req.data.id };
         const payDetails = await userPayments.createPaymentData(paymentData);
-        return res.json({ data: paymentData });
+        return res.json({ data: payDetails });
     }
 }
 
@@ -104,7 +108,6 @@ exports.userRequestList = async (req, res) => {
 exports.userRequestAcception = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
-    // console.log( "dsfdfdsfsdfsdfdsf                 dgdfgdf           dfg dfgd         "       + findRequest);
     if (req.body.status != "Accept") {
         if (findRequest.status != null) {
             if (findRequest.rejected_by == null) {
@@ -125,7 +128,6 @@ exports.userRequestAcception = async (req, res) => {
         const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
         return res.json({ msg: RESPONSE.REJECTED_REQUEST });
     }
-
     if (findRequest == null) {
         return res.json({ msg: RESPONSE.DATA_NOT_FOUND });
     }
@@ -143,13 +145,12 @@ exports.userRequestAcception = async (req, res) => {
         payment: "Pending",
     }
     const paymentDataUpdate = await userPayments.updatePaymentData(paymentData, findRequest.id);
+
     const dataUpdate = { status: "Accepted" }
     const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, dataUpdate);
     const blood_group = findRequest.blood_group;
     return res.json({ msg: RESPONSE.CREATED_SUCCESS });
 }
-
-
 
 
 
@@ -366,6 +367,7 @@ exports.donationConfirmation = async (req, res) => {
     const updateUser = await service.userUpdation(updateData, findRequest.userId);
     return res.send("Donation Complete Thankyou");
 }
+
 
 
 /************************************************************************************************************************

@@ -104,7 +104,7 @@ const userRequestFindByUser = async (requestId, userId) => {
 
 const userRequestUser = async (userId) => {
     try {
-        const userRequest = await userModel.userAction.findOne({
+        const userRequest = await userModel.userAction.findAll({
             where: {
                 UserId:userId
             }

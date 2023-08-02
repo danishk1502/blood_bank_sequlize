@@ -73,7 +73,7 @@ router.get('/users/requests/accepted', usermiddelware.jwtVerification, userRoute
 
 /******************************************************
  * User Data Routes *
- * @description Getting all Data of users
+ * @description Getting Data of users
  * ****************************************************/
 
 

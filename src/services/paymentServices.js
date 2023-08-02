@@ -13,7 +13,7 @@ exports.createPaymentData = async(data)=>{
         )
         return paymentDetails;
     } catch (e) {
-        console.log("error occur" + e);
+        console.log("error occur  " + e);
     }
 
 }

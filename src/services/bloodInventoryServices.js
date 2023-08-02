@@ -33,7 +33,7 @@ const bloodInventoryChange = async (bankId, data) => {
             data,
             {
                 where: {
-                    usersBloodBankId: bankId
+                    UserId: bankId
                 }
             }
         )
