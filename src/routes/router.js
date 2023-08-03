@@ -17,9 +17,9 @@ const usersAction = require("./userActionRoutes");
  * User Routes Registration*
  * @description creating user registration route
  * ****************************************************/
-router.post("/register", usermiddelware.data, userRoute.userRegisterRoute);
+router.post("/register", userRoute.userRegisterRoute);
 
-
+router.post("/superuser/register", usermiddelware.jwtVerification, superUserRoute.superUserRegister);
 
 
 /*****************************************************
@@ -35,7 +35,7 @@ router.patch("/login", usermiddelware.loginMiddelware, userRoute.userAuthenticat
  * User Updation Route*
  * @description creating user update route
  * ****************************************************/
-router.patch("/update",usermiddelware.updateMiddelware ,userRoute.userUpdationRoute);
+router.patch("/update",usermiddelware.jwtVerification ,userRoute.userUpdationRoute);
 
 
 

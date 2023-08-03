@@ -3,7 +3,7 @@ const Joi = require('joi')
 //User-defined function to validate the user
 
 
-const joiUtils = (user)=>
+const joiUtils = ((user)=>
 {
 	const JoiSchema = Joi.object({
 	
@@ -44,8 +44,9 @@ const joiUtils = (user)=>
 		password: Joi.string()
 		.pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),			
 	}).options({ abortEarly: false });
-	return JoiSchema.validate(user)
-}
+	
+		return JoiSchema.validate(user)
+})
 
 
 
@@ -59,31 +60,37 @@ const joiUpdateUtils = (dataUpdate)=>
 		username: Joi.string()
 				.min(5)
 				.max(30)
-				.optional(),
+				.optional()
+				.allow(null),
 					
 		email: Joi.string()
 			.email()
 			.min(5)
 			.max(50)
-			.optional(),
+			.optional()
+			.allow(null),
 
 		name: Joi.string()
 			.min(3)
 			.max(40)
-			.optional(),
+			.optional()
+			.allow(null),
 
 		lname: Joi.string()
 			.min(3)
 			.max(40)
-			.optional(),
+			.optional()
+			.allow(null),
 
 		state: Joi.string()
 			.max(15)
-			.optional(),
+			.optional()
+			.allow(null),
 			
 		distt: Joi.string()
 			.max(15)
-			.optional(),
+			.optional()
+			.allow(null),
 
 		password: Joi.string()
 		.pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),			

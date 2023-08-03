@@ -22,3 +22,6 @@ exports.requestDecline = superuserController.requestDecline;
 * @description * route-Controller connection for acception registration request for a blood bank
 * **********************************************************************************/
 exports.requestAcception = superuserController.requestAcception;
+
+
+exports.superUserRegister = superuserController.superUserRegister;

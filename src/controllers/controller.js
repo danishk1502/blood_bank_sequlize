@@ -34,7 +34,7 @@ exports.userUniqueGet = userController.userUniqueGet;
 /*******************************************************************
  * Baasic Superuser controllers
 *******************************************************************/
-
+exports.superUserRegister = userController.superUserRegister
 exports.requestAcception = userController.requestAcception
 exports.pendingRequest = userController.pendingRequest
 exports.requestDecline = userController.requestDecline

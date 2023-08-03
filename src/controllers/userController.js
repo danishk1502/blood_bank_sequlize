@@ -1,8 +1,8 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
 const RESPONSE = require('../utils/responseUtils');
-// const mailer = require('../utils/mailUtils')
 const userActionRoutes = require('../services/userAction');
+const joiValidations = require("../utils/joiUtils");
 
 
 
@@ -15,13 +15,15 @@ const userActionRoutes = require('../services/userAction');
 
 exports.userRegister = (async (req, res) => {
     try {
+        const response = joiValidations.joiUtils(req.body);
+        if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
         const usernameInfo = await service.findUsername(req.body.username)
         const emailInfo = await service.findEmail(req.body.email)
         if (usernameInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (emailInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         let userStatus = "Active";
-        if(req.body.role == "superuser"){
-            return res.json({msg: RESPONSE.PERMISSSION_DENIED});
+        if (req.body.role == "superuser") {
+            return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
         }
         if (req.body.role == "blood_bank") {
             userStatus = "Deactivate";
@@ -49,6 +51,52 @@ exports.userRegister = (async (req, res) => {
     }
 
 });
+
+
+/*************************************************************************************************************************************
+ * userRegister Controller  for Superuser 
+ * Creating Registration controller  for super user 
+ * Response : res.status(200, 400, 403)
+ * Request : name, lname, email, password, username, state, distt, is_deleted, created_by, updated_by, is_active, user_status
+ **************************************************************************************************************************************/
+exports.superUserRegister = (async (req, res) => {
+    try {
+        const response = joiValidations.joiUtils(req.body);
+        if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
+        const usernameInfo = await service.findUsername(req.body.username);
+        const emailInfo = await service.findEmail(req.body.email);
+        if (usernameInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
+        if (emailInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
+
+        const userCheck = await service.findId(req.data.id);
+        console.log(userCheck);
+        if (userCheck.role != "superuser") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
+        let userStatus = "Active";
+        const userInfo = {
+            name: req.body.name,
+            lname: req.body.lname,
+            email: req.body.email,
+            password: md5(req.body.password),
+            role: req.body.role,
+            username: req.body.username,
+            state: req.body.state,
+            distt: req.body.distt,
+            is_deleted: "false",
+            created_by: req.body.username,
+            updated_by: req.body.username,
+            is_active: "true",
+            user_status: userStatus
+        }
+        const saveData = await service.userRegistrationData(userInfo);
+        return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
+
+    } catch (e) {
+        return res.status(400).json({ status: 400, message: e.message });
+    }
+
+});
+
+
 
 
 
@@ -100,6 +148,8 @@ exports.userDeletion = (async (req, res) => {
 
 
 exports.userUpdation = (async (req, res) => {
+    const response = joiValidations.joiUpdateUtils(req.body);
+    if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
     const tokenData = req.data.id;
     const dataId = await service.findId(tokenData);
     const updateData = req.body;
@@ -226,12 +276,12 @@ exports.requestAcception = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
     if (userData.role == "user" || userData.role == "blood_bank") {
-        return  res.json({ msg: RESPONSE.PERMISSSION_DENIED });
+        return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
-    if (req.body.request != "Accept") {return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+    if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
     const user = await service.findId(req.body.id)
-    if (user == null) {return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-    if (user.role != "blood_bank") {return res.json("you can only update data of Blood Banks"); }
+    if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
+    if (user.role != "blood_bank") { return res.json("you can only update data of Blood Banks"); }
     const updateData = { user_status: "Active", updated_by: userData.username };
     const updationData = await service.userUpdation(updateData, req.body.id);
     return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
@@ -244,7 +294,7 @@ exports.requestAcception = async (req, res) => {
 
 exports.userAllRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestUser(req.data.id);
-    return  res.json({data:findData});
+    return res.json({ data: findData });
 }
 
 
@@ -255,7 +305,7 @@ exports.userAllRequests = async (req, res) => {
 
 exports.userPendingRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
-    return  res.send(findData);
+    return res.send(findData);
 }
 
 
