@@ -20,6 +20,9 @@ exports.userRegister = (async (req, res) => {
         if (usernameInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (emailInfo != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         let userStatus = "Active";
+        if(req.body.role == "superuser"){
+            return res.json({msg: RESPONSE.PERMISSSION_DENIED});
+        }
         if (req.body.role == "blood_bank") {
             userStatus = "Deactivate";
         }

@@ -189,7 +189,7 @@ router.patch("/blood_bank/inventory/decrement", usermiddelware.jwtVerification, 
 router.get("/blood_bank/request", usermiddelware.jwtVerification, usersAction.usersActionList);
 
 /*********************************************************
-* user Request Acception route for blood bank
+* user Request Acception or decline route for blood bank
 *********************************************************/ 
 router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.userRequestAcception);
 
