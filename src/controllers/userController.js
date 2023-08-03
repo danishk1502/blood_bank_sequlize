@@ -123,7 +123,7 @@ exports.userAuthentication = (async (req, res) => {
 /************************************************
  * userDeletion Controller 
  * Creating soft Deletion controller 
- * @Response : res.status(202, 204, 403, )
+ * @Response : res.status(202, 204, 403)
  * @Request : password, username
  ************************************************/
 
@@ -131,7 +131,23 @@ exports.userDeletion = (async (req, res) => {
     const user = await service.findUsername(req.body.username)
     if (user == null) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID }); }
     if (user.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
-    if (user.password == md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
+    if (user.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
+    const username = req.body.username;
+    const userDelete = await service.userDeletion(username);
+    return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
+});
+
+
+
+/************************************************
+ * superuserDeletion Controller 
+ * Delete any account 
+ * @Response : res.status(202, 204, 403, )
+ * @Request : password, username
+ ************************************************/
+exports.superuserDeletion = (async (req, res) => {
+    const findUser = await service.findId(req.data.id);
+    if(findUser.role!="superuser"){return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED })}
     const username = req.body.username;
     const userDelete = await service.userDeletion(username);
     return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
@@ -145,8 +161,6 @@ exports.userDeletion = (async (req, res) => {
 * @Response : res.status(202, 204, 403, )
 * @Request : password, username
 ***************************************************/
-
-
 exports.userUpdation = (async (req, res) => {
     const response = joiValidations.joiUpdateUtils(req.body);
     if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
@@ -159,7 +173,6 @@ exports.userUpdation = (async (req, res) => {
     }
     const updationData = await service.userUpdation(updateData, tokenData);
     return res.status(202).json({ status: 202, message: RESPONSE.DATA_UPDATED });
-
 })
 
 
@@ -275,9 +288,7 @@ exports.requestDecline = async (req, res) => {
 exports.requestAcception = async (req, res) => {
     const id = req.data.id;
     const userData = await service.findId(id);
-    if (userData.role == "user" || userData.role == "blood_bank") {
-        return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
-    }
+    if (userData.role == "user" || userData.role == "blood_bank") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED });}
     if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
     const user = await service.findId(req.body.id)
     if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
@@ -318,5 +329,3 @@ exports.userAcceptedRequests = async (req, res) => {
     const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
     return res.send(findData);
 }
-
-

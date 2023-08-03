@@ -20,14 +20,14 @@ exports.userRegister = userController.userRegister;
 exports.userAuthentication= userController.userAuthentication;
 exports.userDeletion = userController.userDeletion;
 exports.userGet = userController.userGet;
-exports.userUpdation = userController.userUpdation
+exports.userUpdation = userController.userUpdation;
 
 
 /*******************************************************************
  * Baasic Data controllers
 *******************************************************************/
 
-exports.userRoleFilter =userController.userRoleFilter
+exports.userRoleFilter =userController.userRoleFilter;
 exports.userUniqueGet = userController.userUniqueGet;
 
 
