@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-// const port = 3312;
 const route = require("./src/routes/router")
 const mysql = require("mysql");
 

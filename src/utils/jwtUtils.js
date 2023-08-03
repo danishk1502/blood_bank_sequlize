@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const secretKey = "ThisismysecretKey"
+// const secretKey = "
 const fetchId = require("../services/userServices")
-
+require('dotenv').config();
 
 
 
@@ -9,15 +9,20 @@ const fetchId = require("../services/userServices")
 * JWT Token Generation
 * ****************************************************/
 exports.loginJwt= async (userData)=>{
+    try{
         const dataId = await fetchId.findUsername(userData.username);
         if(dataId==null){
             return "username doesn't exist";
         }
         else{
-            const token = jwt.sign({id:dataId.id, username:dataId.username},  secretKey, {expiresIn:"600sec"});
+            const token = jwt.sign({id:dataId.id, username:dataId.username},  process.env.SECRET_KEY, {expiresIn:"600sec"});
             return token;
         }
     }
+    catch (e){
+        console.log('error occur');
+    }
+}
 
 
 
@@ -27,7 +32,7 @@ exports.loginJwt= async (userData)=>{
 * ****************************************************/
 exports.verifyToken = (userToken)=>{
     try {
-	const tokenVerification = jwt.verify(userToken, secretKey)
+	const tokenVerification = jwt.verify(userToken, process.env.SECRET_KEY)
     return tokenVerification;
 	} catch (e) {
 		if (e instanceof jwt.JsonWebTokenError) {
