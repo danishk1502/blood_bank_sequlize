@@ -1,6 +1,7 @@
 const service = require("../services/userServices");
 const bloodBankService = require("../services/bloodBankServices");
-const RESPONSE = require("../utils/responseUtils");
+const RESPONSE = require("../utils/responsesutil/responseutils");
+const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
 const userPayments = require("../services/paymentServices");
@@ -84,9 +85,7 @@ exports.userRequestAction = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -104,9 +103,7 @@ exports.userRequestList = async (req, res) => {
         return requestCheck
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -166,9 +163,7 @@ exports.userRequestAcception = async (req, res) => {
         return res.json({ msg: RESPONSE.CREATED_SUCCESS });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -217,9 +212,7 @@ exports.userCancelRequest = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -239,9 +232,7 @@ exports.userPaymentDetails = async (req, res) => {
         return pendingCondition;
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -277,9 +268,7 @@ exports.userPaymentCompleteion = async (req, res) => {
         return res.json({ payment_receipt: receipt })
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -323,9 +312,7 @@ exports.donationRequest = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -377,9 +364,7 @@ exports.donationAcception = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -424,9 +409,7 @@ exports.donationConfirmation = async (req, res) => {
         return res.send("Donation Complete Thankyou");
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -453,8 +436,6 @@ exports.donationCancel = async (req, res) => {
         donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data);
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }

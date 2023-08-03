@@ -1,10 +1,11 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
 const jwt = require('jsonwebtoken');
-const RESPONSE = require('../utils/responseUtils');
+const RESPONSE = require("../utils/responsesutil/responseutils");
+const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const userActionRoutes = require('../services/userAction');
 const joiValidations = require("../utils/joiUtils");
-const secretKey = "ThisismysecretKey"
+
 
 
 
@@ -46,10 +47,10 @@ exports.userRegister = (async (req, res) => {
             user_status: userStatus
         }
         const saveData = await service.userRegistrationData(userInfo);
-        return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
+        return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
 
     } catch (e) {
-        return res.status(400).json({ status: 400, message: e.message });
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -92,7 +93,7 @@ exports.superUserRegister = (async (req, res) => {
         return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
 
     } catch (e) {
-        return res.status(400).json({ status: 400, message: e.message });
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 
 });
@@ -118,9 +119,7 @@ exports.userAuthentication = (async (req, res) => {
         return res.status(200).json({ status: 200, data: users, message: RESPONSE.LOGIN_SUCCESSFULLY, token: req.token });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -143,9 +142,7 @@ exports.userDeletion = (async (req, res) => {
         return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -166,9 +163,7 @@ exports.superuserDeletion = (async (req, res) => {
         return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -195,9 +190,7 @@ exports.userUpdation = (async (req, res) => {
         return res.status(202).json({ status: 202, message: RESPONSE.DATA_UPDATED });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 })
 
@@ -221,9 +214,7 @@ exports.userUniqueGet = (async (req, res) => {
         return res.status(200).json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -240,9 +231,7 @@ exports.userGet = (async (req, res) => {
         return res.status(200).json({ status: 200, data: users, message: RESPONSE.DATA_GET });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 });
 
@@ -270,9 +259,7 @@ exports.userRoleFilter = (async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 );
@@ -307,9 +294,7 @@ exports.pendingRequest = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -333,9 +318,7 @@ exports.requestDecline = async (req, res) => {
         res.json({ msg: "Blood Banks Request rejected Successfully" });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -359,9 +342,7 @@ exports.requestAcception = async (req, res) => {
         return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -376,9 +357,7 @@ exports.userAllRequests = async (req, res) => {
         return res.json({ data: findData });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -394,9 +373,7 @@ exports.userPendingRequests = async (req, res) => {
         return res.send(findData);
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -412,9 +389,7 @@ exports.userAcceptedRequests = async (req, res) => {
         return res.send(findData);
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 
 }
@@ -442,9 +417,7 @@ exports.logout = async (req, res) => {
         })
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 
 }

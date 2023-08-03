@@ -1,7 +1,8 @@
 const service = require("../services/userServices");
 const bloodBankService = require("../services/bloodBankServices");
-const bloodInventoryServices = require('../services/bloodInventoryServices')
-const RESPONSE = require("../utils/responseUtils")
+const bloodInventoryServices = require('../services/bloodInventoryServices');
+const RESPONSE = require("../utils/responsesutil/responseutils");
+const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 
 
 
@@ -42,9 +43,7 @@ exports.bloodBankDetails = async (req, res) => {
         }
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -99,9 +98,7 @@ exports.bloodBankInventory = async (req, res) => {
         });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -134,9 +131,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
         });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -195,9 +190,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
         });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -260,9 +253,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
         });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
 
@@ -309,8 +300,6 @@ exports.priceBloodInventory = async (req, res) => {
         });
     }
     catch (e) {
-        res.json({
-            msg: RESPONSE.EXCEPTION_ERROR
-        })
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
