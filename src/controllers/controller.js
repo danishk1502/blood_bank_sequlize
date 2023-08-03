@@ -103,9 +103,8 @@ exports.donationReject = userAction.donationCancel;
 
 
 exports.userAllRequests=userController.userAllRequests;
-
 exports.userPendingRequests=userController.userPendingRequests;
-
-
-
 exports.userAcceptedRequests=userController.userAcceptedRequests;
+
+
+exports.logout = userController.logout;

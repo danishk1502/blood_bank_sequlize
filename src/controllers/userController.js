@@ -1,8 +1,10 @@
 const service = require("../services/userServices");
 const md5 = require('md5');
+const jwt = require('jsonwebtoken');
 const RESPONSE = require('../utils/responseUtils');
 const userActionRoutes = require('../services/userAction');
 const joiValidations = require("../utils/joiUtils");
+const secretKey = "ThisismysecretKey"
 
 
 
@@ -49,7 +51,6 @@ exports.userRegister = (async (req, res) => {
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
-
 });
 
 
@@ -98,9 +99,6 @@ exports.superUserRegister = (async (req, res) => {
 
 
 
-
-
-
 /*****************************************
  * userAuthentication Controller 
  * Creating Authentication controller 
@@ -110,13 +108,20 @@ exports.superUserRegister = (async (req, res) => {
 
 
 exports.userAuthentication = (async (req, res) => {
-    const users = await service.findUsername(req.body.username)
-    if (users == null) { return res.status(403).json({ status: 403, data: users, message: RESPONSE.USERNAME_NOT_VALID }); }
-    if (users.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
-    if (users.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
-    const username = req.body.username;
-    const loginData = await service.userAuthentication(username);
-    return res.status(200).json({ status: 200, data: users, message: RESPONSE.LOGIN_SUCCESSFULLY, token: req.token });
+    try {
+        const users = await service.findUsername(req.body.username)
+        if (users == null) { return res.status(403).json({ status: 403, data: users, message: RESPONSE.USERNAME_NOT_VALID }); }
+        if (users.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
+        if (users.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
+        const username = req.body.username;
+        const loginData = await service.userAuthentication(username);
+        return res.status(200).json({ status: 200, data: users, message: RESPONSE.LOGIN_SUCCESSFULLY, token: req.token });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 });
 
 
@@ -128,13 +133,20 @@ exports.userAuthentication = (async (req, res) => {
  ************************************************/
 
 exports.userDeletion = (async (req, res) => {
-    const user = await service.findUsername(req.body.username)
-    if (user == null) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID }); }
-    if (user.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
-    if (user.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
-    const username = req.body.username;
-    const userDelete = await service.userDeletion(username);
-    return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
+    try {
+        const user = await service.findUsername(req.body.username)
+        if (user == null) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID }); }
+        if (user.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
+        if (user.password != md5(req.body.password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
+        const username = req.body.username;
+        const userDelete = await service.userDeletion(username);
+        return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 });
 
 
@@ -146,11 +158,18 @@ exports.userDeletion = (async (req, res) => {
  * @Request : password, username
  ************************************************/
 exports.superuserDeletion = (async (req, res) => {
-    const findUser = await service.findId(req.data.id);
-    if(findUser.role!="superuser"){return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED })}
-    const username = req.body.username;
-    const userDelete = await service.userDeletion(username);
-    return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
+    try {
+        const findUser = await service.findId(req.data.id);
+        if (findUser.role != "superuser") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED }) }
+        const username = req.body.username;
+        const userDelete = await service.userDeletion(username);
+        return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 });
 
 
@@ -162,17 +181,24 @@ exports.superuserDeletion = (async (req, res) => {
 * @Request : password, username
 ***************************************************/
 exports.userUpdation = (async (req, res) => {
-    const response = joiValidations.joiUpdateUtils(req.body);
-    if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
-    const tokenData = req.data.id;
-    const dataId = await service.findId(tokenData);
-    const updateData = req.body;
-    updateData.updated_by = dataId.username;
-    if (updateData.password) {
-        updateData.password = md5(updateData.password);
+    try {
+        const response = joiValidations.joiUpdateUtils(req.body);
+        if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
+        const tokenData = req.data.id;
+        const dataId = await service.findId(tokenData);
+        const updateData = req.body;
+        updateData.updated_by = dataId.username;
+        if (updateData.password) {
+            updateData.password = md5(updateData.password);
+        }
+        const updationData = await service.userUpdation(updateData, tokenData);
+        return res.status(202).json({ status: 202, message: RESPONSE.DATA_UPDATED });
     }
-    const updationData = await service.userUpdation(updateData, tokenData);
-    return res.status(202).json({ status: 202, message: RESPONSE.DATA_UPDATED });
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 })
 
 
@@ -190,8 +216,15 @@ exports.userUpdation = (async (req, res) => {
  */
 
 exports.userUniqueGet = (async (req, res) => {
-    const userUnique = await service.findId(req.data.id)
-    return res.status(200).json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
+    try {
+        const userUnique = await service.findId(req.data.id)
+        return res.status(200).json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 });
 
 
@@ -202,8 +235,15 @@ exports.userUniqueGet = (async (req, res) => {
  ************************************/
 
 exports.userGet = (async (req, res) => {
-    const users = await service.usersGetData()
-    return res.status(200).json({ status: 200, data: users, message: RESPONSE.DATA_GET });
+    try {
+        const users = await service.usersGetData()
+        return res.status(200).json({ status: 200, data: users, message: RESPONSE.DATA_GET });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 });
 
 
@@ -216,20 +256,26 @@ exports.userGet = (async (req, res) => {
 
 
 exports.userRoleFilter = (async (req, res) => {
-    if (req.body.role == "user" || req.body.role == "superuser") {
-        return res.status(403).json({ status: 403, data: null, message: RESPONSE.PERMISSSION_DENIED });
+    try {
+        if (req.body.role == "user" || req.body.role == "superuser") {
+            return res.status(403).json({ status: 403, data: null, message: RESPONSE.PERMISSSION_DENIED });
+        }
+        else if (req.body.role == "blood_bank") {
+            const dataRole = await service.userRoleFilter(req.body.role);
+            const dataRoleCondition = dataRole != null ? res.status(200).json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET }) : res.status(404).json({ status: 404, data: data, message: RESPONSE.DATA_NOT_FOUND })
+            return dataRoleCondition;
+        }
+        else {
+            return res.status(403).json({ status: 403, data: null, message: RESPONSE.NOT_VALID_REQUEST });
+        }
     }
-    else if (req.body.role == "blood_bank") {
-        const dataRole = await service.userRoleFilter(req.body.role);
-        const dataRoleCondition = dataRole != null ? res.status(200).json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET }) : res.status(404).json({ status: 404, data: data, message: RESPONSE.DATA_NOT_FOUND })
-        return dataRoleCondition;
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
     }
-    else {
-        return res.status(403).json({ status: 403, data: null, message: RESPONSE.NOT_VALID_REQUEST });
-    }
-});
-
-
+}
+);
 
 
 /*****************************************************************************************************************************************************************
@@ -246,17 +292,24 @@ exports.userRoleFilter = (async (req, res) => {
 
 
 exports.pendingRequest = async (req, res) => {
-    const id = req.data.id;
-    const userData = await service.findId(id);
-    if (userData.role == "user" || userData.role == "blood_bank") {
-        res.json({ msg: RESPONSE.PERMISSSION_DENIED });
+    try {
+        const id = req.data.id;
+        const userData = await service.findId(id);
+        if (userData.role == "user" || userData.role == "blood_bank") {
+            res.json({ msg: RESPONSE.PERMISSSION_DENIED });
+        }
+        else {
+            const bloodBankList = await service.bloodBankPending("blood_bank");
+            res.json({
+                msg: RESPONSE.DATA_GET,
+                data: bloodBankList
+            });
+        }
     }
-    else {
-        const bloodBankList = await service.bloodBankPending("blood_bank");
+    catch (e) {
         res.json({
-            msg: RESPONSE.DATA_GET,
-            data: bloodBankList
-        });
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
     }
 }
 
@@ -268,15 +321,22 @@ exports.pendingRequest = async (req, res) => {
  *****************************************************************/
 
 exports.requestDecline = async (req, res) => {
-    const id = req.data.id;
-    const userData = await service.findId(id);
-    if (userData.role == "user" || userData.role == "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
-    if (req.body.request != "Decline") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-    const user = await service.findId(req.body.id)
-    if (user == null) { res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-    if (user.role != "blood_bank") { res.json("you can only update data of Blood Banks"); }
-    const userDelete = await service.userDeletion(user.username);
-    res.json({ msg: "Blood Banks Request rejected Successfully" });
+    try {
+        const id = req.data.id;
+        const userData = await service.findId(id);
+        if (userData.role == "user" || userData.role == "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
+        if (req.body.request != "Decline") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+        const user = await service.findId(req.body.id)
+        if (user == null) { res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
+        if (user.role != "blood_bank") { res.json("you can only update data of Blood Banks"); }
+        const userDelete = await service.userDeletion(user.username);
+        res.json({ msg: "Blood Banks Request rejected Successfully" });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 }
 
 
@@ -286,16 +346,23 @@ exports.requestDecline = async (req, res) => {
  ******************************************************************/
 
 exports.requestAcception = async (req, res) => {
-    const id = req.data.id;
-    const userData = await service.findId(id);
-    if (userData.role == "user" || userData.role == "blood_bank") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED });}
-    if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-    const user = await service.findId(req.body.id)
-    if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-    if (user.role != "blood_bank") { return res.json("you can only update data of Blood Banks"); }
-    const updateData = { user_status: "Active", updated_by: userData.username };
-    const updationData = await service.userUpdation(updateData, req.body.id);
-    return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
+    try {
+        const id = req.data.id;
+        const userData = await service.findId(id);
+        if (userData.role == "user" || userData.role == "blood_bank") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
+        if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
+        const user = await service.findId(req.body.id)
+        if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
+        if (user.role != "blood_bank") { return res.json("you can only update data of Blood Banks"); }
+        const updateData = { user_status: "Active", updated_by: userData.username };
+        const updationData = await service.userUpdation(updateData, req.body.id);
+        return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 }
 
 
@@ -304,8 +371,15 @@ exports.requestAcception = async (req, res) => {
  * **************************************************************/
 
 exports.userAllRequests = async (req, res) => {
-    const findData = await userActionRoutes.userRequestUser(req.data.id);
-    return res.json({ data: findData });
+    try {
+        const findData = await userActionRoutes.userRequestUser(req.data.id);
+        return res.json({ data: findData });
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 }
 
 
@@ -315,8 +389,15 @@ exports.userAllRequests = async (req, res) => {
  * **************************************************************/
 
 exports.userPendingRequests = async (req, res) => {
-    const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
-    return res.send(findData);
+    try {
+        const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
+        return res.send(findData);
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
 }
 
 
@@ -326,6 +407,44 @@ exports.userPendingRequests = async (req, res) => {
  * **************************************************************/
 
 exports.userAcceptedRequests = async (req, res) => {
-    const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
-    return res.send(findData);
+    try {
+        const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
+        return res.send(findData);
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
+
+}
+
+
+
+
+
+/*****************************************************************
+ * Logout api for users
+ * **************************************************************/
+exports.logout = async (req, res) => {
+    try {
+        const token = req.headers['authorization']
+        jwt.sign(token, " ", { expiresIn: "1sec" }, (result, err) => {
+            if (result) {
+                console.log(result)
+                return res.json({ msg: "You are logged out" })
+            }
+            else {
+
+                return res.json({ msg: RESPONSE.PERMISSSION_DENIED })
+            }
+
+        })
+    }
+    catch (e) {
+        res.json({
+            msg: RESPONSE.EXCEPTION_ERROR
+        })
+    }
+
 }
