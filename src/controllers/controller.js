@@ -70,6 +70,7 @@ exports.bloodInventoryDecrement = bloodBankController.bloodInventoryDecrement;
 
 exports.userActionRequest = userAction.userRequestAction;
 exports.userActionList = userAction.userRequestList;
+exports.userDonationList = userAction.userDonationList;
 exports.userRequestAcception = userAction.userRequestAcception;
 exports.userRequestCancelation = userAction.userCancelRequest;
 exports.pendingPayments = userAction.userPaymentDetails;

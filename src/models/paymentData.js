@@ -11,9 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.userAction.hasMany(paymentDataModel, {
-        foreignKey: 'userActionId'
+        // foreignKey: 'UserId'
       });
       paymentDataModel.belongsTo( models.userAction);
+
+      models.Users.hasMany(paymentDataModel, {
+        foreignKey: 'UserId'
+      });
+      paymentDataModel.belongsTo( models.Users);
     }
   }
   paymentDataModel.init({

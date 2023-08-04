@@ -5,6 +5,7 @@ const superUserRoute = require("./superUserRoute");
 const usermiddelware = require("../middelware/userMiddelware");
 const bloodBankRoute = require("./bloodBankRoute");
 const usersAction = require("./userActionRoutes");
+const { userAction } = require('../models');
 
 
 
@@ -85,6 +86,12 @@ router.get('/users/requests/accepted', usermiddelware.jwtVerification, userRoute
 
 router.get("/", usermiddelware.jwtVerification, userDataRoute.userGetRoute);
 
+/******************************************************
+ * User request Routes *
+ * @description user request for blood
+ * ****************************************************/
+
+router.post("/users/action/request", usermiddelware.jwtVerification, usersAction.usersActionRequest);
 
 
 /*********************************************************
@@ -100,7 +107,7 @@ router.get("/filter/role", usermiddelware.jwtVerification, userDataRoute.userRol
  * @description Shows about Pending payments 
  * *********************************************************/
 
-router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);
+router.get("/user/pending/payment", usermiddelware.jwtVerification, usersAction.userPaymentPending);   
 
 /*********************************************************
  * User Request cancelation Routes *
@@ -176,7 +183,10 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);
-router.post("/users/action/request", usermiddelware.jwtVerification, usersAction.usersActionRequest);
+
+
+
+router.get('blood_bank/donation',usermiddelware.jwtVerification, usersAction.userDonationList);
 
 
 /*********************************************************

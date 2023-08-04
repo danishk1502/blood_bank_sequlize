@@ -98,6 +98,8 @@ exports.userRequestAction = async (req, res) => {
 
 exports.userRequestList = async (req, res) => {
     try {
+        const userInfo = await service.findId(req.data.id);
+        if(userInfo.role!="blood_bank"){res.json({msg: RESPONSE.PERMISSSION_DENIED})}
         const findRequest = await userActionServices.userRequestData(req.data.id);
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
@@ -106,6 +108,29 @@ exports.userRequestList = async (req, res) => {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
+
+
+
+
+/*********************************************************************************
+* Controller *
+* @description * list of users blood donation 
+* ********************************************************************************/
+
+
+exports.userDonationList= async (req, res) => {
+    try {
+        const userInfo = await service.findId(req.data.id);
+        if(userInfo.role!="blood_bank"){res.json({msg: RESPONSE.PERMISSSION_DENIED})}
+        const findRequest = await userActionServices.userDonationData(req.data.id);
+        const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
+        return requestCheck
+    }
+    catch (e) {
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+    }
+}
+
 
 
 
