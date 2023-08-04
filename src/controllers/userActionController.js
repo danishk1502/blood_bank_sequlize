@@ -85,7 +85,7 @@ exports.userRequestAction = async (req, res) => {
         }
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -99,13 +99,13 @@ exports.userRequestAction = async (req, res) => {
 exports.userRequestList = async (req, res) => {
     try {
         const userInfo = await service.findId(req.data.id);
-        if(userInfo.role!="blood_bank"){res.json({msg: RESPONSE.PERMISSSION_DENIED})}
+        if (userInfo.role != "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
         const findRequest = await userActionServices.userRequestData(req.data.id);
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -118,16 +118,16 @@ exports.userRequestList = async (req, res) => {
 * ********************************************************************************/
 
 
-exports.userDonationList= async (req, res) => {
+exports.userDonationList = async (req, res) => {
     try {
         const userInfo = await service.findId(req.data.id);
-        if(userInfo.role!="blood_bank"){res.json({msg: RESPONSE.PERMISSSION_DENIED})}
+        if (userInfo.role != "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
         const findRequest = await userActionServices.userDonationData(req.data.id);
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -167,11 +167,13 @@ exports.userRequestAcception = async (req, res) => {
         if (findRequest == null) {
             return res.json({ msg: RESPONSE.DATA_NOT_FOUND });
         }
-        if (findRequest.status != null) { return res.send("Request may be rejected by user or accepted by bank"); }
+        if (findRequest.status != null) { return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND }); }
         if (findRequest.action != "Request") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         const priceDetails = await bloodBankService.bloodPriceInventoryById(bankId);
         if (priceDetails == null) {
-            return res.send("First Create Price Inventory");
+            return res.json({
+                msg: RESPONSE.PRICE_INVENTORY
+            });
         }
         const findInventory = await bloodInventory.bloodInventorySearch(bankId);
         const blood_units = findInventory[findRequest.blood_group] - findRequest.number_of_blood_unit;
@@ -188,7 +190,7 @@ exports.userRequestAcception = async (req, res) => {
         return res.json({ msg: RESPONSE.CREATED_SUCCESS });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -217,7 +219,7 @@ exports.userCancelRequest = async (req, res) => {
             if (checkPayment.payment == "Complete") {
                 return res.json(
                     {
-                        msg: "your payment already completed you need too contact with blood bank"
+                        msg: RESPONSE.REJECTION_AFTER_PAYMENT
                     }
                 );
             }
@@ -227,17 +229,19 @@ exports.userCancelRequest = async (req, res) => {
             const data = { status: "Reject", rejected_by: "user" };
             const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, data);
             const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
-            return res.json({ msg: "Request Rejected successfully", data: requestAcception });
+            return res.json({ msg: RESPONSE.REQUEST_REJECTED, data: requestAcception });
         }
         else if (findRequest.status == "Reject" && findRequest.rejected_by == "blood_bank") {
-            return res.send("your request already rejected by blood bank");
+            return res.json({
+                msg: RESPONSE.ALREADY_REJECTED_BY_BLOOD_BANK
+            });
         }
         else {
-            return res.send("your request already rejected");
+            return res.json({ msg: "fghjk" });
         }
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -253,7 +257,7 @@ exports.userPaymentDetails = async (req, res) => {
         return pendingCondition;
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -289,7 +293,7 @@ exports.userPaymentCompleteion = async (req, res) => {
         return res.json({ payment_receipt: receipt })
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -315,7 +319,11 @@ exports.donationRequest = async (req, res) => {
         const year = date1.getFullYear();
         const presentDate = date - month - year;
         const bloodBankDetails = await service.findUsername(req.body.blood_bank_username);
-        if (bloodBankDetails.role != "blood_bank") { return res.send("you choose wrong blood bank"); }
+        if (bloodBankDetails.role != "blood_bank") {
+            return res.json({
+                msg: RESPONSE.WRONG_BLOOD_BANK
+            });
+        }
         if (findUser.able_to_donate == null || findUser.able_to_donate < presentDate) {
             const data = {
                 action: "Donation",
@@ -329,11 +337,13 @@ exports.donationRequest = async (req, res) => {
             return res.send(usersAction);
         }
         else {
-            return res.send("you are not able to donate blood yet")
+            return res.json({
+                msg: RESPONSE.NOT_ABLE_TO_DONATE
+            })
         }
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -361,7 +371,7 @@ exports.donationAcception = async (req, res) => {
             const day = today.getDate();
             const acceptionDate = year + "-" + month + "-" + day;
             if (acceptionDate >= req.body.date_schedule) {
-                return res.send("change schedule date ")
+                return res.json({ msg: RESPONSE.DATE_SCHEDULE })
             }
             if (req.body.request == "Accepted") {
                 const data = {
@@ -380,12 +390,12 @@ exports.donationAcception = async (req, res) => {
             return res.json({ data: donationAcception });
 
         } else {
-            const rejectionCheck = findRequest.rejected_by == "user" ? res.json({ msg: "Request is Rejected By User" }) : res.json({ msg: "Blood bank already Rejct the request" })
+            const rejectionCheck = findRequest.rejected_by == "user" ? res.json({ msg: RESPONSE.USER_REJECTED_REQUEST }) : res.json({ msg: RESPONSE.REJECTED_BY_BLOOD_BANK })
             return rejectionCheck;
         }
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -402,7 +412,7 @@ exports.donationConfirmation = async (req, res) => {
         const findRequest = await userActionServices.userRequestFind(requestId, bankId);
         if (findRequest.action != "Donation") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         if (findRequest.status != "Accepted") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-        if (findRequest.donation != null) { return res.json({ msg: "Donation may be rejected by user or accepted" }); }
+        if (findRequest.donation != null) { return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND }); }
         const donationData = {
             donation: "Done",
         }
@@ -431,10 +441,10 @@ exports.donationConfirmation = async (req, res) => {
         }
         console.log(updateData);
         const updateUser = await service.userUpdation(updateData, findRequest.UserId);
-        return res.send("Donation Complete Thankyou");
+        return res.json({ msg: RESPONSE.DONATION_COMPLETE });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -453,15 +463,15 @@ exports.donationCancel = async (req, res) => {
         const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
         if (userData.role != "user") { return res.send({ msg: RESPONSE.PERMISSSION_DENIED }) }
         if (requestData.donation == "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
-        if (requestData.rejected_by != null) { return res.send("Request is already rejected") }
+        if (requestData.rejected_by != null) { return res.json({ msg: RESPONSE.REQUEST_REJECTED }) }
         const data = {
             rejected_by: "user",
             donation: "Incomplete"
         }
         donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data);
-        res.json({msg:"donation request rejected successfully"});
+        res.json({ msg: RESPONSE.REQUEST_REJECTED });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }

@@ -28,7 +28,16 @@ const RESPONSE = {
     USER_CANCEL_REQUEST: "Request may be canceled by user",
     ALREADY_REJECTED_BY_BLOOD_BANK: "Bloodbank already reject the request",
     REJECTED_REQUEST: "Request Rejected Successfully",
-    EXCEPTION_ERROR: "something went wrong please select another bank or try again"
+    EXCEPTION_ERROR: "something went wrong please select another bank or try again",
+    REQUEST_NOT_FOUND:"Request may be rejected by user or accepted by bank",
+    REJECTED_BY_BLOOD_BANK:"Request Rejected by blood Bank",
+    USER_REJECTED_REQUEST:"Request Rejected by User",
+    PRICE_INVENTORY:"First Create Price Inventory",
+    REJECTION_AFTER_PAYMENT: "your payment already completed you need too contact with blood bank",
+    REQUEST_REJECTED:"Request Rejected successfully",
+    DONATION_COMPLETE:"Donation completed thankyou",
+    DATE_SCHEDULE : "Change Schedule Date "
+
 
 }
 

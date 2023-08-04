@@ -168,12 +168,6 @@ const usersRequestAcception = async (uniqueID, data) => {
 
 
 
-
-
-
-
-
-
 /*******************************************************************
  * findId for 
  * inventory
