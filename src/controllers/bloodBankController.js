@@ -303,3 +303,34 @@ exports.priceBloodInventory = async (req, res) => {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
     }
 }
+
+
+
+/***********************************************************
+ * blood Inventory Controller
+ * Creating blood banks Inventory controller to update Data 
+************************************************************/
+
+exports.bloodBankpriceInventoryUpdate = async (req, res) => {
+    try {
+        const bankId = req.data.id;
+        const verifyBank = await service.findId(bankId);
+        if (verifyBank.role != "blood_bank") {
+            return res.json({
+                msg: RESPONSE.PERMISSSION_DENIED
+            });
+        }
+        const findInventory = await bloodBankService.priceInventorybyId(bankId);
+        if (findInventory == null) {
+            return res.send("");
+        }
+        const updateData = await bloodInventoryServices.priceInventoryChange(bankId, req.body)
+        return res.json({
+            msg: RESPONSE.DATA_UPDATED,
+            data: updateData
+        });
+    }
+    catch (e) {
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+    }
+}

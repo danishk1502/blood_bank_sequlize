@@ -38,3 +38,4 @@ exports.incrementBloodInventory = bloodBankController.bloodInventoryIncrement;
 exports.decrementBloodInventory = bloodBankController.bloodInventoryDecrement;
 
 
+exports.bloodBankpriceInventoryUpdate = bloodBankController.bloodBankpriceInventoryUpdate;

@@ -45,5 +45,27 @@ const bloodInventoryChange = async (bankId, data) => {
 }
 
 
+/*****************************************
+price Inventory changes while request acception  
+********************************************/
 
-module.exports = { bloodInventorySearch, bloodInventoryChange }
+const priceInventoryChange = async (bankId, data) => {
+    try {
+        const bloodBankDetails = await userModel.bloodBankInventory.update(
+            data,
+            {
+                where: {
+                    UserId: bankId
+                }
+            }
+        )
+        return bloodBankDetails;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+
+}
+
+
+
+module.exports = { bloodInventorySearch, bloodInventoryChange, priceInventoryChange }

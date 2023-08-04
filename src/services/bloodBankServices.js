@@ -100,6 +100,27 @@ const bloodInventoryById = async (uniqueID) => {
 
 
 
+/*******************************************************************
+ * findId for 
+ * inventory
+ * @param {*} id 
+*******************************************************************/
+
+const priceInventorybyId = async (uniqueID) => {
+    try {
+        const users = await  userModel.priceBloodInventory.findOne({
+            where: {
+                UserId : uniqueID
+            }
+        })
+        return users;
+    } catch (e) {
+        throw e ;
+    }
+};
+
+
+
 
 /*******************************************************************
  * Users request Acception 
@@ -169,4 +190,4 @@ const bloodPriceInventoryCreation = async(inventoryData)=>{
 }
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, bloodPriceInventoryCreation, usersRequestAcception}
+module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, priceInventorybyId, bloodPriceInventoryCreation, usersRequestAcception}

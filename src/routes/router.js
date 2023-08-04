@@ -199,6 +199,8 @@ router.patch("/blood_bank/inventory/increment", usermiddelware.jwtVerification, 
 router.patch("/blood_bank/inventory/decrement", usermiddelware.jwtVerification, bloodBankRoute.decrementBloodInventory);
 
 
+
+
 /*********************************************************
 * user Request list for blood bank
 *********************************************************/ 
@@ -215,6 +217,7 @@ router.patch("/blood_bank/request", usermiddelware.jwtVerification, usersAction.
 router.post("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.createBloodBankPriceInventory);
 
 
+router.patch("/blood_bank/price", usermiddelware.jwtVerification, bloodBankRoute.bloodBankpriceInventoryUpdate);
 
 
 
