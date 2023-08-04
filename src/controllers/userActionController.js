@@ -241,10 +241,6 @@ exports.userCancelRequest = async (req, res) => {
     }
 }
 
-
-
-
-
 /*********************************************************************************
 * Controller*
 * @description * creating users payment Details show
@@ -324,7 +320,7 @@ exports.donationRequest = async (req, res) => {
             const data = {
                 action: "Donation",
                 blood_group: req.body.blood_group,
-                userId: req.data.id,
+                UserId: req.data.id,
                 usersBloodBankId: bloodBankDetails.id,
                 created_by: req.data.username,
                 updated_by: req.data.username
@@ -413,6 +409,9 @@ exports.donationConfirmation = async (req, res) => {
         const bloodInventoryFind = await bloodBankService.bloodInventoryById(bankId);
         const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
         const inventoryUpdate = await bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues });
+
+
+
         const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
         const date = new Date();
         let day = date.getDate();
@@ -430,7 +429,8 @@ exports.donationConfirmation = async (req, res) => {
             last_donation: year + "-" + month + "-" + day,
             able_to_donate: updateDate
         }
-        const updateUser = await service.userUpdation(updateData, findRequest.userId);
+        console.log(updateData);
+        const updateUser = await service.userUpdation(updateData, findRequest.UserId);
         return res.send("Donation Complete Thankyou");
     }
     catch (e) {
@@ -452,13 +452,14 @@ exports.donationCancel = async (req, res) => {
         const userData = await service.findId(userId);
         const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
         if (userData.role != "user") { return res.send({ msg: RESPONSE.PERMISSSION_DENIED }) }
-        if (requestData.donation != "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
+        if (requestData.donation == "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
         if (requestData.rejected_by != null) { return res.send("Request is already rejected") }
         const data = {
             rejected_by: "user",
             donation: "Incomplete"
         }
         donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data);
+        res.json({msg:"donation request rejected successfully"});
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});

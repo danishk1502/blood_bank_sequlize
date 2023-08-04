@@ -186,7 +186,7 @@ router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRout
 
 
 
-router.get('blood_bank/donation',usermiddelware.jwtVerification, usersAction.userDonationList);
+router.get('/blood_bank/donation',usermiddelware.jwtVerification, usersAction.userDonationList);
 
 
 /*********************************************************
