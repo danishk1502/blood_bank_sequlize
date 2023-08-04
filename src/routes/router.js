@@ -19,7 +19,6 @@ const { userAction } = require('../models');
  * @description creating user registration route
  * ****************************************************/
 router.post("/register", userRoute.userRegisterRoute);
-
 router.post("/superuser/register", usermiddelware.jwtVerification, superUserRoute.superUserRegister);
 
 
@@ -183,6 +182,9 @@ router.delete("/pending/blood_bank/request", usermiddelware.jwtVerification, sup
 
 
 router.post("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.createDetailBloodBank);
+
+router.patch("/blood_bank/details", usermiddelware.jwtVerification, bloodBankRoute.bloodBankUpdateDetails);
+
 
 
 

@@ -62,6 +62,29 @@ const addBloodBankDetails = async(data)=>{
 
 
 /*******************************************************************
+ * Adding Details on blood bank details table
+ * @param {*} bloodbankDetails 
+*******************************************************************/
+
+const updateBloodBankDetails = async(data, id)=>{
+    try {
+        const bloodBankDetails = await bloodBankDetail.update(
+            data,
+            {
+                where :{
+                    UserId : id
+                }
+            }
+        )
+        return bloodBankDetails;
+    } catch (e) {
+        console.log("error occur"+ e);
+    }
+
+}
+
+
+/*******************************************************************
  * creating blood Inventory
  * @param {*} Inventory Data
 *******************************************************************/
@@ -190,4 +213,4 @@ const bloodPriceInventoryCreation = async(inventoryData)=>{
 }
 
 
-module.exports = {addBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, priceInventorybyId, bloodPriceInventoryCreation, usersRequestAcception}
+module.exports = {addBloodBankDetails, updateBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, priceInventorybyId, bloodPriceInventoryCreation, usersRequestAcception}

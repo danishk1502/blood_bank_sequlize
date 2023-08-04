@@ -25,9 +25,9 @@ exports.bloodBankDetails = async (req, res) => {
                 msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
             });
         }
-        req.body.usersBloodBankId = req.data.id;
         req.body.created_by = req.data.username;
         req.body.updated_by = req.data.username;
+        req.body.UserId = req.data.id;
         const findUserData = await bloodBankService.bloodDetailById(checkId.id);
         if (findUserData == null) {
             const createDetails = await bloodBankService.addBloodBankDetails(req.body);
@@ -43,7 +43,42 @@ exports.bloodBankDetails = async (req, res) => {
         }
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    }
+}
+
+
+/********************************************
+ * blood Bank update details Controller
+ * Creating blood banks update details controller
+*********************************************/
+
+exports.bloodBankUpdateDetails = async (req, res) => {
+    try {
+        const authId = req.data.id;
+        const checkId = await service.findId(authId);
+        if (checkId.role != "blood_bank") {
+            return res.json({
+                msg: RESPONSE.PERMISSSION_DENIED
+            });
+        }
+        if (checkId.user_status != "Active") {
+            return res.json({
+                msg: RESPONSE.NOT_PERMISION_TO_LOGIN,
+            });
+        }
+        req.body.created_by = req.data.username;
+        req.body.updated_by = req.data.username;
+        req.body.UserId = req.data.id;
+            const createDetails = await bloodBankService.addBloodBankDetails(req.body, req.data.id);
+            return res.json({
+                msg: RESPONSE.CREATED_SUCCESS,
+                data: createDetails
+            });
+
+        }
+    catch (e) {
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -98,7 +133,7 @@ exports.bloodBankInventory = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -131,7 +166,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -190,7 +225,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -253,7 +288,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -300,7 +335,7 @@ exports.priceBloodInventory = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
 
@@ -331,6 +366,6 @@ exports.bloodBankpriceInventoryUpdate = async (req, res) => {
         });
     }
     catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
+        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }

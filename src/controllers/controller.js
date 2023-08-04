@@ -97,6 +97,8 @@ exports.donationConfirmation = userAction.donationConfirmation;
 
 exports.donationReject = userAction.donationCancel;
 
+exports.bloodBankUpdateDetails = bloodBankController.bloodBankUpdateDetails;
+
 
 
 
