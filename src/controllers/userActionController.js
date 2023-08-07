@@ -253,7 +253,7 @@ exports.userCancelRequest = async (req, res) => {
 exports.userPaymentDetails = async (req, res) => {
     try {
         const pendingPaymentData = await userPayments.findPaymentData(req.data.id);
-        const pendingCondition = pendingPaymentData == null ? res.json({ msg: "There is no pending payments" }) : res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET })
+        const pendingCondition = pendingPaymentData == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET })
         return pendingCondition;
     }
     catch (e) {
