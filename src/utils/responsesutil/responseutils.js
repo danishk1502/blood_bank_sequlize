@@ -38,7 +38,9 @@ const RESPONSE = {
     DONATION_COMPLETE:"Donation completed thankyou",
     DATE_SCHEDULE : "Change Schedule Date ",
     NOT_ABLE_TO_DONATE : "You are not able to donate blood yet",
-    WRONG_BLOOD_BANK :"you choose wrong blood bank"
+    WRONG_BLOOD_BANK :"you choose wrong blood bank",
+    LOG_OUT:"You are logged out",
+    BLOOD_BANK_REQUEST_REJECTED:"Blood Banks Request rejected Successfully"
 
 
 

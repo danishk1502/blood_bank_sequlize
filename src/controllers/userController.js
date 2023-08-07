@@ -313,9 +313,9 @@ exports.requestDecline = async (req, res) => {
         if (req.body.request != "Decline") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         const user = await service.findId(req.body.id)
         if (user == null) { res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-        if (user.role != "blood_bank") { res.json("you can only update data of Blood Banks"); }
+        if (user.role != "blood_bank") { res.json({MSG:RESPONSE.PERMISSSION_DENIED}); }
         const userDelete = await service.userDeletion(user.username);
-        res.json({ msg: "Blood Banks Request rejected Successfully" });
+        res.json({ msg: RESPONSE.BLOOD_BANK_REQUEST_REJECTED });
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
@@ -336,10 +336,10 @@ exports.requestAcception = async (req, res) => {
         if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         const user = await service.findId(req.body.id)
         if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-        if (user.role != "blood_bank") { return res.json("you can only update data of Blood Banks"); }
+        if (user.role != "blood_bank") { return res.json({MSG : RESPONSE.DATA_GET}); }
         const updateData = { user_status: "Active", updated_by: userData.username };
         const updationData = await service.userUpdation(updateData, req.body.id);
-        return res.json({ msg: "Blood Bank Activated Successfully", data: updationData });
+        return res.json({ msg: RESPONSE.DATA_GET, data: updationData });
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR});
@@ -406,8 +406,8 @@ exports.logout = async (req, res) => {
         const token = req.headers['authorization']
         jwt.sign(token, " ", { expiresIn: "1sec" }, (result, err) => {
             if (result) {
-                console.log(result)
-                return res.json({ msg: "You are logged out" })
+                // console.log(result)
+                return res.json({ msg: RESPONSE.LOG_OUT })
             }
             else {
 
