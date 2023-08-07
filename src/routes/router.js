@@ -5,7 +5,6 @@ const superUserRoute = require("./superUserRoute");
 const usermiddelware = require("../middelware/userMiddelware");
 const bloodBankRoute = require("./bloodBankRoute");
 const usersAction = require("./userActionRoutes");
-const { userAction } = require('../models');
 
 
 

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const route = require("./src/routes/router")
-const mysql = require("mysql");
+// const mysql = require("mysql");
 
 
 app.use(express.json());

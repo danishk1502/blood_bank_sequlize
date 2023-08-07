@@ -4,7 +4,7 @@
 const {
   Model
 } = require('sequelize');
-const { all } = require('../routes/router');
+// const { all } = require('../routes/router');
 module.exports = (sequelize, DataTypes) => {
   class userAction extends Model {
     /**

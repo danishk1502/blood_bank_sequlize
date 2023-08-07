@@ -99,7 +99,7 @@ const userRegistrationData = async (userData) => {
             )
         return userCreate;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 
@@ -120,7 +120,7 @@ const userAuthentication = async (username) => {
             )
         return userLogin;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 
@@ -141,7 +141,7 @@ const userDeletion = async (username) => {
         })
         return userDelete;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 
@@ -164,7 +164,7 @@ const userUpdation = async (updateData, id) => {
         })
         return userUpdate;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 
@@ -194,7 +194,7 @@ const userRoleFilter = async (role) => {
         })
         return users;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 
@@ -217,7 +217,7 @@ const bloodBankPending = async (role) => {
         })
         return users;
     } catch (e) {
-        throw e;
+        console.log("error occur" + e);
     }
 };
 

@@ -1,5 +1,4 @@
-const { response } = require("express");
-const joiValidations = require("../utils/joiUtils");
+
 const jwtValidation = require("../utils/jwtUtils");
 const jwt = require('jsonwebtoken');
 
@@ -10,7 +9,7 @@ const jwt = require('jsonwebtoken');
  */
 
 const loginMiddelware = async (req, res, next) => {
-    userData = req.body;
+   const userData = req.body;
     const token = await jwtValidation.loginJwt(userData);
     req.token = token;
     next()
@@ -22,8 +21,8 @@ const loginMiddelware = async (req, res, next) => {
  */
 
 const jwtVerification = async (req, res, next) => {
-    userToken = req.headers['authorization']
-    if (typeof userToken == undefined) {
+   const userToken = req.headers['authorization']
+    if (typeof userToken == "undefined") {
         return   res.json({
             message: "Invalid Token here"
         })

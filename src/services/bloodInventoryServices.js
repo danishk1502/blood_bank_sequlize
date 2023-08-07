@@ -1,4 +1,4 @@
-const { Model } = require('sequelize');
+// const { Model } = require('sequelize');
 const userModel = require('../models/index');
 
 

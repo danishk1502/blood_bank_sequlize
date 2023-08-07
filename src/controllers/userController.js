@@ -313,7 +313,7 @@ exports.requestDecline = async (req, res) => {
         if (req.body.request != "Decline") { res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         const user = await service.findId(req.body.id)
         if (user == null) { res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
-        if (user.role != "blood_bank") { res.json({MSG:RESPONSE.PERMISSSION_DENIED}); }
+        if (user.role != "blood_bank") { res.json({MSG:RESPONSE.PEE}); }
         const userDelete = await service.userDeletion(user.username);
         res.json({ msg: RESPONSE.BLOOD_BANK_REQUEST_REJECTED });
     }

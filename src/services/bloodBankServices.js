@@ -13,14 +13,14 @@ const bloodBankDetail = userModel.bloodBankDetail;
 
 const bloodDetailById = async (uniqueID) => {
     try {
-        const users = await  bloodBankDetail.findOne({
+        const users = await bloodBankDetail.findOne({
             where: {
-                usersBloodBankId : uniqueID
+                usersBloodBankId: uniqueID
             }
         })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -31,14 +31,14 @@ const bloodDetailById = async (uniqueID) => {
 
 const bloodDetailByUsername = async (username) => {
     try {
-        const users = await  bloodBankDetail.findOne({
+        const users = await bloodBankDetail.findOne({
             where: {
-                username : username
+                username: username
             }
         })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -48,14 +48,14 @@ const bloodDetailByUsername = async (username) => {
  * @param {*} bloodbankDetails 
 *******************************************************************/
 
-const addBloodBankDetails = async(data)=>{
+const addBloodBankDetails = async (data) => {
     try {
         const bloodBankDetails = await bloodBankDetail.create(
             data
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur"+ e);
+        console.log("error occur" + e);
     }
 
 }
@@ -66,19 +66,19 @@ const addBloodBankDetails = async(data)=>{
  * @param {*} bloodbankDetails 
 *******************************************************************/
 
-const updateBloodBankDetails = async(data, id)=>{
+const updateBloodBankDetails = async (data, id) => {
     try {
         const bloodBankDetails = await bloodBankDetail.update(
             data,
             {
-                where :{
-                    UserId : id
+                where: {
+                    UserId: id
                 }
             }
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur"+ e);
+        console.log("error occur" + e);
     }
 
 }
@@ -89,14 +89,14 @@ const updateBloodBankDetails = async(data, id)=>{
  * @param {*} Inventory Data
 *******************************************************************/
 
-const bloodInventoryCreation = async(inventoryData)=>{
+const bloodInventoryCreation = async (inventoryData) => {
     try {
         const bloodBankDetails = await userModel.bloodBankInventory.create(
             inventoryData
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur"+ e);
+        console.log("error occur" + e);
     }
 
 }
@@ -110,14 +110,14 @@ const bloodInventoryCreation = async(inventoryData)=>{
 
 const bloodInventoryById = async (uniqueID) => {
     try {
-        const users = await  userModel.bloodBankInventory.findOne({
+        const users = await userModel.bloodBankInventory.findOne({
             where: {
-                UserId : uniqueID
+                UserId: uniqueID
             }
         })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -131,14 +131,14 @@ const bloodInventoryById = async (uniqueID) => {
 
 const priceInventorybyId = async (uniqueID) => {
     try {
-        const users = await  userModel.priceBloodInventory.findOne({
+        const users = await userModel.priceBloodInventory.findOne({
             where: {
-                UserId : uniqueID
+                UserId: uniqueID
             }
         })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -153,16 +153,16 @@ const priceInventorybyId = async (uniqueID) => {
 
 const usersRequestAcception = async (uniqueID, data) => {
     try {
-        const users = await  userModel.userAction.update(
+        const users = await userModel.userAction.update(
             data,
             {
-            where: {
-                id : uniqueID
-            }
-        })
+                where: {
+                    id: uniqueID
+                }
+            })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -176,14 +176,14 @@ const usersRequestAcception = async (uniqueID, data) => {
 
 const bloodPriceInventoryById = async (uniqueID) => {
     try {
-        const users = await  userModel.priceBloodInventory.findOne({
+        const users = await userModel.priceBloodInventory.findOne({
             where: {
-                UserId : uniqueID
+                UserId: uniqueID
             }
         })
         return users;
     } catch (e) {
-        throw e ;
+        console.log("error occur" + e)
     }
 };
 
@@ -194,17 +194,17 @@ const bloodPriceInventoryById = async (uniqueID) => {
  * @param {*} Inventory Data
 *******************************************************************/
 
-const bloodPriceInventoryCreation = async(inventoryData)=>{
+const bloodPriceInventoryCreation = async (inventoryData) => {
     try {
         const bloodBankDetails = await userModel.priceBloodInventory.create(
             inventoryData
         )
         return bloodBankDetails;
     } catch (e) {
-        console.log("error occur"+ e);
+        console.log("error occur" + e);
     }
 
 }
 
 
-module.exports = {addBloodBankDetails, updateBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, priceInventorybyId, bloodPriceInventoryCreation, usersRequestAcception}
+module.exports = { addBloodBankDetails, updateBloodBankDetails, bloodDetailById, bloodInventoryCreation, bloodDetailByUsername, bloodInventoryById, bloodPriceInventoryById, priceInventorybyId, bloodPriceInventoryCreation, usersRequestAcception }
