@@ -36,7 +36,11 @@ const RESPONSE = {
     REJECTION_AFTER_PAYMENT: "your payment already completed you need too contact with blood bank",
     REQUEST_REJECTED:"Request Rejected successfully",
     DONATION_COMPLETE:"Donation completed thankyou",
-    DATE_SCHEDULE : "Change Schedule Date "
+    DATE_SCHEDULE : "Change Schedule Date ",
+    NOT_ABLE_TO_DONATE : "You are not able to donate blood yet",
+    WRONG_BLOOD_BANK :"you choose wrong blood bank"
+
+
 
 
 }
