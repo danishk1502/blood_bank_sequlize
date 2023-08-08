@@ -9,6 +9,21 @@ const sequelizeModel = userModel.user;
 /***********************************************************************************
  * @description Common function for validations 
  * *********************************************************************************/
+const findUser = async (attribute) => {
+    try {
+        const users = await  sequelizeModel.findOne({
+            where : attribute
+        })
+        return users;
+    } catch (e) {
+        throw Error("Error while finding Data")
+        
+    }
+};
+
+
+
+
 
 
 /*******************************************************************
@@ -47,7 +62,7 @@ const findUsername = async (username) => {
         try {
             const users = await  sequelizeModel.findOne({
                 where: {
-                    username: username
+                    username : username
                 }
             })
             return users;
@@ -67,7 +82,7 @@ const findEmail = async (email) => {
     try {
         const users = await  sequelizeModel.findOne({
             where: {
-                email: email
+                email
             }
         })
         return users;
@@ -223,4 +238,4 @@ const bloodBankPending = async (role) => {
 
        
 
-module.exports = { userRegistrationData, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation, bloodBankPending };  
+module.exports = { userRegistrationData,findUser, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation, bloodBankPending };  

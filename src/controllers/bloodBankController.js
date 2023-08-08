@@ -15,10 +15,7 @@ exports.bloodBankDetails = async (req, res) => {
     try {
         const authId = req.data.id;
         const checkId = await service.findId(authId);
-        if (checkId.role != "blood_bank") {
-            return res.json({
-                msg: RESPONSE.PERMISSSION_DENIED
-            });
+        if (checkId.role != "blood_bank") {return res.json({msg: RESPONSE.PERMISSSION_DENIED});
         }
         if (checkId.user_status != "Active") {
             return res.json({

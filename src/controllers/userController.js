@@ -27,6 +27,28 @@ const userRegistrationSchema = ((data) => {
     return JoiSchema.validate(data)
 })
 
+/*************************************************************************************************************************************
+* user Updation Schema for Joi Validations  
+**************************************************************************************************************************************/
+
+
+
+const joiUpdateUtils = ((dataUpdate) => {
+    const JoiSchema = Joi.object({
+        username: Joi.string().min(5).max(30).optional().allow(null),
+        email: Joi.string().email().min(5).max(50).optional().allow(null),
+        name: Joi.string().min(3).max(40).optional().allow(null),
+        lname: Joi.string().min(3).max(40).optional().allow(null),
+        state: Joi.string().max(15).optional().allow(null),
+        distt: Joi.string().max(15).optional().allow(null),
+        password: Joi.string()
+            .pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),
+    }).options({ abortEarly: false });
+    return JoiSchema.validate(dataUpdate)
+})
+
+
+
 
 /*************************************************************************************************************************************
 * userRegister Controller 
@@ -98,7 +120,7 @@ exports.superUserRegister = (async (req, res) => {
 
 
 /*****************************************
- * userAuthentication Controller 
+ * userAuthentication Controller
  * Creating Authentication controller 
  * @Response : res.status(200, 403, 202)
  * @Request : password, username
@@ -174,17 +196,21 @@ exports.superuserDeletion = (async (req, res) => {
 ***************************************************/
 exports.userUpdation = (async (req, res) => {
     try {
-        // const response = joiValidations.joiUpdateUtils(req.body);
-        // if (response.error) { return res.json({ status: 412, msg: response.error.details[0].message }) }
+        const { name, lname, email, password, username, role, state, distt } = req.body;
+        const userInfo = {
+            name, lname, email, password, username, role, state, distt
+        }
+        const [joiUpdation, dataId] = await Promise.all([
+            joiUpdateUtils(userInfo),
+            service.findId(tokenData)
+        ])
+        if (joiUpdation.error) { return res.json({ status: 412, msg: joiUpdation.error.details[0].message }) }
         const tokenData = req.data.id;
-        const dataId = await service.findId(tokenData);
         const updateData = req.body;
         updateData.updated_by = dataId.username;
-        if (updateData.password) {
-            updateData.password = md5(updateData.password);
-        }
+        if (updateData.password) { updateData.password = md5(updateData.password); }
         const updationData = await service.userUpdation(updateData, tokenData);
-        return res.status(202).json({ status: 202, data:updationData, message: RESPONSE.DATA_UPDATED });
+        return res.status(202).json({ status: 202, data: updationData, message: RESPONSE.DATA_UPDATED });
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
@@ -401,9 +427,8 @@ exports.userAcceptedRequests = async (req, res) => {
 exports.logout = async (req, res) => {
     try {
         const token = req.headers['authorization']
-        jwt.sign(token, " ", { expiresIn: "1sec" }, (result, err) => {
+        jwt.sign(token, " ", { expiresIn: "1sec" }, (result) => {
             if (result) {
-                // console.log(result)
                 return res.json({ msg: RESPONSE.LOG_OUT })
             }
             else {

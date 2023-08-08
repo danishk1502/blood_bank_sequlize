@@ -27,7 +27,6 @@ exports.userRequestAction = async (req, res) => {
                 msg: RESPONSE.USERNAME_NOT_VALID
             })
         }
-        const findUserData = await service.findId(req.data.id);
         const bloodInventoryFind = await bloodInventory.bloodInventorySearch(bloodBankDetails.id);
         if (typeof bloodInventoryFind == "string") {
             return res.json({
@@ -37,11 +36,6 @@ exports.userRequestAction = async (req, res) => {
         if (bloodInventoryFind == null) {
             return res.json({
                 msg: RESPONSE.BLOOD_NOT_AVAILABLE
-            })
-        }
-        if (findUserData.role != "user") {
-            return res.json({
-                msg: RESPONSE.DONT_HAVE_ACCEES
             })
         }
         if (bloodBankDetails.role != "blood_bank") {
@@ -77,7 +71,6 @@ exports.userRequestAction = async (req, res) => {
         req.body.created_by = req.data.username;
         req.body.updated_by = req.data.username;
         const usersAction = await userActionServices.userRequestAction(req.body);
-        console.log(usersAction);
         if (usersAction != null) {
             const paymentData = { userActionId: usersAction.id, UserId: req.data.id };
             const payDetails = await userPayments.createPaymentData(paymentData);
@@ -271,19 +264,21 @@ exports.userPaymentDetails = async (req, res) => {
 
 exports.userPaymentCompleteion = async (req, res) => {
     try {
-        const actionId = req.body.requestId;
-        const paymentFind = await userPayments.findPaymentOneData(actionId);
+        const { requestId, transaction_id } = req.body;
+        const paymentFind = await userPayments.findPaymentOneData(requestId);
         if (paymentFind.payment != "Pending") { return res.send("Request is rejected or may be amount paid.....") }
         if (req.body.paid_amount !== paymentFind.total_amount) { return res.send("Please Pay complete amount"); }
         const data = {
             payment: "Complete",
-            transaction_id: req.body.transaction_id,
+            transaction_id: transaction_id,
             updated_by: req.data.username
         }
-        const dataUpdation = await userPayments.updatePaymentData(data, actionId);
-        const findUser = await service.findId(req.data.id);
-        const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, req.data.id);
-        const findBloodBank = await service.findId(findRequest.usersBloodBankId);
+        const [dataUpdation, findUser, findRequest, findBloodBank] = await Promise.all([
+            userPayments.updatePaymentData(data, requestId),
+            service.findId(req.data.id),
+            userActionServices.userRequestFindByUser(requestId, req.data.id),
+            service.findId(findRequest.usersBloodBankId)
+        ])
         const receipt = {
             name: findUser.name,
             blood_bank: findBloodBank.name,
@@ -425,7 +420,7 @@ exports.donationConfirmation = async (req, res) => {
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
         if (month + 3 > 12) {
-            const updateMonth = (month + 3) - 12;
+            let updateMonth = (month + 3) - 12;
             year = year + 1;
         }
         else {
@@ -455,17 +450,15 @@ exports.donationConfirmation = async (req, res) => {
 exports.donationCancel = async (req, res) => {
     try {
         const userId = req.data.id;
-        const requestId = req.body.requestId;
-        const userData = await service.findId(userId);
+        const { requestId } = req.body;
         const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
-        if (userData.role != "user") { return res.send({ msg: RESPONSE.PERMISSSION_DENIED }) }
         if (requestData.donation == "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
         if (requestData.rejected_by != null) { return res.json({ msg: RESPONSE.REQUEST_REJECTED }) }
         const data = {
             rejected_by: "user",
             donation: "Incomplete"
         }
-        donationAcception = await bloodBankService.usersRequestAcception(req.body.requestId, data);
+        const donationAcception = await bloodBankService.usersRequestAcception(requestId, data);
         res.json({ msg: RESPONSE.REQUEST_REJECTED });
     }
     catch (e) {
