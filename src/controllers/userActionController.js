@@ -419,9 +419,6 @@ exports.donationConfirmation = async (req, res) => {
         const bloodInventoryFind = await bloodBankService.bloodInventoryById(bankId);
         const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
         const inventoryUpdate = await bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues });
-
-
-
         const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
         const date = new Date();
         let day = date.getDate();
