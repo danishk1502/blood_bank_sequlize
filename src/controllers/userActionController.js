@@ -5,6 +5,7 @@ const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
 const userPayments = require("../services/paymentServices");
+const dateTime = require("../utils/dateandtime")
 
 
 
@@ -207,7 +208,7 @@ exports.userCancelRequest = async (req, res) => {
                 data: requestAcception
             })
         }
-        else if (findRequest.status == "Accepted"){
+        else if (findRequest.status == "Accepted") {
             const checkPayment = await userPayments.findPaymentOneData(findRequest.id);
             if (checkPayment.payment == "Complete") {
                 return res.json(
@@ -363,12 +364,7 @@ exports.donationAcception = async (req, res) => {
             })
         }
         if (findRequest.status == null) {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth() + 1;
-            const day = today.getDate();
-            const acceptionDate = year + "-" + month + "-" + day;
-            if (acceptionDate >= req.body.date_schedule) {
+            if (dateTime.activeDate >= req.body.date_schedule) {
                 return res.json({ msg: RESPONSE.DATE_SCHEDULE })
             }
             if (req.body.request == "Accepted") {
@@ -405,7 +401,7 @@ exports.donationAcception = async (req, res) => {
 
 exports.donationConfirmation = async (req, res) => {
     try {
-        const requestId = req.body.requestId;
+        const { requestId } = req.body;
         const bankId = req.data.id;
         const findRequest = await userActionServices.userRequestFind(requestId, bankId);
         if (findRequest.action != "Donation") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
@@ -416,24 +412,13 @@ exports.donationConfirmation = async (req, res) => {
         }
         const bloodInventoryFind = await bloodBankService.bloodInventoryById(bankId);
         const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
-
-        const [inventoryUpdate, donationAcception ] = await Promise.all([
+        const [inventoryUpdate, donationAcception] = await Promise.all([
             bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues }),
             bloodBankService.usersRequestAcception(findRequest.id, donationData)
         ])
-        const date = new Date();
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-        let updateMonth = month + 3;
-        if (month + 3 > 12) {
-            updateMonth = (month + 3) - 12;
-            year = year + 1;
-        }
-        const updateDate = year + "-" + updateMonth + "-" + day;
         const updateData = {
-            last_donation: year + "-" + month + "-" + day,
-            able_to_donate: updateDate
+            last_donation: dateTime.activeDate,
+            able_to_donate: dateTime.nextDonation
         }
         console.log(updateData);
         const updateUser = await service.userUpdation(updateData, findRequest.UserId);

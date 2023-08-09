@@ -69,7 +69,7 @@ const bloodBankRoleMiddelware = async (req, res, next) => {
         })
     }
     if (!findRole) { return res.send("user not found") }
-    if (findRole.role != "blood_bank") { return res.send("You dont have access") }
+    if (findRole.role != "blood_bank" && findRole.user_status != "Active") { return res.send("You dont have access") }
     next();
 }
 
