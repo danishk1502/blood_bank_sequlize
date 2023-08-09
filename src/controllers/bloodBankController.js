@@ -14,7 +14,7 @@ const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 exports.bloodBankDetails = async (req, res) => {
     try {
         const authId = req.data.id;
-        const checkId = await service.findId(authId);
+        const checkId = await service.findUser({id : authId});
         if (checkId.role != "blood_bank") {return res.json({msg: RESPONSE.PERMISSSION_DENIED});
         }
         if (checkId.user_status != "Active") {
@@ -53,7 +53,7 @@ exports.bloodBankDetails = async (req, res) => {
 exports.bloodBankUpdateDetails = async (req, res) => {
     try {
         const authId = req.data.id;
-        const checkId = await service.findId(authId);
+        const checkId = await service.findUser({id : authId});
         if (checkId.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED
@@ -90,7 +90,7 @@ exports.bloodBankUpdateDetails = async (req, res) => {
 exports.bloodBankInventory = async (req, res) => {
     try {
         const authId = req.data.id;
-        const checkId = await service.findId(authId);
+        const checkId = await service.findUser({id : authId});
         if (checkId.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED
@@ -146,7 +146,7 @@ exports.bloodBankInventory = async (req, res) => {
 exports.bloodBankInventoryUpdate = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const verifyBank = await service.findId(bankId);
+        const verifyBank = await service.findUser({id : bankId});
         if (verifyBank.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED
@@ -179,7 +179,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
 exports.bloodInventoryIncrement = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const verifyBank = await service.findId(bankId);
+        const verifyBank = await service.findUser({id : bankId})
         if (verifyBank.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED
@@ -237,7 +237,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
 exports.bloodInventoryDecrement = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const verifyBank = await service.findId(bankId);
+        const verifyBank = await service.findUser({id : bankId});
         if (verifyBank.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED
@@ -300,7 +300,7 @@ exports.bloodInventoryDecrement = async (req, res) => {
 exports.priceBloodInventory = async (req, res) => {
     try {
         const authId = req.data.id;
-        const checkId = await service.findId(authId);
+        const checkId = await service.findUser({id : authId});
         if (checkId.role != "blood_bank") {
             return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
         }
@@ -346,7 +346,7 @@ exports.priceBloodInventory = async (req, res) => {
 exports.bloodBankpriceInventoryUpdate = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const verifyBank = await service.findId(bankId);
+        const verifyBank = await service.findUser({id : bankId});
         if (verifyBank.role != "blood_bank") {
             return res.json({
                 msg: RESPONSE.PERMISSSION_DENIED

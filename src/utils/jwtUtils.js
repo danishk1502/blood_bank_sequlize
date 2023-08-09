@@ -9,7 +9,7 @@ require('dotenv').config();
 * ****************************************************/
 exports.loginJwt = async (userData) => {
     try {
-        const dataId = await services.findUsername(userData.username);
+        const dataId = await services.findUser({username : userData.username});
         if (!dataId) {
             return "username doesn't exist";
         }

@@ -1,6 +1,5 @@
 
 const userModel = require('../models/index');
-
 const sequelizeModel = userModel.user;
 
 
@@ -11,83 +10,13 @@ const sequelizeModel = userModel.user;
  * *********************************************************************************/
 const findUser = async (attribute) => {
     try {
-        const users = await  sequelizeModel.findOne({
+        const users = await  sequelizeModel.findAll({
             where : attribute
         })
         return users;
     } catch (e) {
         throw Error("Error while finding Data")
         
-    }
-};
-
-
-
-
-
-
-/*******************************************************************
- * findId
- * @param {*} username 
- * @returns : return data if id exist or not
- * @description : This function check about id in database
- * (This function also used in login)
-*******************************************************************/
-
-const findId = async (uniqueID) => {
-    try {
-        const users = await  sequelizeModel.findOne({
-            where: {
-                id: uniqueID
-            }
-        })
-        return users;
-    } catch (e) {
-        throw Error("Error while finding Data")
-        
-    }
-};
-
-
-
-/*******************************************************************
- * findUsername
- * @param {*} username 
- * @returns : return data if username exist or not
- * @description : This function check about username in database
- * (This function also used in login)
-*******************************************************************/
-
-const findUsername = async (username) => {
-        try {
-            const users = await  sequelizeModel.findOne({
-                where: {
-                    username : username
-                }
-            })
-            return users;
-        } catch (e) {
-            throw Error('Error while Paginating Users')
-        }
-};
-
-/*******************************************************
- * findEmail
- * @param {*} email 
- * @returns return data if email exists
- * @description check about email address exist or not 
- *******************************************************/
-
-const findEmail = async (email) => {
-    try {
-        const users = await  sequelizeModel.findOne({
-            where: {
-                email
-            }
-        })
-        return users;
-    } catch (e) {
-        throw Error('Error while Paginating Users')
     }
 };
 
@@ -184,58 +113,6 @@ const userUpdation = async (updateData, id) => {
 };
 
 
-
-
-/***********************************************************************************
- * @description Getter function (using role filter)
- * *********************************************************************************/
-
-
-
-/*******************************************************************
- * get all Data of a specific role
- * @param {*}  role
- * @returns : get all Data of a specific role
- * @description : This function used to get all Data of a specific role
-*******************************************************************/
-
-const userRoleFilter = async (role) => {
-    try {
-        const users = await sequelizeModel.findAll({
-            where : {
-                role : role,
-                user_status:"Active"
-            }
-        })
-        return users;
-    } catch (e) {
-        console.log("error occur" + e);
-    }
-};
-
-
-
-/*******************************************************************
- * get Data of blood banks whose request for registration are not completed
- * @param {*}  role user_status
- * @returns : get all Data of a specific role
- * @description : This function used to get all Data of a specific role
-*******************************************************************/
-
-const bloodBankPending = async (role) => {
-    try {
-        const users = await sequelizeModel.findAll({
-            where : {
-                role : role,
-                user_status : "Deactivate"
-            }
-        })
-        return users;
-    } catch (e) {
-        console.log("error occur" + e);
-    }
-};
-
        
 
-module.exports = { userRegistrationData,findUser, findEmail, userDeletion, findUsername, userAuthentication, findId, userRoleFilter, userUpdation, bloodBankPending };  
+module.exports = { userRegistrationData,findUser, userDeletion, userAuthentication, userUpdation };  
