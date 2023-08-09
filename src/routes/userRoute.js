@@ -34,7 +34,6 @@ exports.userUpdationRoute = userController.userUpdation;
 exports.userAllRequests = userController.userAllRequests; 
 exports.userPendingRequests = userController.userPendingRequests;
 exports.userAcceptedRequests = userController.userAcceptedRequests;
-
 exports.logout = userController.logout;
 
 

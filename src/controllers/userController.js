@@ -64,6 +64,7 @@ exports.userRegister = (async (req, res) => {
         if (role == "superuser") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); } //Check for superuser registration
         if (role == "blood_bank") { userStatus = "Deactivate"; } //blood bank registration status setup
         const userStaticInfo = { is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus }
+        userInfo.password = md5(password);
         Object.assign(userInfo, userStaticInfo); 
         const saveData = await service.userRegistrationData(userInfo);
         return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });

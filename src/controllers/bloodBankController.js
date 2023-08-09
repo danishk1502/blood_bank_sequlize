@@ -77,7 +77,6 @@ exports.bloodBankInventory = async (req, res) => {
             return res.json({
                 msg: RESPONSE.REGENERATE_INVENTORY
             });
-
         }
         let updatevalues = Object.values(req.body);
         const dataFilter = updatevalues.filter((value, index) => {
@@ -132,10 +131,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
 }
 
 
-
-
-
-/**************************************************************************
+/****************************************************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller to Increment Blood unit Data 
  * * @description : This function to add a number of blood unit 
@@ -240,10 +236,6 @@ exports.bloodInventoryDecrement = async (req, res) => {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
-
-
-
-
 
 /***************************************************
  * blood price Inventory Controller
