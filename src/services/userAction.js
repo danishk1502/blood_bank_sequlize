@@ -2,6 +2,23 @@
 const userModel = require('../models/index');
 
 
+
+const requestFind  = async (attribute) => {
+    try {
+        const userRequest = await userModel.userAction.findOne({
+            where: attribute
+        })
+        return userRequest;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
+
+
+
+
 /*****************************************************
 * User Request *
 * @description * Services for user Request and Donation
@@ -161,5 +178,5 @@ const userRequestsAccepted = async (myId) => {
 
 
 
-module.exports = {userRequestAction, userRequestData, userRequestFind, userRequestFindByUser, userDonationData, userRequestUser, userRequestsForBlood, userRequestsAccepted}
+module.exports = {userRequestAction, requestFind, userRequestData, userRequestFind, userRequestFindByUser, userDonationData, userRequestUser, userRequestsForBlood, userRequestsAccepted}
 

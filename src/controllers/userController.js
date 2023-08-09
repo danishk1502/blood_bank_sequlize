@@ -13,42 +13,31 @@ const Joi = require('joi');
 * userRegister Schema for Joi Validations  
 **************************************************************************************************************************************/
 
-const userRegistrationSchema = ((data) => {
-    const JoiSchema = Joi.object({
-        username: Joi.string().min(5).max(30).required(),
-        email: Joi.string().email().min(5).max(50).required(),
-        name: Joi.string().min(3).max(40).required(),
-        role: Joi.string().min(3).max(40).required(),
-        lname: Joi.string().min(3).max(40).required(),
-        state: Joi.string().max(15).required(),
-        distt: Joi.string().max(15).required(),
-        password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),
-    }).options({ abortEarly: false });
-    return JoiSchema.validate(data)
-})
+const userRegistrationSchema = Joi.object({
+    username: Joi.string().min(5).max(30).required(),
+    email: Joi.string().email().min(5).max(50).required(),
+    name: Joi.string().min(3).max(40).required(),
+    role: Joi.string().min(3).max(40).required(),
+    lname: Joi.string().min(3).max(40).required(),
+    state: Joi.string().max(15).required(),
+    distt: Joi.string().max(15).required(),
+    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),
+}).options({ abortEarly: false });
 
 /*************************************************************************************************************************************
 * user Updation Schema for Joi Validations  
 **************************************************************************************************************************************/
 
-
-
-const joiUpdateUtils = ((dataUpdate) => {
-    const JoiSchema = Joi.object({
-        username: Joi.string().min(5).max(30).optional().allow(null),
-        email: Joi.string().email().min(5).max(50).optional().allow(null),
-        name: Joi.string().min(3).max(40).optional().allow(null),
-        lname: Joi.string().min(3).max(40).optional().allow(null),
-        state: Joi.string().max(15).optional().allow(null),
-        distt: Joi.string().max(15).optional().allow(null),
-        password: Joi.string()
-            .pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),
-    }).options({ abortEarly: false });
-    return JoiSchema.validate(dataUpdate)
-})
-
-
-
+const userUpdationSchema = Joi.object({
+    username: Joi.string().min(5).max(30).optional().allow(null),
+    email: Joi.string().email().min(5).max(50).optional().allow(null),
+    name: Joi.string().min(3).max(40).optional().allow(null),
+    lname: Joi.string().min(3).max(40).optional().allow(null),
+    state: Joi.string().max(15).optional().allow(null),
+    distt: Joi.string().max(15).optional().allow(null),
+    password: Joi.string()
+        .pattern(new RegExp("^[a-zA-Z0-9@]{3,30}$")),
+}).options({ abortEarly: false });
 
 /*************************************************************************************************************************************
 * userRegister Controller 
@@ -63,12 +52,12 @@ exports.userRegister = (async (req, res) => {
         const userInfo = {
             name, lname, email, password, username, role, state, distt
         }
-        const [joiValidation, userName, userEmail] = await Promise.all([
-            userRegistrationSchema(userInfo),
+        const { error } = userRegistrationSchema.validate(userInfo);
+        if (error) { return res.json({ msg: error.details[0].message }); }
+        const [userName, userEmail] = await Promise.all([
             service.findUsername(username),
             service.findEmail(email)
         ]);
-        if (joiValidation.error) { return res.json({ status: 412, msg: joiValidation.error.details[0].message }) }
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         let userStatus = "Active";
@@ -96,13 +85,13 @@ exports.superUserRegister = (async (req, res) => {
         const userInfo = {
             name, lname, email, password, username, role, state, distt
         };
-        const [joiValidation, userName, userEmail, activeUser] = await Promise.all([
-            userRegistrationSchema(userInfo),
-            service.findUsername(username),
-            service.findEmail(email),
-            service.findId(req.data.id)
+        const { error } = userRegistrationSchema.validate(userInfo);
+        if (error) { return res.json({ msg: error.details[0].message }); }
+        const [userName, userEmail, activeUser] = await Promise.all([
+            service.findUser({ username: username }),
+            service.findUser({ email: email }),
+            service.findUser({ id: req.data.id })
         ]);
-        if (joiValidation.error) { return res.json({ status: 412, msg: joiValidation.error.details[0].message }) }
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         if (activeUser.role != "superuser") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
@@ -200,11 +189,11 @@ exports.userUpdation = (async (req, res) => {
         const userInfo = {
             name, lname, email, password, username, role, state, distt
         }
-        const [joiUpdation, dataId] = await Promise.all([
-            joiUpdateUtils(userInfo),
+        const { error } = userUpdationSchema.validate(userInfo);
+        if (error) { return res.json({ msg: error.details[0].message }); }
+        const [dataId] = await Promise.all([
             service.findId(tokenData)
         ])
-        if (joiUpdation.error) { return res.json({ status: 412, msg: joiUpdation.error.details[0].message }) }
         const tokenData = req.data.id;
         const updateData = req.body;
         updateData.updated_by = dataId.username;
