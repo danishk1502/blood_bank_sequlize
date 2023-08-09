@@ -48,23 +48,23 @@ const userUpdationSchema = Joi.object({
 
 exports.userRegister = (async (req, res) => {
     try {
-        const { name, lname, email, password, username, role, state, distt } = req.body;
+        const { name, lname, email, password, username, role, state, distt } = req.body; 
         const userInfo = {
             name, lname, email, password, username, role, state, distt
         }
-        const { error } = userRegistrationSchema.validate(userInfo);
-        if (error) { return res.json({ msg: error.details[0].message }); }
-        const [userName, userEmail] = await Promise.all([
+        const { error } = userRegistrationSchema.validate(userInfo); //Joi Validations 
+        if (error) { return res.json({ msg: error.details[0].message }); } 
+        const [userName, userEmail] = await Promise.all([ //Promise for parallel awaits
             service.findUser({ username: username }),
             service.findUser({ email: email })
         ]);
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         let userStatus = "Active";
-        if (role == "superuser") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
-        if (req.body.role == "blood_bank") { userStatus = "Deactivate"; }
+        if (role == "superuser") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); } //Check for superuser registration
+        if (role == "blood_bank") { userStatus = "Deactivate"; } //blood bank registration status setup
         const userStaticInfo = { is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus }
-        Object.assign(userInfo, userStaticInfo);
+        Object.assign(userInfo, userStaticInfo); 
         const saveData = await service.userRegistrationData(userInfo);
         return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
     } catch (e) {
@@ -82,21 +82,17 @@ exports.userRegister = (async (req, res) => {
 exports.superUserRegister = (async (req, res) => {
     try {
         const { name, lname, email, password, username, role, state, distt } = req.body;
-        const userInfo = {
-            name, lname, email, password, username, role, state, distt
-        };
-        const { error } = userRegistrationSchema.validate(userInfo);
+        const userInfo = { name, lname, email, password, username, role, state, distt};
+        const { error } = userRegistrationSchema.validate(userInfo); //joi Validations 
         if (error) { return res.json({ msg: error.details[0].message }); }
-        const [userName, userEmail, activeUser] = await Promise.all([
+        const [userName, userEmail] = await Promise.all([
             service.findUser({ username: username }),
             service.findUser({ email: email }),
-            service.findUser({ id: req.data.id })
         ]);
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
-        if (activeUser.role != "superuser") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
         let userStatus = "Active";
-        const userStaticInfo = { is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus }
+        const userStaticInfo = { is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus } //object for static Information
         Object.assign(userInfo, userStaticInfo);
         const saveData = await service.userRegistrationData(userInfo);
         return res.status(200).json({ status: 200, data: saveData, message: RESPONSE.REGISTER_SUCCESSFULLY });
@@ -108,12 +104,12 @@ exports.superUserRegister = (async (req, res) => {
 
 
 
-/*****************************************
+/*********************************************************************************************************************************************
  * userAuthentication Controller
  * Creating Authentication controller 
  * @Response : res.status(200, 403, 202)
  * @Request : password, username
- ******************************************/
+ *********************************************************************************************************************************************/
 
 
 exports.userAuthentication = (async (req, res) => {
@@ -132,19 +128,19 @@ exports.userAuthentication = (async (req, res) => {
 });
 
 
-/************************************************
+/****************************************************************************************************************************************************
  * userDeletion Controller 
  * Creating soft Deletion controller 
  * @Response : res.status(202, 204, 403)
  * @Request : password, username
- ************************************************/
+ ******************************************************************************************************************************************************/
 
 exports.userDeletion = (async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await service.findUser(username);
-        if (req.data.id != user.id) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.PERMISSSION_DENIED }); }
         if (user == null) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID }); }
+        if (req.data.id != user.id) { return res.status(403).json({ status: 403, message: RESPONSE.PERMISSSION_DENIED }); } //Checking who delete the account
         if (user.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
         if (user.password != md5(password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
         const userDelete = await service.userDeletion(username);
@@ -157,17 +153,17 @@ exports.userDeletion = (async (req, res) => {
 
 
 
-/************************************************
+/*************************************************************************************************************************************************************
  * superuserDeletion Controller 
  * Delete any account 
- * @Response : res.status(202, 204, 403, )
+ * @Response : res.status(202, 204)
  * @Request : password, username
- ************************************************/
+ ***************************************************************************************************************************************************/
 exports.superuserDeletion = (async (req, res) => {
     try {
         const { username } = req.body;
         const findUser = await service.findUser({ id: req.data.id });
-        if (findUser.role != "superuser") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED }) }
+        if (findUser.role != "superuser") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED }) }//Cchecking who deleted functions
         const userDelete = await service.userDeletion(username);
         return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
     }
@@ -333,7 +329,7 @@ exports.requestAcception = async (req, res) => {
         const user = await service.findUser({ id: req.body.id })
         if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
         if (user.role != "blood_bank") { return res.json({ MSG: RESPONSE.DATA_GET }); }
-        const updateData = { user_status: "Active", updated_by: userData.username };
+        const updateData = { user_status: "Active", updated_by: req.data.username };
         const updationData = await service.userUpdation(updateData, req.body.id);
         return res.json({ msg: RESPONSE.DATA_GET, data: updationData });
     }
@@ -416,6 +412,3 @@ exports.logout = async (req, res) => {
     }
 
 }
-
-
-

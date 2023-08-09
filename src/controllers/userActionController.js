@@ -5,7 +5,6 @@ const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const bloodInventory = require("../services/bloodInventoryServices")
 const userActionServices = require("../services/userAction")
 const userPayments = require("../services/paymentServices");
-const { promises } = require("nodemailer/lib/xoauth2");
 
 
 
@@ -21,8 +20,8 @@ const { promises } = require("nodemailer/lib/xoauth2");
 
 exports.userRequestAction = async (req, res) => {
     try {
-        const {username} = req.body;
-        const bloodBankDetails = await service.findUser({username : username});
+        const { username } = req.body;
+        const bloodBankDetails = await service.findUser({ username: username });
         if (bloodBankDetails == null) {
             return res.json({
                 msg: RESPONSE.USERNAME_NOT_VALID
@@ -92,8 +91,6 @@ exports.userRequestAction = async (req, res) => {
 
 exports.userRequestList = async (req, res) => {
     try {
-        const userInfo = await service.findUser({id : req.data.id});
-        if (userInfo.role != "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
         const findRequest = await userActionServices.userRequestData(req.data.id);
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
@@ -114,8 +111,6 @@ exports.userRequestList = async (req, res) => {
 
 exports.userDonationList = async (req, res) => {
     try {
-        const userInfo = await service.findUser({id : req.data.id});
-        if (userInfo.role != "blood_bank") { res.json({ msg: RESPONSE.PERMISSSION_DENIED }) }
         const findRequest = await userActionServices.userDonationData(req.data.id);
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
@@ -154,7 +149,7 @@ exports.userRequestAcception = async (req, res) => {
                 return res.json({ msg: RESPONSE.ALREADY_REJECTED_BY_BLOOD_BANK });
             }
             const dataUpdate = { status: "Reject", rejected_by: "blood_bank" }
-            const requestAcception= await Promise.all([
+            const requestAcception = await Promise.all([
                 bloodBankService.usersRequestAcception(findRequest.id, dataUpdate),
                 userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id)
             ]);
@@ -203,14 +198,16 @@ exports.userCancelRequest = async (req, res) => {
         const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, userId);
         if (findRequest.status == null) {
             const data = { status: "Reject", rejected_by: "user" };
-            const requestAcception = await bloodBankService.usersRequestAcception(findRequest.id, data);
-            const paymentUpdate = await userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id);
+            const [requestAcception, paymentUpdate] = await Promise.all([
+                bloodBankService.usersRequestAcception(findRequest.id, data),
+                userPayments.updatePaymentData({ payment: "Incomplete" }, findRequest.id)
+            ])
             return res.json({
                 msg: "Request is rejected",
                 data: requestAcception
             })
         }
-        else if (findRequest.status == "Accepted") {
+        else if (findRequest.status == "Accepted"){
             const checkPayment = await userPayments.findPaymentOneData(findRequest.id);
             if (checkPayment.payment == "Complete") {
                 return res.json(
@@ -278,9 +275,9 @@ exports.userPaymentCompleteion = async (req, res) => {
         }
         const [dataUpdation, findUser, findRequest, findBloodBank] = await Promise.all([
             userPayments.updatePaymentData(data, requestId),
-            service.findUser({id : req.data.id}),
+            service.findUser({ id: req.data.id }),
             userActionServices.userRequestFindByUser(requestId, req.data.id),
-            service.findUser({id : findRequest.usersBloodBankId})
+            service.findUser({ id: findRequest.usersBloodBankId })
         ])
         const receipt = {
             name: findUser.name,
@@ -309,11 +306,11 @@ exports.userPaymentCompleteion = async (req, res) => {
 
 exports.donationRequest = async (req, res) => {
     try {
-        const {blood_bank_username} = req.body
+        const { blood_bank_username } = req.body
         const userId = req.data.id;
         const [findUser, bloodBankDetails] = await Promise.all([
-            service.findUser({id : userId}),
-            service.findUser({username : blood_bank_username})
+            service.findUser({ id: userId }),
+            service.findUser({ username: blood_bank_username })
         ])
         if (bloodBankDetails.role != "blood_bank") {
             return res.json({
@@ -329,18 +326,19 @@ exports.donationRequest = async (req, res) => {
         if (findUser.able_to_donate != null || findUser.able_to_donate > presentDate) {
             return res.json({
                 msg: RESPONSE.NOT_ABLE_TO_DONATE
-            })}
+            })
+        }
 
-            const data = {
-                action: "Donation",
-                blood_group: req.body.blood_group,
-                UserId: req.data.id,
-                usersBloodBankId: bloodBankDetails.id,
-                created_by: req.data.username,
-                updated_by: req.data.username
-            }
-            const usersAction = await userActionServices.userRequestAction(data);
-            return res.send(usersAction);
+        const data = {
+            action: "Donation",
+            blood_group: req.body.blood_group,
+            UserId: req.data.id,
+            usersBloodBankId: bloodBankDetails.id,
+            created_by: req.data.username,
+            updated_by: req.data.username
+        }
+        const usersAction = await userActionServices.userRequestAction(data);
+        return res.send(usersAction);
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
@@ -418,18 +416,19 @@ exports.donationConfirmation = async (req, res) => {
         }
         const bloodInventoryFind = await bloodBankService.bloodInventoryById(bankId);
         const updateValues = bloodInventoryFind[findRequest.blood_group] + 1;
-        const inventoryUpdate = await bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues });
-        const donationAcception = await bloodBankService.usersRequestAcception(findRequest.id, donationData);
+
+        const [inventoryUpdate, donationAcception ] = await Promise.all([
+            bloodInventory.bloodInventoryChange(req.data.id, { [findRequest.blood_group]: updateValues }),
+            bloodBankService.usersRequestAcception(findRequest.id, donationData)
+        ])
         const date = new Date();
         let day = date.getDate();
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
+        let updateMonth = month + 3;
         if (month + 3 > 12) {
-            let updateMonth = (month + 3) - 12;
+            updateMonth = (month + 3) - 12;
             year = year + 1;
-        }
-        else {
-            updateMonth = month + 3;
         }
         const updateDate = year + "-" + updateMonth + "-" + day;
         const updateData = {

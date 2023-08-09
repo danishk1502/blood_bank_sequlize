@@ -22,5 +22,10 @@ module.exports = {
         "ecmaVersion": "latest"
     },
     "rules": {
+        "env": {
+            "node": true,
+            "commonjs": true
+        },
+        "no-unused-vars": "off"
     }
 }
