@@ -47,7 +47,7 @@ const jwtVerification = async (req, res, next) => {
 //Role base Middelware for user
 
 const userRoleMiddelware = async (req, res, next) => {
-    const token = req.data;
+    const token = req.data.id;
     const findRole = await jwtValidation.userRoleMiddelwareUtil(token);
     if (findRole instanceof jwt.JsonWebTokenError || findRole == undefined) {
         return res.json({
@@ -69,8 +69,9 @@ const bloodBankRoleMiddelware = async (req, res, next) => {
         })
     }
     if (!findRole) { return res.send("user not found") }
-    if (findRole.role != "blood_bank" && findRole.user_status != "Active") { return res.send("You dont have access") }
+    if (findRole.role != "blood_bank" || findRole.user_status != "Active") { return res.send("You dont have access") }
     next();
+
 }
 
 

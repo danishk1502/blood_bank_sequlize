@@ -9,7 +9,7 @@ require('dotenv').config();
 * ****************************************************/
 exports.loginJwt = async (userData) => {
     try {
-        const dataId = await services.findUser({username : userData.username});
+        const dataId = await services.findOneUser({username : userData.username});
         if (!dataId) {
             return "username doesn't exist";
         }
@@ -21,8 +21,6 @@ exports.loginJwt = async (userData) => {
         console.log('error occur');
     }
 }
-
-
 
 
 /*****************************************************
@@ -43,7 +41,7 @@ exports.verifyToken = (userToken) => {
 
 exports.userRoleMiddelwareUtil = async (token) => {
     try {
-        const findUser = await services.findUser({ id: token.id });
+        const findUser = await services.findOneUser({ id: token.id });
         return findUser;
     }
     catch (e) {

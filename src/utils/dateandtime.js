@@ -9,7 +9,7 @@ if (updateMonth> 12) {
     updateYear = year + 1;
 }
 
-exports.lastDonation = year + "-" + month + "-" + day;
+exports.activeDate = year + "-" + month + "-" + day;
 exports.nextDonation = updateYear + "-" + updateMonth + "-" + day;
 
 

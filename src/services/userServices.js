@@ -23,6 +23,23 @@ const findUser = async (attribute) => {
 
 
 /***********************************************************************************
+ * @description Common function for validations FOR SINGLE USER
+ * *********************************************************************************/
+const findOneUser = async (attribute) => {
+    try {
+        const users = await  sequelizeModel.findOne({
+            where : attribute
+        })
+        return users;
+    } catch (e) {
+        throw Error("Error while finding Data")
+        
+    }
+};
+
+
+
+/***********************************************************************************
  * @description User, Blood-bank and Superuser CRUD functions 
  * *********************************************************************************/
 
@@ -115,4 +132,4 @@ const userUpdation = async (updateData, id) => {
 
        
 
-module.exports = { userRegistrationData,findUser, userDeletion, userAuthentication, userUpdation };  
+module.exports = { userRegistrationData,findUser, userDeletion, userAuthentication, userUpdation, findOneUser};  

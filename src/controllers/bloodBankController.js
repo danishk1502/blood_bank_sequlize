@@ -59,8 +59,6 @@ exports.bloodBankUpdateDetails = async (req, res) => {
 }
 
 
-
-
 /*********************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller
@@ -93,8 +91,6 @@ exports.bloodBankInventory = async (req, res) => {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
     }
 }
-
-
 
 
 

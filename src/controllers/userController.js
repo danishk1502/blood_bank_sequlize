@@ -55,14 +55,16 @@ exports.userRegister = (async (req, res) => {
         const { error } = userRegistrationSchema.validate(userInfo); //Joi Validations 
         if (error) { return res.json({ msg: error.details[0].message }); } 
         const [userName, userEmail] = await Promise.all([ //Promise for parallel awaits
-            service.findUser({ username: username }),
-            service.findUser({ email: email })
+            service.findOneUser({ username: username }),
+            service.findOneUser({ email: email })
         ]);
+        console.log(userName);
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
         let userStatus = "Active";
+        // Console.log(userStatus);
         if (role == "superuser") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); } //Check for superuser registration
-        if (role == "blood_bank") { userStatus = "Deactivate"; } //blood bank registration status setup
+        if (role == "blood_bank") { userStatus = "Deactivate" } //blood bank registration status setup
         const userStaticInfo = { is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus }
         userInfo.password = md5(password);
         Object.assign(userInfo, userStaticInfo); 
@@ -116,7 +118,8 @@ exports.superUserRegister = (async (req, res) => {
 exports.userAuthentication = (async (req, res) => {
     try {
         const { username, password } = req.body;
-        const users = await service.findUser({ username: username })
+        const users = await service.findOneUser({ username: username })
+        console.log(users)
         if (users == null) { return res.status(403).json({ status: 403, data: users, message: RESPONSE.USERNAME_NOT_VALID }); }
         if (users.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
         if (users.password != md5(password)) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.PASSWORD_INCORRECT }); }
