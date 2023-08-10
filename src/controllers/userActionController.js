@@ -22,7 +22,7 @@ const dateTime = require("../utils/dateandtime")
 exports.userRequestAction = async (req, res) => {
     try {
         const { username } = req.body;
-        const bloodBankDetails = await service.findUser({ username: username });
+        const bloodBankDetails = await service.findOneUser({ username: username });
         if (bloodBankDetails == null) {
             return res.json({
                 msg: RESPONSE.USERNAME_NOT_VALID
@@ -136,7 +136,7 @@ exports.userRequestAcception = async (req, res) => {
     try {
         const bankId = req.data.id;
         const {requestId}=req.body;
-        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
+        const findRequest = await userActionServices.requestOneFind({id: requestId,usersBloodBankId:bankId});
         if (req.body.status != "Accept") {
             if (findRequest.status != null) {
                 if (findRequest.rejected_by == null) {
@@ -200,7 +200,7 @@ exports.userCancelRequest = async (req, res) => {
     try {
         const userId = req.data.id;
         const {requestId} = req.body
-        const findRequest = await userActionServices.requestFind({ id: requestId, UserId:userId});
+        const findRequest = await userActionServices.requestOneFind({ id: requestId, UserId:userId});
         if (findRequest.status == null) {
             const data = { status: "Reject", rejected_by: "user" };
             const [requestAcception, paymentUpdate] = await Promise.all([
@@ -283,9 +283,9 @@ exports.userPaymentCompleteion = async (req, res) => {
         }
         const [dataUpdation, findUser, findRequest, findBloodBank] = await Promise.all([
             userPayments.updatePaymentData(data, requestId),
-            service.findUser({ id: userId}),
-            userActionServices.requestFind({id: requestId, UserId:userId}),
-            service.findUser({ id: findRequest.usersBloodBankId })
+            service.findOneUser({ id: userId}),
+            userActionServices.requestOneFind({id: requestId, UserId:userId}),
+            service.findOneUser({ id: findRequest.usersBloodBankId })
         ])
         const receipt = {
             name: findUser.name,
@@ -317,8 +317,8 @@ exports.donationRequest = async (req, res) => {
         const { blood_bank_username } = req.body
         const userId = req.data.id;
         const [findUser, bloodBankDetails] = await Promise.all([
-            service.findUser({ id: userId }),
-            service.findUser({ username: blood_bank_username })
+            service.findOneUser({ id: userId }),
+            service.findOneUser({ username: blood_bank_username })
         ])
         if (bloodBankDetails.role != "blood_bank") {
             return res.json({
@@ -364,7 +364,7 @@ exports.donationAcception = async (req, res) => {
     try {
         const bankId = req.data.id;
         const {requestId} = req.body;
-        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
+        const findRequest = await userActionServices.requestOneFind({id: requestId,usersBloodBankId:bankId});
         if (req.body.requestId != findRequest.id) {
             return res.json({
                 msg: RESPONSE.NOT_VALID_REQUEST
@@ -410,7 +410,7 @@ exports.donationConfirmation = async (req, res) => {
     try {
         const { requestId } = req.body;
         const bankId = req.data.id;
-        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
+        const findRequest = await userActionServices.requestOneFind({id: requestId,usersBloodBankId:bankId});
         if (findRequest.action != "Donation") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         if (findRequest.status != "Accepted") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         if (findRequest.donation != null) { return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND }); }
@@ -447,7 +447,7 @@ exports.donationCancel = async (req, res) => {
     try {
         const userId = req.data.id;
         const { requestId } = req.body;
-        const requestData = await userActionServices.requestFind({id: requestId, UserId:userId});
+        const requestData = await userActionServices.requestOneFind({id: requestId, UserId:userId});
         if (requestData.donation == "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
         if (requestData.rejected_by != null) { return res.json({ msg: RESPONSE.REQUEST_REJECTED }) }
         const data = {

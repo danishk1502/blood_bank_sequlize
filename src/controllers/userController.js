@@ -89,8 +89,8 @@ exports.superUserRegister = (async (req, res) => {
         const { error } = userRegistrationSchema.validate(userInfo); //joi Validations 
         if (error) { return res.json({ msg: error.details[0].message }); }
         const [userName, userEmail] = await Promise.all([
-            service.findUser({ username: username }),
-            service.findUser({ email: email }),
+            service.findOneUser({ username: username }),
+            service.findOneUser({ email: email }),
         ]);
         if (userName != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST }); }
         if (userEmail != null) { return res.status(403).json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST }); }
@@ -142,7 +142,7 @@ exports.userAuthentication = (async (req, res) => {
 exports.userDeletion = (async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await service.findUser(username);
+        const user = await service.findOneUser({username : username});
         if (user == null) { return res.status(403).json({ status: 403, data: user, message: RESPONSE.USERNAME_NOT_VALID }); }
         if (req.data.id != user.id) { return res.status(403).json({ status: 403, message: RESPONSE.PERMISSSION_DENIED }); } //Checking who delete the account
         if (user.user_status != "Active") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.NOT_PERMISION_TO_LOGIN }) }
@@ -166,7 +166,7 @@ exports.userDeletion = (async (req, res) => {
 exports.superuserDeletion = (async (req, res) => {
     try {
         const { username } = req.body;
-        const findUser = await service.findUser({ id: req.data.id });
+        const findUser = await service.findOneUser({ id: req.data.id });
         if (findUser.role != "superuser") { return res.status(202).json({ status: 202, data: null, message: RESPONSE.PERMISSSION_DENIED }) }//Cchecking who deleted functions
         const userDelete = await service.userDeletion(username);
         return res.status(202).json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
@@ -223,7 +223,7 @@ exports.userUpdation = (async (req, res) => {
 
 exports.userUniqueGet = (async (req, res) => {
     try {
-        const userUnique = await service.findUser({ id: req.data.id })
+        const userUnique = await service.findOneUser({ id: req.data.id })
         return res.status(200).json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
     }
     catch (e) {
@@ -264,7 +264,7 @@ exports.userRoleFilter = (async (req, res) => {
             return res.status(403).json({ status: 403, data: null, message: RESPONSE.PERMISSSION_DENIED });
         }
         const dataRole = await service.findUser({role : req.body.role, user_status:"Active" });
-        const dataRoleCondition = dataRole != null ? res.status(200).json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET }) : res.status(404).json({ status: 404, data: dataRole, message: RESPONSE.DATA_NOT_FOUND })
+        const dataRoleCondition = dataRole[0] != null ? res.status(200).json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET }) : res.status(404).json({ status: 404, data: dataRole, message: RESPONSE.DATA_NOT_FOUND })
         return dataRoleCondition;
     }
     catch (e) {
@@ -330,7 +330,7 @@ exports.requestDecline = async (req, res) => {
 exports.requestAcception = async (req, res) => {
     try {
         if (req.body.request != "Accept") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
-        const user = await service.findUser({ id: req.body.id })
+        const user = await service.findOneUser({ id: req.body.id })
         if (user == null) { return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND }); }
         if (user.role != "blood_bank") { return res.json({ MSG: RESPONSE.DATA_GET }); }
         const updateData = { user_status: "Active", updated_by: req.data.username };

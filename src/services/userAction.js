@@ -19,6 +19,23 @@ const requestFind  = async (attribute) => {
     }
 }
 
+/*****************************************************
+* User Request Find*
+* @description * Services for user Request find one
+* ****************************************************/
+
+const requestOneFind  = async (attribute) => {
+    try {
+        const userRequest = await userModel.userAction.findOne({
+            where: attribute
+        })
+        return userRequest;
+    } catch (e) {
+        console.log("error occur" + e);
+    }
+}
+
+
 
 
 /*****************************************************
@@ -41,5 +58,5 @@ const userRequestAction = async (requestData) => {
 
 
 
-module.exports = {userRequestAction, requestFind}
+module.exports = {userRequestAction, requestFind, requestOneFind}
 

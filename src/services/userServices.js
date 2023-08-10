@@ -25,6 +25,7 @@ const findUser = async (attribute) => {
 /***********************************************************************************
  * @description Common function for validations FOR SINGLE USER
  * *********************************************************************************/
+
 const findOneUser = async (attribute) => {
     try {
         const users = await  sequelizeModel.findOne({
@@ -42,8 +43,6 @@ const findOneUser = async (attribute) => {
 /***********************************************************************************
  * @description User, Blood-bank and Superuser CRUD functions 
  * *********************************************************************************/
-
-
 
 /*******************************************************************
  * userRegistrationData
