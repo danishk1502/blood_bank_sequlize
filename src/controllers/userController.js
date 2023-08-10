@@ -5,6 +5,7 @@ const RESPONSE = require("../utils/responsesutil/responseutils");
 const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const userActionRoutes = require("../services/userAction");
 const Joi = require("joi");
+const ENUM = require("../utils/responsesutil/enumUtils");
 
 /*************************************************************************************************************************************
  * userRegister Schema for Joi Validations
@@ -61,7 +62,6 @@ exports.userRegister = async (req, res) => {
       return res.json({ msg: error.details[0].message });
     }
     const [userName, userEmail] = await Promise.all([
-      //Promise for parallel awaits
       service.findOneUser({ username: username }),
       service.findOneUser({ email: email }),
     ]);
@@ -75,13 +75,13 @@ exports.userRegister = async (req, res) => {
         .status(403)
         .json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
     }
-    let userStatus = "Active";
-    if (role == "superuser") {
+    let userStatus = ENUM.USERSTATUS.ACTIVE;
+    if (role == ENUM.USER_ROLE.SUPERUSER) {
       return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
-    } //Check for superuser registration
-    if (role == "blood_bank") {
-      userStatus = "Deactivate";
-    } //blood bank registration status setup
+    }
+    if (role == ENUM.USER_ROLE.BLOOD_BANK) {
+      userStatus = ENUM.USERSTATUS.DEACTIVE;
+    } 
     const userStaticInfo = {
       is_deleted: "false",
       created_by: username,
@@ -144,14 +144,14 @@ exports.superUserRegister = async (req, res) => {
         .status(403)
         .json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
     }
-    let userStatus = "Active";
+    let userStatus = ENUM.USERSTATUS.ACTIVE;
     const userStaticInfo = {
       is_deleted: "false",
       created_by: username,
       updated_by: username,
       is_active: "true",
       user_status: userStatus,
-    }; //object for static Information
+    }; 
     Object.assign(userInfo, userStaticInfo);
     const saveData = await service.userRegistrationData(userInfo);
     return res
@@ -189,7 +189,7 @@ exports.userAuthentication = async (req, res) => {
           message: RESPONSE.USERNAME_NOT_VALID,
         });
     }
-    if (users.user_status != "Active") {
+    if (users.user_status != ENUM.USERSTATUS.ACTIVE) {
       return res
         .status(202)
         .json({
@@ -247,8 +247,8 @@ exports.userDeletion = async (req, res) => {
       return res
         .status(403)
         .json({ status: 403, message: RESPONSE.PERMISSSION_DENIED });
-    } //Checking who delete the account
-    if (user.user_status != "Active") {
+    }
+    if (user.user_status != ENUM.USERSTATUS.ACTIVE) {
       return res
         .status(202)
         .json({
@@ -287,7 +287,8 @@ exports.superuserDeletion = async (req, res) => {
   try {
     const { username } = req.body;
     const findUser = await service.findOneUser({ id: req.data.id });
-    if (findUser.role != "superuser") {
+    if (findUser.role != ENUM.USER_ROLE.SUPERUSER)
+     {
       return res
         .status(202)
         .json({
@@ -406,7 +407,7 @@ exports.userGet = async (req, res) => {
 exports.userRoleFilter = async (req, res) => {
   try {
     const { role } = req.body;
-    if (role != "blood_bank") {
+    if (role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res
         .status(403)
         .json({
@@ -417,7 +418,7 @@ exports.userRoleFilter = async (req, res) => {
     }
     const dataRole = await service.findUser({
       role: req.body.role,
-      user_status: "Active",
+      user_status: ENUM.USERSTATUS.ACTIVE,
     });
     const dataRoleCondition =
       dataRole[0] != null
@@ -453,8 +454,8 @@ exports.userRoleFilter = async (req, res) => {
 exports.pendingRequest = async (req, res) => {
   try {
     const bloodBankList = await service.findUser({
-      role: "blood_bank",
-      user_status: "Deactivate",
+      role: ENUM.USER_ROLE.BLOOD_BANK,
+      user_status: ENUM.USERSTATUS.ACTIVE,
     });
     res.json({
       msg: RESPONSE.DATA_GET,
@@ -481,7 +482,7 @@ exports.requestDecline = async (req, res) => {
     if (user == null) {
       res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND });
     }
-    if (user.role != "blood_bank") {
+    if (user.role != ENUM.USER_ROLE.BLOOD_BANK) {
       res.json({ MSG: RESPONSE.PEE });
     }
     const userDelete = await service.userDeletion(user.username);
@@ -507,10 +508,10 @@ exports.requestAcception = async (req, res) => {
     if (user == null) {
       return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND });
     }
-    if (user.role != "blood_bank") {
+    if (user.role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res.json({ MSG: RESPONSE.DATA_GET });
     }
-    const updateData = { user_status: "Active", updated_by: req.data.username };
+    const updateData = { user_status: ENUM.USERSTATUS.ACTIVE, updated_by: req.data.username };
     const updationData = await service.userUpdation(updateData, req.body.id);
     return res.json({ msg: RESPONSE.DATA_GET, data: updationData });
   } catch (e) {
@@ -545,7 +546,7 @@ exports.userPendingRequests = async (req, res) => {
     const userId = req.data.id;
     const findData = await userActionRoutes.requestFind({
       UserId: userId,
-      action: "Request",
+      action: ENUM.USERREQUESTTYPE.REQUEST,
       status: null,
     });
     return res.send(findData);
@@ -565,8 +566,8 @@ exports.userAcceptedRequests = async (req, res) => {
     const userId = req.data.id;
     const findData = await userActionRoutes.requestFind({
       UserId: userId,
-      action: "Request",
-      status: "Accepted",
+      action: ENUM.USERREQUESTTYPE.REQUEST,
+      status: ENUM.REQUESTSTATUS.ACCEPT,
     });
     return res.send(findData);
   } catch (e) {

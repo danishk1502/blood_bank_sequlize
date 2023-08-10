@@ -6,6 +6,7 @@ const bloodInventory = require("../services/bloodInventoryServices");
 const userActionServices = require("../services/userAction");
 const userPayments = require("../services/paymentServices");
 const dateTime = require("../utils/dateandtime");
+const ENUM = require("../utils/responsesutil/enumUtils");
 
 /*****************************************************************************************************************************************************************
 *******************************************************************User Action for Blood Request******************************************************************
@@ -18,8 +19,9 @@ const dateTime = require("../utils/dateandtime");
 
 exports.userRequestAction = async (req, res) => {
   try {
-    const { username } = req.body;
+    const username  = req.body.blood_bank_username;
     const bloodBankDetails = await service.findOneUser({ username: username });
+    console.log(bloodBankDetails);
     if (bloodBankDetails == null) {
       return res.json({
         msg: RESPONSE.USERNAME_NOT_VALID,
@@ -38,7 +40,7 @@ exports.userRequestAction = async (req, res) => {
         msg: RESPONSE.BLOOD_NOT_AVAILABLE,
       });
     }
-    if (bloodBankDetails.role != "blood_bank") {
+    if (bloodBankDetails.role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res.json({
         msg: RESPONSE.INVALID_BANK,
       });
@@ -66,7 +68,7 @@ exports.userRequestAction = async (req, res) => {
     }
     req.body.UserId = req.data.id;
     req.body.usersBloodBankId = bloodBankDetails.id;
-    req.body.action = "request";
+    req.body.action = ENUM.USERREQUESTTYPE.REQUEST;
     req.body.created_by = req.data.username;
     req.body.updated_by = req.data.username;
     const usersAction = await userActionServices.userRequestAction(req.body);
@@ -92,7 +94,7 @@ exports.userRequestList = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.requestFind({
       usersBloodBankId: bankId,
-      action: "Request",
+      action:ENUM.USERREQUESTTYPE.REQUEST,
       status: null,
     });
     const requestCheck =
@@ -117,7 +119,7 @@ exports.userDonationList = async (req, res) => {
     const bankId = req.data.id;
     const findRequest = await userActionServices.requestFind({
       usersBloodBankId: bankId,
-      action: "Donation",
+      action: ENUM.USERREQUESTTYPE.DONATION,
       status: null,
     });
     const requestCheck =
@@ -149,7 +151,7 @@ exports.userRequestAcception = async (req, res) => {
       if (findRequest.status != null) {
         if (findRequest.rejected_by == null) {
           return res.json({ msg: RESPONSE.PREACCEPTED_REQUEST });
-        } else if (findRequest.rejected_by == "user") {
+        } else if (findRequest.rejected_by == ENUM.USER_ROLE.USER) {
           return res.json({ msg: RESPONSE.USER_CANCEL_REQUEST });
         } else {
           return res.json({ msg: RESPONSE.USER_CANCEL_REQUEST });
@@ -158,11 +160,11 @@ exports.userRequestAcception = async (req, res) => {
       if (findRequest == null) {
         return res.json({ msg: RESPONSE.ALREADY_REJECTED_BY_BLOOD_BANK });
       }
-      const dataUpdate = { status: "Reject", rejected_by: "blood_bank" };
+      const dataUpdate = { status: ENUM.REQUESTSTATUS.DECLINE, rejected_by: ENUM.USER_ROLE.BLOOD_BANK };
       const requestAcception = await Promise.all([
         bloodBankService.usersRequestAcception(findRequest.id, dataUpdate),
         userPayments.updatePaymentData(
-          { payment: "Incomplete" },
+          { payment: ENUM.DONATION_TYPE.INCOMPLETE },
           findRequest.id
         ),
       ]);
@@ -174,7 +176,7 @@ exports.userRequestAcception = async (req, res) => {
     if (findRequest.status != null) {
       return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND });
     }
-    if (findRequest.action != "Request") {
+    if (findRequest.action != ENUM.USERREQUESTTYPE.REQUEST) {
       return res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
     const priceDetails = await bloodBankService.bloodPriceInventoryById(bankId);
@@ -200,7 +202,7 @@ exports.userRequestAcception = async (req, res) => {
       findRequest.id
     );
 
-    const dataUpdate = { status: "Accepted" };
+    const dataUpdate = { status: ENUM.REQUESTSTATUS.ACCEPT };
     const requestAcception = await bloodBankService.usersRequestAcception(
       findRequest.id,
       dataUpdate
@@ -227,11 +229,11 @@ exports.userCancelRequest = async (req, res) => {
       UserId: userId,
     });
     if (findRequest.status == null) {
-      const data = { status: "Reject", rejected_by: "user" };
+      const data = { status: ENUM.REQUESTSTATUS.DECLINE, rejected_by: ENUM.USER_ROLE.USER};
       const [requestAcception, paymentUpdate] = await Promise.all([
         bloodBankService.usersRequestAcception(findRequest.id, data),
         userPayments.updatePaymentData(
-          { payment: "Incomplete" },
+          { payment: ENUM.DONATION_TYPE.INCOMPLETE },
           findRequest.id
         ),
       ]);
@@ -239,7 +241,7 @@ exports.userCancelRequest = async (req, res) => {
         msg: "Request is rejected",
         data: requestAcception,
       });
-    } else if (findRequest.status == "Accepted") {
+    } else if (findRequest.status == ENUM.REQUESTSTATUS.ACCEPT ) {
       const actionId = findRequest.id;
       const checkPayment = await userPayments.findPayment({
         userActionId: actionId,
@@ -259,13 +261,13 @@ exports.userCancelRequest = async (req, res) => {
         findRequest.usersBloodBankId,
         { [findRequest.blood_group]: blood_units }
       );
-      const data = { status: "Reject", rejected_by: "user" };
+      const data = { status: ENUM.REQUESTSTATUS.DECLINE, rejected_by: ENUM.USER_ROLE.USER};
       const requestAcception = await bloodBankService.usersRequestAcception(
         findRequest.id,
         data
       );
       const paymentUpdate = await userPayments.updatePaymentData(
-        { payment: "Incomplete" },
+        { payment: ENUM.DONATION_TYPE.INCOMPLETE },
         findRequest.id
       );
       return res.json({
@@ -273,8 +275,8 @@ exports.userCancelRequest = async (req, res) => {
         data: requestAcception,
       });
     } else if (
-      findRequest.status == "Reject" &&
-      findRequest.rejected_by == "blood_bank"
+      findRequest.status == ENUM.REQUESTSTATUS.DECLINE &&
+      findRequest.rejected_by == ENUM.USER_ROLE.BLOOD_BANK
     ) {
       return res.json({
         msg: RESPONSE.ALREADY_REJECTED_BY_BLOOD_BANK,
@@ -374,7 +376,7 @@ exports.donationRequest = async (req, res) => {
       service.findOneUser({ id: userId }),
       service.findOneUser({ username: blood_bank_username }),
     ]);
-    if (bloodBankDetails.role != "blood_bank") {
+    if (bloodBankDetails.role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res.json({
         msg: RESPONSE.WRONG_BLOOD_BANK,
       });
@@ -394,7 +396,7 @@ exports.donationRequest = async (req, res) => {
       });
     }
     const data = {
-      action: "Donation",
+      action:ENUM.USERREQUESTTYPE.DONATION,
       blood_group: req.body.blood_group,
       UserId: req.data.id,
       usersBloodBankId: bloodBankDetails.id,
@@ -432,9 +434,9 @@ exports.donationAcception = async (req, res) => {
       if (dateTime.activeDate >= req.body.date_schedule) {
         return res.json({ msg: RESPONSE.DATE_SCHEDULE });
       }
-      if (req.body.request == "Accepted") {
+      if (req.body.request == ENUM.REQUESTSTATUS.ACCEPT ) {
         const data = {
-          status: "Accepted",
+          status: ENUM.REQUESTSTATUS.ACCEPT ,
           date: req.body.date_schedule,
         };
         const donationAcception = await bloodBankService.usersRequestAcception(
@@ -444,8 +446,8 @@ exports.donationAcception = async (req, res) => {
         return res.json({ data: donationAcception });
       }
       const data = {
-        status: "Reject",
-        rejected_by: "blood_bank",
+        status: ENUM.REQUESTSTATUS.DECLINE,
+        rejected_by: ENUM.USER_ROLE.BLOOD_BANK,
         date: new Date(),
       };
       const donationAcception = await bloodBankService.usersRequestAcception(
@@ -455,7 +457,7 @@ exports.donationAcception = async (req, res) => {
       return res.json({ data: donationAcception });
     } else {
       const rejectionCheck =
-        findRequest.rejected_by == "user"
+        findRequest.rejected_by == ENUM.USER_ROLE.USER
           ? res.json({ msg: RESPONSE.USER_REJECTED_REQUEST })
           : res.json({ msg: RESPONSE.REJECTED_BY_BLOOD_BANK });
       return rejectionCheck;
@@ -480,17 +482,17 @@ exports.donationConfirmation = async (req, res) => {
       id: requestId,
       usersBloodBankId: bankId,
     });
-    if (findRequest.action != "Donation") {
+    if (findRequest.action != ENUM.USERREQUESTTYPE.DONATION) {
       return res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
-    if (findRequest.status != "Accepted") {
+    if (findRequest.status != ENUM.REQUESTSTATUS.ACCEPT ) {
       return res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
     if (findRequest.donation != null) {
       return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND });
     }
     const donationData = {
-      donation: "Done",
+      donation: ENUM.DONATION_TYPE.DONE,
     };
     const bloodInventoryFind = await bloodBankService.bloodInventoryById(
       bankId
@@ -532,15 +534,15 @@ exports.donationCancel = async (req, res) => {
       id: requestId,
       UserId: userId,
     });
-    if (requestData.donation == "Done") {
+    if (requestData.donation == ENUM.DONATION_TYPE.DONE) {
       return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
     }
     if (requestData.rejected_by != null) {
       return res.json({ msg: RESPONSE.REQUEST_REJECTED });
     }
     const data = {
-      rejected_by: "user",
-      donation: "Incomplete",
+      rejected_by: ENUM.USER_ROLE.USER,
+      donation: ENUM.DONATION_TYPE.INCOMPLETE,
     };
     const donationAcception = await bloodBankService.usersRequestAcception(
       requestId,

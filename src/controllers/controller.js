@@ -1,11 +1,11 @@
 const userController = require("./userController");
 const bloodBankController = require("./bloodBankController");
 const userAction = require("./userActionController");
-// const { use } = require('../routes/router');
+
 
 /*******************************************************************************************************************************************
- ************************************************** User Controllers from userController.js *************************************************
- ********************************************************************************************************************************************/
+*************************************************** User Controllers from userController.js ************************************************
+********************************************************************************************************************************************/
 
 /*******************************************************************
  * Baasic user controllers
@@ -18,7 +18,7 @@ exports.userGet = userController.userGet;
 exports.userUpdation = userController.userUpdation;
 
 /*******************************************************************
- * Baasic Data controllers
+ * Basic Data controllers
  *******************************************************************/
 
 exports.userRoleFilter = userController.userRoleFilter;
@@ -71,11 +71,8 @@ exports.donationRequest = userAction.donationRequest;
  *******************************************************************/
 
 exports.donationAccept = userAction.donationAcception;
-
 exports.donationConfirmation = userAction.donationConfirmation;
-
 exports.donationReject = userAction.donationCancel;
-
 exports.bloodBankUpdateDetails = bloodBankController.bloodBankUpdateDetails;
 
 //user Request Data
@@ -83,5 +80,4 @@ exports.bloodBankUpdateDetails = bloodBankController.bloodBankUpdateDetails;
 exports.userAllRequests = userController.userAllRequests;
 exports.userPendingRequests = userController.userPendingRequests;
 exports.userAcceptedRequests = userController.userAcceptedRequests;
-
 exports.logout = userController.logout;

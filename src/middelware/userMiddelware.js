@@ -22,7 +22,7 @@ const jwtVerification = async (req, res, next) => {
     return res.json({
       message: "Invalid Token here",
     });
-  } else {
+  } 
     const verifiedToken = await jwtValidation.verifyToken(userToken);
     if (
       verifiedToken instanceof jwt.JsonWebTokenError ||
@@ -34,9 +34,9 @@ const jwtVerification = async (req, res, next) => {
     } else {
       req.data = verifiedToken;
       next();
-    }
   }
 };
+
 
 //Role base Middelware for user
 
@@ -56,6 +56,7 @@ const userRoleMiddelware = async (req, res, next) => {
   }
   next();
 };
+
 
 //Role base Middelware for blood_bank
 const bloodBankRoleMiddelware = async (req, res, next) => {

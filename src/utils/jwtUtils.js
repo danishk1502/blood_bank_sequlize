@@ -38,7 +38,8 @@ exports.verifyToken = (userToken) => {
 
 exports.userRoleMiddelwareUtil = async (token) => {
   try {
-    const findUser = await services.findOneUser({ id: token.id });
+    // console.log(token);
+    const findUser = await services.findOneUser({ id: token});
     return findUser;
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {

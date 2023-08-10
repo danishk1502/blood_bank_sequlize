@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 "use strict";
 const { Model, AccessDeniedError } = require("sequelize");
 const { all } = require("../routes/router");
@@ -16,9 +17,10 @@ module.exports = (sequelize, DataTypes) => {
   bloodBankPriceInventory.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4
       },
       a_positive_blood_unit: {
         type: DataTypes.INTEGER,

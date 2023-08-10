@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -15,9 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   bloodInventory.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4
       },
       a_positive_blood_unit: {
         type: DataTypes.INTEGER,

@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -22,9 +23,10 @@ module.exports = (sequelize, DataTypes) => {
   paymentDataModel.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4
       },
       total_amount: {
         type: DataTypes.INTEGER,

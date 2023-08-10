@@ -1,4 +1,5 @@
-"use strict";
+const uuid = require("uuid");
+("use strict");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class bloodBankDetails extends Model {
@@ -15,9 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   bloodBankDetails.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4
       },
       numberOfSales: {
         type: DataTypes.INTEGER,

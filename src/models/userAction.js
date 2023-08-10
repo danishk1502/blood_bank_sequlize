@@ -1,5 +1,5 @@
-// const user =require("./users");
 
+const uuid = require("uuid");
 "use strict";
 const { Model } = require("sequelize");
 // const { all } = require('../routes/router');
@@ -20,9 +20,10 @@ module.exports = (sequelize, DataTypes) => {
   userAction.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        allowNull: false,
         primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4
       },
       action: {
         type: DataTypes.ENUM("Request", "Donation"),

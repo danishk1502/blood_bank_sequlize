@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4'); 
+
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -5,9 +7,8 @@ module.exports = {
     await queryInterface.createTable('paymentDataModels', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
       },
       updated_by: {
         type: Sequelize.STRING

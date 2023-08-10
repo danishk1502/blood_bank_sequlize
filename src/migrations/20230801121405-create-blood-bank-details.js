@@ -1,34 +1,35 @@
-'use strict';
+const uuid = require('uuid/v4'); 
+
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('bloodBankDetails', {
+    await queryInterface.createTable("bloodBankDetails", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
       },
       updated_by: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       blood_group: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       create_by: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('bloodBankDetails');
-  }
+    await queryInterface.dropTable("bloodBankDetails");
+  },
 };

@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4'); 
+
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -5,9 +7,8 @@ module.exports = {
     await queryInterface.createTable('blood_banks_price_inventories', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
       },
       create_by: {
         type: Sequelize.STRING
