@@ -6,7 +6,7 @@ const userModel = require('../models/index');
 payment Data Creation
 ********************************************/
 
-exports.createPaymentData = async(data)=>{
+const createPaymentData = async(data)=>{
     try {
         const paymentDetails = await userModel.userPayments.create(
             data
@@ -23,7 +23,7 @@ exports.createPaymentData = async(data)=>{
 update payment Data Creation (while request accept)
 ****************************************************/
 
-exports.updatePaymentData = async(data, requestId)=>{
+const updatePaymentData = async(data, requestId)=>{
     try {
         const paymentDetailsUpdate = await userModel.userPayments.update(
             data,
@@ -41,20 +41,19 @@ exports.updatePaymentData = async(data, requestId)=>{
 }
 
 
+
+
 /**********************************************
- * @param {*} userId 
+ * @param {*} attribute
  * @returns showing data about payment to user
  ***********************************************/
 
-exports.findPaymentData = async(userId)=>{
+
+const findPayment = async(attribute)=>{
     try {
         const paymentDetails = await userModel.userPayments.findAll(
             {
-                where:{
-                    UserId : userId,
-                    payment : "Pending"
-
-                }
+                where:attribute
             }
         )
         return paymentDetails;
@@ -64,24 +63,4 @@ exports.findPaymentData = async(userId)=>{
 
 }
 
-
-/**********************************************
- * @param {*} by id 
- * @returns showing data about payment to user
- ***********************************************/
-
-exports.findPaymentOneData = async(actionId)=>{
-    try {
-        const paymentDetails = await userModel.userPayments.findOne(
-            {
-                where:{
-                    userActionId : actionId
-                }
-            }
-        )
-        return paymentDetails;
-    } catch (e) {
-        console.log("error occur" + e);
-    }
-
-}
+module.exports = {findPayment, updatePaymentData, createPaymentData}

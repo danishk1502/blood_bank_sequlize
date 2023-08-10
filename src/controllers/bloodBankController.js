@@ -84,17 +84,10 @@ exports.bloodBankInventory = async (req, res) => {
         })
 
         if (dataFilter.length != 0) {
-            return res.json({
-                msg: RESPONSE.NEGATIVE_VALUES
-            });
-
+            return res.json({msg: RESPONSE.NEGATIVE_VALUES});
         }
         const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
-
-        return res.json({
-            msg: RESPONSE.CREATED_SUCCESS,
-            data: createInventory
-        });
+        return res.json({msg: RESPONSE.CREATED_SUCCESS,data: createInventory});
     }
     catch (e) {
         return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });

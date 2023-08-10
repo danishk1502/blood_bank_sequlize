@@ -346,7 +346,8 @@ exports.requestAcception = async (req, res) => {
 
 exports.userAllRequests = async (req, res) => {
     try {
-        const findData = await userActionRoutes.userRequestUser(req.data.id);
+        const userId = req.data.id;
+        const findData = await userActionRoutes.requestFind({UserId:userId});
         return res.json({ data: findData });
     }
     catch (e) {
@@ -362,7 +363,8 @@ exports.userAllRequests = async (req, res) => {
 
 exports.userPendingRequests = async (req, res) => {
     try {
-        const findData = await userActionRoutes.userRequestsForBlood(req.data.id);
+        const userId = req.data.id;
+        const findData = await userActionRoutes.requestFind({ UserId: userId, action: "Request", status: null}); 
         return res.send(findData);
     }
     catch (e) {
@@ -378,7 +380,8 @@ exports.userPendingRequests = async (req, res) => {
 
 exports.userAcceptedRequests = async (req, res) => {
     try {
-        const findData = await userActionRoutes.userRequestsAccepted(req.data.id);
+        const userId = req.data.id ;
+        const findData = await userActionRoutes.requestFind({UserId: userId, action: "Request", status: "Accepted"});
         return res.send(findData);
     }
     catch (e) {

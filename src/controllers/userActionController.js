@@ -92,7 +92,8 @@ exports.userRequestAction = async (req, res) => {
 
 exports.userRequestList = async (req, res) => {
     try {
-        const findRequest = await userActionServices.userRequestData(req.data.id);
+        const bankId = req.data.id;
+        const findRequest = await userActionServices.requestFind({ usersBloodBankId : bankId, action : "Request", status : null});
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
     }
@@ -112,7 +113,8 @@ exports.userRequestList = async (req, res) => {
 
 exports.userDonationList = async (req, res) => {
     try {
-        const findRequest = await userActionServices.userDonationData(req.data.id);
+        const bankId = req.data.id;
+        const findRequest = await userActionServices.requestFind({usersBloodBankId: bankId, action: "Donation", status: null});
         const requestCheck = findRequest == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: findRequest });
         return requestCheck
     }
@@ -133,7 +135,8 @@ exports.userDonationList = async (req, res) => {
 exports.userRequestAcception = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
+        const {requestId}=req.body;
+        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
         if (req.body.status != "Accept") {
             if (findRequest.status != null) {
                 if (findRequest.rejected_by == null) {
@@ -196,7 +199,8 @@ exports.userRequestAcception = async (req, res) => {
 exports.userCancelRequest = async (req, res) => {
     try {
         const userId = req.data.id;
-        const findRequest = await userActionServices.userRequestFindByUser(req.body.requestId, userId);
+        const {requestId} = req.body
+        const findRequest = await userActionServices.requestFind({ id: requestId, UserId:userId});
         if (findRequest.status == null) {
             const data = { status: "Reject", rejected_by: "user" };
             const [requestAcception, paymentUpdate] = await Promise.all([
@@ -209,7 +213,8 @@ exports.userCancelRequest = async (req, res) => {
             })
         }
         else if (findRequest.status == "Accepted") {
-            const checkPayment = await userPayments.findPaymentOneData(findRequest.id);
+            const actionId = findRequest.id;
+            const checkPayment = await userPayments.findPayment({userActionId : actionId});
             if (checkPayment.payment == "Complete") {
                 return res.json(
                     {
@@ -231,7 +236,7 @@ exports.userCancelRequest = async (req, res) => {
             });
         }
         else {
-            return res.json({ msg: "fghjk" });
+            return res.json({ msg: "" });
         }
     }
     catch (e) {
@@ -246,7 +251,8 @@ exports.userCancelRequest = async (req, res) => {
 
 exports.userPaymentDetails = async (req, res) => {
     try {
-        const pendingPaymentData = await userPayments.findPaymentData(req.data.id);
+        const userId = req.data.id;
+        const pendingPaymentData = await userPayments.findPayment({UserId : userId, payment : "Pending"}); 
         const pendingCondition = pendingPaymentData == null ? res.json({ msg: RESPONSE.DATA_NOT_FOUND }) : res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET })
         return pendingCondition;
     }
@@ -265,8 +271,9 @@ exports.userPaymentDetails = async (req, res) => {
 
 exports.userPaymentCompleteion = async (req, res) => {
     try {
+        const userId = req.data.id 
         const { requestId, transaction_id } = req.body;
-        const paymentFind = await userPayments.findPaymentOneData(requestId);
+        const paymentFind = await userPayments.findPayment({userActionId : requestId});
         if (paymentFind.payment != "Pending") { return res.send("Request is rejected or may be amount paid.....") }
         if (req.body.paid_amount !== paymentFind.total_amount) { return res.send("Please Pay complete amount"); }
         const data = {
@@ -276,8 +283,8 @@ exports.userPaymentCompleteion = async (req, res) => {
         }
         const [dataUpdation, findUser, findRequest, findBloodBank] = await Promise.all([
             userPayments.updatePaymentData(data, requestId),
-            service.findUser({ id: req.data.id }),
-            userActionServices.userRequestFindByUser(requestId, req.data.id),
+            service.findUser({ id: userId}),
+            userActionServices.requestFind({id: requestId, UserId:userId}),
             service.findUser({ id: findRequest.usersBloodBankId })
         ])
         const receipt = {
@@ -329,7 +336,6 @@ exports.donationRequest = async (req, res) => {
                 msg: RESPONSE.NOT_ABLE_TO_DONATE
             })
         }
-
         const data = {
             action: "Donation",
             blood_group: req.body.blood_group,
@@ -357,7 +363,8 @@ exports.donationRequest = async (req, res) => {
 exports.donationAcception = async (req, res) => {
     try {
         const bankId = req.data.id;
-        const findRequest = await userActionServices.userRequestFind(req.body.requestId, bankId);
+        const {requestId} = req.body;
+        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
         if (req.body.requestId != findRequest.id) {
             return res.json({
                 msg: RESPONSE.NOT_VALID_REQUEST
@@ -403,7 +410,7 @@ exports.donationConfirmation = async (req, res) => {
     try {
         const { requestId } = req.body;
         const bankId = req.data.id;
-        const findRequest = await userActionServices.userRequestFind(requestId, bankId);
+        const findRequest = await userActionServices.requestFind({id: requestId,usersBloodBankId:bankId});
         if (findRequest.action != "Donation") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         if (findRequest.status != "Accepted") { return res.json({ msg: RESPONSE.NOT_VALID_REQUEST }); }
         if (findRequest.donation != null) { return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND }); }
@@ -440,7 +447,7 @@ exports.donationCancel = async (req, res) => {
     try {
         const userId = req.data.id;
         const { requestId } = req.body;
-        const requestData = await userActionServices.userRequestFindByUser(requestId, userId);
+        const requestData = await userActionServices.requestFind({id: requestId, UserId:userId});
         if (requestData.donation == "Done") { return res.json({ msg: RESPONSE.PERMISSSION_DENIED }); }
         if (requestData.rejected_by != null) { return res.json({ msg: RESPONSE.REQUEST_REJECTED }) }
         const data = {
