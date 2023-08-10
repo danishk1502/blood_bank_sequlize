@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class paymentDataModel extends Model {
     /**
@@ -13,42 +11,44 @@ module.exports = (sequelize, DataTypes) => {
       models.userAction.hasMany(paymentDataModel, {
         // foreignKey: 'UserId'
       });
-      paymentDataModel.belongsTo( models.userAction);
+      paymentDataModel.belongsTo(models.userAction);
 
       models.Users.hasMany(paymentDataModel, {
-        foreignKey: 'UserId'
+        foreignKey: "UserId",
       });
-      paymentDataModel.belongsTo( models.Users);
+      paymentDataModel.belongsTo(models.Users);
     }
   }
-  paymentDataModel.init({
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+  paymentDataModel.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      total_amount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      payment: {
+        type: DataTypes.ENUM("Incomplete", "Complete", "Pending"),
+      },
+      transaction_id: {
+        type: DataTypes.STRING,
+        defaultValue: null,
+      },
+      created_by: {
+        type: DataTypes.STRING,
+      },
+      updated_by: {
+        type: DataTypes.STRING,
+      },
     },
-    total_amount: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    payment: {
-      type: DataTypes.ENUM("Incomplete", "Complete", "Pending")
-    },
-    transaction_id: {
-      type: DataTypes.STRING,
-      defaultValue: null
-    },
-    created_by: {
-      type: DataTypes.STRING,
-
-    },
-    updated_by: {
-      type: DataTypes.STRING,
+    {
+      sequelize,
+      modelName: "paymentDataModel",
+      paranoid: true,
     }
-  }, {
-    sequelize,
-    modelName: 'paymentDataModel',
-    paranoid: true
-  });
+  );
   return paymentDataModel;
 };

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class bloodInventory extends Model {
     /**
@@ -14,55 +12,57 @@ module.exports = (sequelize, DataTypes) => {
       bloodInventory.belongsTo(models.Users);
     }
   }
-  bloodInventory.init({
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+  bloodInventory.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      a_positive_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      b_positive_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      o_positive_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      ab_positive_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      a_negative_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      b_negative_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      o_negative_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      ab_negative_blood_unit: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      created_by: {
+        type: DataTypes.STRING,
+      },
+      updated_by: {
+        type: DataTypes.STRING,
+      },
     },
-    a_positive_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    b_positive_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    o_positive_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    ab_positive_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    a_negative_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    b_negative_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    o_negative_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    ab_negative_blood_unit: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    created_by: {
-      type: DataTypes.STRING,
-
-    },
-    updated_by: {
-      type: DataTypes.STRING,
+    {
+      sequelize,
+      modelName: "bloodInventory",
+      paranoid: true,
     }
-  }, {
-    sequelize,
-    modelName: 'bloodInventory',
-    paranoid: true
-  });
+  );
   return bloodInventory;
 };

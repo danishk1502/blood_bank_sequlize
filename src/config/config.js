@@ -8,7 +8,6 @@ const db ={
     host: process.env.HOST,
     dialect: "mysql",
     logging:false
-
   }
 }
 

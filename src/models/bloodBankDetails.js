@@ -1,9 +1,5 @@
-
-
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class bloodBankDetails extends Model {
     /**
@@ -16,33 +12,35 @@ module.exports = (sequelize, DataTypes) => {
       bloodBankDetails.belongsTo(models.Users);
     }
   }
-  bloodBankDetails.init({
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+  bloodBankDetails.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      numberOfSales: {
+        type: DataTypes.INTEGER,
+      },
+      totalDonation: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      totalBloodUnitAvailable: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      created_by: {
+        type: DataTypes.STRING,
+      },
+      updated_by: {
+        type: DataTypes.STRING,
+      },
     },
-    numberOfSales: {
-      type: DataTypes.INTEGER,
-    },
-    totalDonation: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    totalBloodUnitAvailable: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
-    created_by: {
-      type: DataTypes.STRING,
-
-    },
-    updated_by: {
-      type: DataTypes.STRING,
+    {
+      sequelize,
+      modelName: "bloodBankDetails",
     }
-  }, {
-    sequelize,
-    modelName: 'bloodBankDetails',
-  });
+  );
   return bloodBankDetails;
 };

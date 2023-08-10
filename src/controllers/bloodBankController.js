@@ -1,291 +1,307 @@
 const service = require("../services/userServices");
 const bloodBankService = require("../services/bloodBankServices");
-const bloodInventoryServices = require('../services/bloodInventoryServices');
+const bloodInventoryServices = require("../services/bloodInventoryServices");
 const RESPONSE = require("../utils/responsesutil/responseutils");
 const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
-
-
 
 /********************************************
  * blood Bank Detail Controller
  * Creating blood banks details controller
-*********************************************/
+ *********************************************/
 
 exports.bloodBankDetails = async (req, res) => {
-    try {
-        const authId = req.data.id;
-        req.body.created_by = req.data.username;
-        req.body.updated_by = req.data.username;
-        req.body.UserId = req.data.id;
-        const findUserData = await bloodBankService.bloodDetailById(authId);
-        if (findUserData == null) { //Permission to stop recreation of details
-            const createDetails = await bloodBankService.addBloodBankDetails(req.body);
-            return res.json({
-                msg: RESPONSE.CREATED_SUCCESS,
-                data: createDetails
-            });
-        }
-        return res.json({
-            msg: RESPONSE.REGENERATE_INVENTORY
-        })
+  try {
+    const authId = req.data.id;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    req.body.UserId = req.data.id;
+    const findUserData = await bloodBankService.bloodDetailById(authId);
+    if (findUserData == null) {
+      //Permission to stop recreation of details
+      const createDetails = await bloodBankService.addBloodBankDetails(
+        req.body
+      );
+      return res.json({
+        msg: RESPONSE.CREATED_SUCCESS,
+        data: createDetails,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
-    }
-}
-
+    return res.json({
+      msg: RESPONSE.REGENERATE_INVENTORY,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /********************************************
  * blood Bank update details Controller
  * Creating blood banks update details controller
-*********************************************/
+ *********************************************/
 
 exports.bloodBankUpdateDetails = async (req, res) => {
-    try {
-        const authId = req.data.id;
-        req.body.created_by = req.data.username;
-        req.body.updated_by = req.data.username;
-        req.body.UserId = authId;
-        const createDetails = await bloodBankService.addBloodBankDetails(req.body, authId);
-        return res.json({
-            msg: RESPONSE.CREATED_SUCCESS,
-            data: createDetails
-        });
-
-    }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
-    }
-}
-
+  try {
+    const authId = req.data.id;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    req.body.UserId = authId;
+    const createDetails = await bloodBankService.addBloodBankDetails(
+      req.body,
+      authId
+    );
+    return res.json({
+      msg: RESPONSE.CREATED_SUCCESS,
+      data: createDetails,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /*********************************************
  * blood Inventory Controller
  * Creating blood banks Inventory controller
-***********************************************/
+ ***********************************************/
 
 exports.bloodBankInventory = async (req, res) => {
-    try {
-        const authId = req.data.id;
-        req.body.UserId = authId;
-        req.body.created_by = req.data.username;
-        req.body.updated_by = req.data.username;
-        const findUserData = await bloodBankService.bloodInventoryById(authId);
-        if (findUserData != null) {
-            return res.json({
-                msg: RESPONSE.REGENERATE_INVENTORY
-            });
-        }
-        let updatevalues = Object.values(req.body);
-        const dataFilter = updatevalues.filter((value, index) => {
-            return value < 0;
-        })
-
-        if (dataFilter.length != 0) {
-            return res.json({msg: RESPONSE.NEGATIVE_VALUES});
-        }
-        const createInventory = await bloodBankService.bloodInventoryCreation(req.body);
-        return res.json({msg: RESPONSE.CREATED_SUCCESS,data: createInventory});
+  try {
+    const authId = req.data.id;
+    req.body.UserId = authId;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    const findUserData = await bloodBankService.bloodInventoryById(authId);
+    if (findUserData != null) {
+      return res.json({
+        msg: RESPONSE.REGENERATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+      return value < 0;
+    });
+    if (dataFilter.length != 0) {
+      return res.json({ msg: RESPONSE.NEGATIVE_VALUES });
     }
-}
-
-
+    const createInventory = await bloodBankService.bloodInventoryCreation(
+      req.body
+    );
+    return res.json({ msg: RESPONSE.CREATED_SUCCESS, data: createInventory });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /***********************************************************
  * blood Inventory Controller
- * Creating blood banks Inventory controller to update Data 
-************************************************************/
+ * Creating blood banks Inventory controller to update Data
+ ************************************************************/
 
 exports.bloodBankInventoryUpdate = async (req, res) => {
-    try {
-        const bankId = req.data.id;
-        const findInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (findInventory == null) {
-            return res.JSON({
-                msg: RESPONSE.CREATE_INVENTORY
-            });
-        }
-        const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, req.body)
-        return res.json({
-            msg: RESPONSE.DATA_UPDATED,
-            data: updateData
-        });
+  try {
+    const bankId = req.data.id;
+    const findInventory = await bloodBankService.bloodInventoryById(bankId);
+    if (findInventory == null) {
+      return res.JSON({
+        msg: RESPONSE.CREATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
-    }
-}
-
+    const updateData = await bloodInventoryServices.bloodInventoryChange(
+      bankId,
+      req.body
+    );
+    return res.json({
+      msg: RESPONSE.DATA_UPDATED,
+      data: updateData,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /****************************************************************************
  * blood Inventory Controller
- * Creating blood banks Inventory controller to Increment Blood unit Data 
- * * @description : This function to add a number of blood unit 
-*****************************************************************************/
+ * Creating blood banks Inventory controller to Increment Blood unit Data
+ * * @description : This function to add a number of blood unit
+ *****************************************************************************/
 exports.bloodInventoryIncrement = async (req, res) => {
-    try {
-        const bankId = req.data.id;
-        const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (bloodInventory == null) {
-            return res.JSON({
-                msg: RESPONSE.CREATE_INVENTORY
-            });
-        }
-        let keysInventory = Object.keys(bloodInventory.dataValues);
-        let updateKeys = Object.keys(req.body);
-        let valuesInventory = Object.values(bloodInventory.dataValues);
-        let updatevalues = Object.values(req.body);
-        const dataFilter = updatevalues.filter((value, index) => {
-            return value < 0;
-        });
-        if (dataFilter.length == 0) {
-            return res.json({
-                msg: RESPONSE.NEGATIVE_VALUES
-            });
-        }
-        const keysTotal = []
-        const updateObject = {};
-        for (let i = 0; i < keysInventory.length; i++) {
-            for (let j = 0; j < updateKeys.length; j++) {
-                if (keysInventory[i] == updateKeys[j]) {
-                    const totalValue = valuesInventory[i] + updatevalues[j];
-                    keysTotal.push(totalValue);
-                }
-            }
-        }
-        updateKeys.forEach((element, index) => {
-            updateObject[element] = keysTotal[index];
-        });
-        const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-        return res.json({
-            msg: RESPONSE.DATA_UPDATED
-        });
+  try {
+    const bankId = req.data.id;
+    const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
+    if (bloodInventory == null) {
+      return res.JSON({
+        msg: RESPONSE.CREATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    let keysInventory = Object.keys(bloodInventory.dataValues);
+    let updateKeys = Object.keys(req.body);
+    let valuesInventory = Object.values(bloodInventory.dataValues);
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+      return value < 0;
+    });
+    if (dataFilter.length == 0) {
+      return res.json({
+        msg: RESPONSE.NEGATIVE_VALUES,
+      });
     }
-}
-
-
-
+    const keysTotal = [];
+    const updateObject = {};
+    for (let i = 0; i < keysInventory.length; i++) {
+      for (let j = 0; j < updateKeys.length; j++) {
+        if (keysInventory[i] == updateKeys[j]) {
+          const totalValue = valuesInventory[i] + updatevalues[j];
+          keysTotal.push(totalValue);
+        }
+      }
+    }
+    updateKeys.forEach((element, index) => {
+      updateObject[element] = keysTotal[index];
+    });
+    const updateData = await bloodInventoryServices.bloodInventoryChange(
+      bankId,
+      updateObject
+    );
+    return res.json({
+      msg: RESPONSE.DATA_UPDATED,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /*************************************************************************
  * blood Inventory Controller
- * Creating blood banks Inventory controller to decrement Blood unit Data 
- * @description : This function to decrease a number of blood unit 
-***************************************************************************/
+ * Creating blood banks Inventory controller to decrement Blood unit Data
+ * @description : This function to decrease a number of blood unit
+ ***************************************************************************/
 exports.bloodInventoryDecrement = async (req, res) => {
-    try {
-        const bankId = req.data.id;
-        const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
-        if (bloodInventory == null) {
-            return res.JSON({
-                msg: RESPONSE.CREATE_INVENTORY
-            });
-        }
-        let keysInventory = Object.keys(bloodInventory.dataValues);
-        let updateKeys = Object.keys(req.body);
-        let valuesInventory = Object.values(bloodInventory.dataValues);
-        let updatevalues = Object.values(req.body);
-        const dataFilter = updatevalues.filter((value, index) => {
-            return value < 0;
-        })
-        if (dataFilter.length != 0) {
-            return res.json({
-                msg: RESPONSE.NEGATIVE_VALUES
-            });
-        }
-        let keysTotal = []
-        const updateObject = {};
-        for (let i = 0; i < keysInventory.length; i++) {
-            for (let j = 0; j < updateKeys.length; j++) {
-                if (keysInventory[i] == updateKeys[j]) {
-                    const totalValue = valuesInventory[i] - updatevalues[j];
-                    const totalKey = totalValue >= 0 ? keysTotal.push(totalValue) : keysTotal = [];
-                }
-            }
-        }
-        if (updateKeys.length != keysTotal.length) {
-            return res.json({
-                msg: RESPONSE.NOT_VALID_REQUEST
-            });
-        }
-        updateKeys.forEach((element, index) => {
-            updateObject[element] = keysTotal[index];
-        });
-        const updateData = await bloodInventoryServices.bloodInventoryChange(bankId, updateObject)
-        return res.json({
-            msg: RESPONSE.DATA_UPDATED
-        });
+  try {
+    const bankId = req.data.id;
+    const bloodInventory = await bloodBankService.bloodInventoryById(bankId);
+    if (bloodInventory == null) {
+      return res.JSON({
+        msg: RESPONSE.CREATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    let keysInventory = Object.keys(bloodInventory.dataValues);
+    let updateKeys = Object.keys(req.body);
+    let valuesInventory = Object.values(bloodInventory.dataValues);
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+      return value < 0;
+    });
+    if (dataFilter.length != 0) {
+      return res.json({
+        msg: RESPONSE.NEGATIVE_VALUES,
+      });
     }
-}
+    let keysTotal = [];
+    const updateObject = {};
+    for (let i = 0; i < keysInventory.length; i++) {
+      for (let j = 0; j < updateKeys.length; j++) {
+        if (keysInventory[i] == updateKeys[j]) {
+          const totalValue = valuesInventory[i] - updatevalues[j];
+          const totalKey =
+            totalValue >= 0 ? keysTotal.push(totalValue) : (keysTotal = []);
+        }
+      }
+    }
+    if (updateKeys.length != keysTotal.length) {
+      return res.json({
+        msg: RESPONSE.NOT_VALID_REQUEST,
+      });
+    }
+    updateKeys.forEach((element, index) => {
+      updateObject[element] = keysTotal[index];
+    });
+    const updateData = await bloodInventoryServices.bloodInventoryChange(
+      bankId,
+      updateObject
+    );
+    return res.json({
+      msg: RESPONSE.DATA_UPDATED,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /***************************************************
  * blood price Inventory Controller
  * Creating blood banks price Inventory controller
-*****************************************************/
+ *****************************************************/
 exports.priceBloodInventory = async (req, res) => {
-    try {
-        const authId = req.data.id;
-        req.body.UserId = authId;
-        req.body.created_by = req.data.username;
-        req.body.updated_by = req.data.username;
-        const findUserData = await bloodBankService.bloodPriceInventoryById(authId);
-        if (findUserData != null) {
-            return res.json({
-                msg: RESPONSE.REGENERATE_INVENTORY
-            });
-        }
-        let updatevalues = Object.values(req.body);
-        const dataFilter = updatevalues.filter((value, index) => {
-            return value < 0;
-        });
-        if (dataFilter.length != 0) {
-            return res.json({
-                msg: RESPONSE.NEGATIVE_VALUES
-            });
-        }
-        const createInventory = await bloodBankService.bloodPriceInventoryCreation(req.body);
-        return res.json({
-            msg: RESPONSE.CREATED_SUCCESS,
-            data: createInventory
-        });
+  try {
+    const authId = req.data.id;
+    req.body.UserId = authId;
+    req.body.created_by = req.data.username;
+    req.body.updated_by = req.data.username;
+    const findUserData = await bloodBankService.bloodPriceInventoryById(authId);
+    if (findUserData != null) {
+      return res.json({
+        msg: RESPONSE.REGENERATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    let updatevalues = Object.values(req.body);
+    const dataFilter = updatevalues.filter((value, index) => {
+      return value < 0;
+    });
+    if (dataFilter.length != 0) {
+      return res.json({
+        msg: RESPONSE.NEGATIVE_VALUES,
+      });
     }
-}
-
-
+    const createInventory = await bloodBankService.bloodPriceInventoryCreation(
+      req.body
+    );
+    return res.json({
+      msg: RESPONSE.CREATED_SUCCESS,
+      data: createInventory,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
 
 /***********************************************************
  * blood Inventory Controller
- * Creating blood banks Inventory controller to update Data 
-************************************************************/
+ * Creating blood banks Inventory controller to update Data
+ ************************************************************/
 
 exports.bloodBankpriceInventoryUpdate = async (req, res) => {
-    try {
-        const bankId = req.data.id;
-        const findInventory = await bloodBankService.priceInventorybyId(bankId);
-        if (findInventory == null) {
-            return res.json({
-                msg: RESPONSE.CREATE_INVENTORY
-            });
-        }
-        const updateData = await bloodInventoryServices.priceInventoryChange(bankId, req.body)
-        return res.json({
-            msg: RESPONSE.DATA_UPDATED,
-            data: updateData
-        });
+  try {
+    const bankId = req.data.id;
+    const findInventory = await bloodBankService.priceInventorybyId(bankId);
+    if (findInventory == null) {
+      return res.json({
+        msg: RESPONSE.CREATE_INVENTORY,
+      });
     }
-    catch (e) {
-        return res.status(STATUS_CODE.EXCEPTION_ERROR).json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
-    }
-}
-
+    const updateData = await bloodInventoryServices.priceInventoryChange(
+      bankId,
+      req.body
+    );
+    return res.json({
+      msg: RESPONSE.DATA_UPDATED,
+      data: updateData,
+    });
+  } catch (e) {
+    return res
+      .status(STATUS_CODE.EXCEPTION_ERROR)
+      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+  }
+};
