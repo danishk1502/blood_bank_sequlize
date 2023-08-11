@@ -152,7 +152,6 @@ exports.userAuthentication = async (req, res) => {
   try {
     const { username, password } = req.body;
     const users = await service.findOneUser({ username: username });
-    console.log(users);
     if (users == null) {
       return res.status(403).json({
         status: 403,
