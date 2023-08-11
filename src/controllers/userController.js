@@ -6,6 +6,7 @@ const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const userActionRoutes = require("../services/userAction");
 const Joi = require("joi");
 const ENUM = require("../utils/responsesutil/enumUtils");
+const response = require("../middelware/responseMiddelware");
 
 /*************************************************************************************************************************************
  * userRegister Schema for Joi Validations
@@ -81,7 +82,7 @@ exports.userRegister = async (req, res) => {
     }
     if (role == ENUM.USER_ROLE.BLOOD_BANK) {
       userStatus = ENUM.USERSTATUS.DEACTIVE;
-    } 
+    }
     const userStaticInfo = {
       is_deleted: "false",
       created_by: username,
@@ -92,17 +93,17 @@ exports.userRegister = async (req, res) => {
     userInfo.password = md5(password);
     Object.assign(userInfo, userStaticInfo);
     const saveData = await service.userRegistrationData(userInfo);
-    return res
-      .status(STATUS_CODE.SUCCESS)
-      .json({
-        status: STATUS_CODE.SUCCESS,
-        data: saveData,
-        message: RESPONSE.REGISTER_SUCCESSFULLY,
-      });
+    return res.status(STATUS_CODE.SUCCESS).json({
+      status: STATUS_CODE.SUCCESS,
+      data: saveData,
+      message: RESPONSE.REGISTER_SUCCESSFULLY,
+    });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    // return response()
+    // STATUS_CODE.EXCEPTION_ERROR, RESPONSE.EXCEPTION_ERROR, 
+    // res
+    //   .status()
+    //   .json({ status: STATUS_CODE.ERROR, message:  });
   }
 };
 
@@ -151,16 +152,14 @@ exports.superUserRegister = async (req, res) => {
       updated_by: username,
       is_active: "true",
       user_status: userStatus,
-    }; 
+    };
     Object.assign(userInfo, userStaticInfo);
     const saveData = await service.userRegistrationData(userInfo);
-    return res
-      .status(200)
-      .json({
-        status: 200,
-        data: saveData,
-        message: RESPONSE.REGISTER_SUCCESSFULLY,
-      });
+    return res.status(200).json({
+      status: 200,
+      data: saveData,
+      message: RESPONSE.REGISTER_SUCCESSFULLY,
+    });
   } catch (e) {
     return res
       .status(STATUS_CODE.EXCEPTION_ERROR)
@@ -181,41 +180,33 @@ exports.userAuthentication = async (req, res) => {
     const users = await service.findOneUser({ username: username });
     console.log(users);
     if (users == null) {
-      return res
-        .status(403)
-        .json({
-          status: 403,
-          data: users,
-          message: RESPONSE.USERNAME_NOT_VALID,
-        });
+      return res.status(403).json({
+        status: 403,
+        data: users,
+        message: RESPONSE.USERNAME_NOT_VALID,
+      });
     }
     if (users.user_status != ENUM.USERSTATUS.ACTIVE) {
-      return res
-        .status(202)
-        .json({
-          status: 202,
-          data: null,
-          message: RESPONSE.NOT_PERMISION_TO_LOGIN,
-        });
+      return res.status(202).json({
+        status: 202,
+        data: null,
+        message: RESPONSE.NOT_PERMISION_TO_LOGIN,
+      });
     }
     if (users.password != md5(password)) {
-      return res
-        .status(403)
-        .json({
-          status: 403,
-          data: null,
-          message: RESPONSE.PASSWORD_INCORRECT,
-        });
+      return res.status(403).json({
+        status: 403,
+        data: null,
+        message: RESPONSE.PASSWORD_INCORRECT,
+      });
     }
     const loginData = await service.userAuthentication(username);
-    return res
-      .status(200)
-      .json({
-        status: 200,
-        data: users,
-        message: RESPONSE.LOGIN_SUCCESSFULLY,
-        token: req.token,
-      });
+    return res.status(200).json({
+      status: 200,
+      data: users,
+      message: RESPONSE.LOGIN_SUCCESSFULLY,
+      token: req.token,
+    });
   } catch (e) {
     return res
       .status(STATUS_CODE.EXCEPTION_ERROR)
@@ -235,13 +226,11 @@ exports.userDeletion = async (req, res) => {
     const { username, password } = req.body;
     const user = await service.findOneUser({ username: username });
     if (user == null) {
-      return res
-        .status(403)
-        .json({
-          status: 403,
-          data: user,
-          message: RESPONSE.USERNAME_NOT_VALID,
-        });
+      return res.status(403).json({
+        status: 403,
+        data: user,
+        message: RESPONSE.USERNAME_NOT_VALID,
+      });
     }
     if (req.data.id != user.id) {
       return res
@@ -249,22 +238,18 @@ exports.userDeletion = async (req, res) => {
         .json({ status: 403, message: RESPONSE.PERMISSSION_DENIED });
     }
     if (user.user_status != ENUM.USERSTATUS.ACTIVE) {
-      return res
-        .status(202)
-        .json({
-          status: 202,
-          data: null,
-          message: RESPONSE.NOT_PERMISION_TO_LOGIN,
-        });
+      return res.status(202).json({
+        status: 202,
+        data: null,
+        message: RESPONSE.NOT_PERMISION_TO_LOGIN,
+      });
     }
     if (user.password != md5(password)) {
-      return res
-        .status(403)
-        .json({
-          status: 403,
-          data: null,
-          message: RESPONSE.PASSWORD_INCORRECT,
-        });
+      return res.status(403).json({
+        status: 403,
+        data: null,
+        message: RESPONSE.PASSWORD_INCORRECT,
+      });
     }
     const userDelete = await service.userDeletion(username);
     return res
@@ -287,15 +272,12 @@ exports.superuserDeletion = async (req, res) => {
   try {
     const { username } = req.body;
     const findUser = await service.findOneUser({ id: req.data.id });
-    if (findUser.role != ENUM.USER_ROLE.SUPERUSER)
-     {
-      return res
-        .status(202)
-        .json({
-          status: 202,
-          data: null,
-          message: RESPONSE.PERMISSSION_DENIED,
-        });
+    if (findUser.role != ENUM.USER_ROLE.SUPERUSER) {
+      return res.status(202).json({
+        status: 202,
+        data: null,
+        message: RESPONSE.PERMISSSION_DENIED,
+      });
     } //Checking who deleted functions
     const userDelete = await service.userDeletion(username);
     return res
@@ -340,13 +322,11 @@ exports.userUpdation = async (req, res) => {
       updateData.password = md5(updateData.password);
     }
     const updationData = await service.userUpdation(updateData, tokenData);
-    return res
-      .status(202)
-      .json({
-        status: 202,
-        data: updationData,
-        message: RESPONSE.DATA_UPDATED,
-      });
+    return res.status(202).json({
+      status: 202,
+      data: updationData,
+      message: RESPONSE.DATA_UPDATED,
+    });
   } catch (e) {
     return res
       .status(STATUS_CODE.EXCEPTION_ERROR)
@@ -408,13 +388,11 @@ exports.userRoleFilter = async (req, res) => {
   try {
     const { role } = req.body;
     if (role != ENUM.USER_ROLE.BLOOD_BANK) {
-      return res
-        .status(403)
-        .json({
-          status: 403,
-          data: null,
-          message: RESPONSE.PERMISSSION_DENIED,
-        });
+      return res.status(403).json({
+        status: 403,
+        data: null,
+        message: RESPONSE.PERMISSSION_DENIED,
+      });
     }
     const dataRole = await service.findUser({
       role: req.body.role,
@@ -425,13 +403,11 @@ exports.userRoleFilter = async (req, res) => {
         ? res
             .status(200)
             .json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET })
-        : res
-            .status(404)
-            .json({
-              status: 404,
-              data: dataRole,
-              message: RESPONSE.DATA_NOT_FOUND,
-            });
+        : res.status(404).json({
+            status: 404,
+            data: dataRole,
+            message: RESPONSE.DATA_NOT_FOUND,
+          });
     return dataRoleCondition;
   } catch (e) {
     return res
@@ -511,7 +487,10 @@ exports.requestAcception = async (req, res) => {
     if (user.role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res.json({ MSG: RESPONSE.DATA_GET });
     }
-    const updateData = { user_status: ENUM.USERSTATUS.ACTIVE, updated_by: req.data.username };
+    const updateData = {
+      user_status: ENUM.USERSTATUS.ACTIVE,
+      updated_by: req.data.username,
+    };
     const updationData = await service.userUpdation(updateData, req.body.id);
     return res.json({ msg: RESPONSE.DATA_GET, data: updationData });
   } catch (e) {

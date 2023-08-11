@@ -1,15 +1,20 @@
-const md5 = require('md5')
-
+const md5 = require("md5");
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     /**
      * Add seed commands here.
      *
-     * Example:*/
+     * Example:
+     * await queryInterface.bulkInsert('People', [{
+     *   name: 'John Doe',
+     *   isBetaMember: false
+     * }], {});
+    */
     await queryInterface.bulkInsert('users', [{
+      id : "hwgh-fdsfs-21423432",
       name: 'John',
       lname: 'Doe',
       username: 'johndoe123',
@@ -26,7 +31,7 @@ module.exports = {
     }], {});
   },
 
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *

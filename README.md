@@ -73,5 +73,3 @@ md5()
 ```
 
 
-
-is_deleted: "false", created_by: username, updated_by: username, is_active: "true", user_status: userStatus

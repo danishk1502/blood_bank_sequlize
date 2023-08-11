@@ -28,10 +28,7 @@ db.userAction = require("./userAction")(sequelize, DataTypes);
 db.userPayments = require("./paymentData")(sequelize, DataTypes);
 db.bloodBankInventory = require("./bloodInventory")(sequelize, DataTypes);
 db.bloodBankDetail = require("./bloodBankDetails")(sequelize, DataTypes);
-db.priceBloodInventory = require("./bloodBankPriceInventory")(
-  sequelize,
-  DataTypes
-);
+db.priceBloodInventory = require("./bloodBankPriceInventory")(sequelize,DataTypes);
 
 fs.readdirSync(__dirname)
   .filter((file) => {
