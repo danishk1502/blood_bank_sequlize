@@ -40,7 +40,11 @@ const RESPONSE = {
     NOT_ABLE_TO_DONATE : "You are not able to donate blood yet",
     WRONG_BLOOD_BANK :"you choose wrong blood bank",
     LOG_OUT:"You are logged out",
-    BLOOD_BANK_REQUEST_REJECTED:"Blood Banks Request rejected Successfully"
+    BLOOD_BANK_REQUEST_REJECTED:"Blood Banks Request rejected Successfully",
+    REQUEST_REJEECTED: "Request already Accepted",
+
+    INVALID_TOKEN : "Invalid Token",
+    PAY_AMOUNT : "Please Pay complete amount"
 
 
 

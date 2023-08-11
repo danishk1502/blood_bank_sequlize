@@ -147,7 +147,7 @@ exports.userRequestAcception = async (req, res) => {
       id: requestId,
       usersBloodBankId: bankId,
     });
-    if (req.body.status != "Accept") {
+    if (req.body.status != ENUM.REQUEST.ACCEPT) {
       if (findRequest.status != null) {
         if (findRequest.rejected_by == null) {
           return res.json({ msg: RESPONSE.PREACCEPTED_REQUEST });
@@ -192,10 +192,8 @@ exports.userRequestAcception = async (req, res) => {
       [findRequest.blood_group]: blood_units,
     });
     const paymentData = {
-      total_amount:
-        priceDetails[findRequest.blood_group] *
-        findRequest.number_of_blood_unit,
-      payment: "Pending",
+      total_amount:priceDetails[findRequest.blood_group] * findRequest.number_of_blood_unit,
+      payment: ENUM.PAYMENT_STATUS.PENDING,
     };
     const paymentDataUpdate = await userPayments.updatePaymentData(
       paymentData,
@@ -238,7 +236,7 @@ exports.userCancelRequest = async (req, res) => {
         ),
       ]);
       return res.json({
-        msg: "Request is rejected",
+        msg: RESPONSE.REQUEST_REJEECTED,
         data: requestAcception,
       });
     } else if (findRequest.status == ENUM.REQUESTSTATUS.ACCEPT ) {
@@ -246,7 +244,7 @@ exports.userCancelRequest = async (req, res) => {
       const checkPayment = await userPayments.findPayment({
         userActionId: actionId,
       });
-      if (checkPayment.payment == "Complete") {
+      if (checkPayment.payment == ENUM.PAYMENT_STATUS.COMPLETE) {
         return res.json({
           msg: RESPONSE.REJECTION_AFTER_PAYMENT,
         });
@@ -301,7 +299,7 @@ exports.userPaymentDetails = async (req, res) => {
     const userId = req.data.id;
     const pendingPaymentData = await userPayments.findPayment({
       UserId: userId,
-      payment: "Pending",
+      payment: ENUM.PAYMENT_STATUS.PENDING,
     });
     const pendingCondition =
       pendingPaymentData == null
@@ -327,14 +325,18 @@ exports.userPaymentCompleteion = async (req, res) => {
     const paymentFind = await userPayments.findPayment({
       userActionId: requestId,
     });
-    if (paymentFind.payment != "Pending") {
-      return res.send("Request is rejected or may be amount paid.....");
+    if (paymentFind.payment != ENUM.PAYMENT_STATUS.PENDING) {
+      return res.json({
+        msg: RESPONSE.DATA_NOT_FOUND
+      });
     }
     if (req.body.paid_amount !== paymentFind.total_amount) {
-      return res.send("Please Pay complete amount");
+      return res.JSON({
+        msg : RESPONSE.PAY_AMOUNT
+      })
     }
     const data = {
-      payment: "Complete",
+      payment: ENUM.PAYMENT_STATUS.COMPLETE,
       transaction_id: transaction_id,
       updated_by: req.data.username,
     };

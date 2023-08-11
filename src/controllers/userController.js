@@ -84,10 +84,10 @@ exports.userRegister = async (req, res) => {
       userStatus = ENUM.USERSTATUS.DEACTIVE;
     }
     const userStaticInfo = {
-      is_deleted: "false",
+      is_deleted: ENUM.ACTIVE.FALSE,
       created_by: username,
       updated_by: username,
-      is_active: "true",
+      is_active: ENUM.ACTIVE.TRUE,
       user_status: userStatus,
     };
     userInfo.password = md5(password);
@@ -147,10 +147,10 @@ exports.superUserRegister = async (req, res) => {
     }
     let userStatus = ENUM.USERSTATUS.ACTIVE;
     const userStaticInfo = {
-      is_deleted: "false",
+      is_deleted: ENUM.ACTIVE.TRUE,
       created_by: username,
       updated_by: username,
-      is_active: "true",
+      is_active: ENUM.ACTIVE.TRUE,
       user_status: userStatus,
     };
     Object.assign(userInfo, userStaticInfo);
@@ -278,7 +278,7 @@ exports.superuserDeletion = async (req, res) => {
         data: null,
         message: RESPONSE.PERMISSSION_DENIED,
       });
-    } //Checking who deleted functions
+    } 
     const userDelete = await service.userDeletion(username);
     return res
       .status(202)
@@ -451,7 +451,7 @@ exports.pendingRequest = async (req, res) => {
 
 exports.requestDecline = async (req, res) => {
   try {
-    if (req.body.request != "Decline") {
+    if (req.body.request != ENUM.REQUEST.DECLINE) {
       res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
     const user = await service.findId(req.body.id);
@@ -477,7 +477,7 @@ exports.requestDecline = async (req, res) => {
 
 exports.requestAcception = async (req, res) => {
   try {
-    if (req.body.request != "Accept") {
+    if (req.body.request != ENUM.REQUEST.ACCEPT) {
       return res.json({ msg: RESPONSE.NOT_VALID_REQUEST });
     }
     const user = await service.findOneUser({ id: req.body.id });

@@ -17,8 +17,16 @@ exports.USER_ROLE = {
 
 exports.REQUESTSTATUS = {
     ACCEPT : "Accepted",
-    DECLINE : "Reject"
+    DECLINE : "Reject",
+    
 }
+
+exports.REQUEST = {
+  ACCEPT : "Accept",
+  DECLINE : "Decline",
+}
+
+
 
 //users Request Type ENUM
 
@@ -33,4 +41,27 @@ exports.USERREQUESTTYPE = {
 exports.DONATION_TYPE = {
     DONE : "Done",
     INCOMPLETE : "Incomplete"
+}
+
+
+//Payment status 
+
+exports.PAYMENT_STATUS = {
+  COMPLETE :"Complete",
+  INCOMPLETE : "Incomplete",
+  PENDING : "Pending"
+}
+
+
+//Active Status 
+
+exports.ACTIVE = {
+  TRUE:"true",
+  FALSE:"false"
+}
+
+//Undefined 
+
+exports.UNDEFINED = {
+ NOT_DEFINE : "undefined"
 }
