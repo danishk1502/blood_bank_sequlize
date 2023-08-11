@@ -5,6 +5,7 @@ const RESPONSE = require("../utils/responsesutil/responseutils");
 const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const ENUM = require("../utils/responsesutil/enumUtils");
 const { allow } = require("joi");
+const {response} = require("../utils/responsesutil/resUtils");
 
 /********************************************
  * blood Bank Detail Controller
@@ -32,9 +33,7 @@ exports.bloodBankDetails = async (req, res) => {
       msg: RESPONSE.REGENERATE_INVENTORY,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -58,9 +57,7 @@ exports.bloodBankUpdateDetails = async (req, res) => {
       data: createDetails,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -93,9 +90,7 @@ exports.bloodBankInventory = async (req, res) => {
     );
     return res.json({ msg: RESPONSE.CREATED_SUCCESS, data: createInventory });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -122,9 +117,7 @@ exports.bloodBankInventoryUpdate = async (req, res) => {
       data: updateData,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -175,9 +168,7 @@ exports.bloodInventoryIncrement = async (req, res) => {
       msg: RESPONSE.DATA_UPDATED,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -273,9 +264,7 @@ exports.priceBloodInventory = async (req, res) => {
       data: createInventory,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -302,9 +291,7 @@ exports.bloodBankpriceInventoryUpdate = async (req, res) => {
       data: updateData,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 

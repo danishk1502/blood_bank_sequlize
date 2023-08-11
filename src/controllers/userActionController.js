@@ -7,6 +7,7 @@ const userActionServices = require("../services/userAction");
 const userPayments = require("../services/paymentServices");
 const dateTime = require("../utils/dateandtime");
 const ENUM = require("../utils/responsesutil/enumUtils");
+const {response} = require("../utils/responsesutil/resUtils");
 
 /*****************************************************************************************************************************************************************
 *******************************************************************User Action for Blood Request******************************************************************
@@ -78,9 +79,7 @@ exports.userRequestAction = async (req, res) => {
       return res.json({ data: payDetails });
     }
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -99,13 +98,11 @@ exports.userRequestList = async (req, res) => {
     });
     const requestCheck =
       findRequest == null
-        ? res.json({ msg: RESPONSE.DATA_NOT_FOUND })
+        ? res.json({ status :STATUS_CODE.NOT_FOUND, msg: RESPONSE.DATA_NOT_FOUND })
         : res.json({ data: findRequest });
     return requestCheck;
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -124,13 +121,11 @@ exports.userDonationList = async (req, res) => {
     });
     const requestCheck =
       findRequest == null
-        ? res.json({ msg: RESPONSE.DATA_NOT_FOUND })
+        ? res.json({status :STATUS_CODE.NOT_FOUND, msg: RESPONSE.DATA_NOT_FOUND })
         : res.json({ data: findRequest });
     return requestCheck;
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -171,7 +166,7 @@ exports.userRequestAcception = async (req, res) => {
       return res.json({ msg: RESPONSE.REJECTED_REQUEST });
     }
     if (findRequest == null) {
-      return res.json({ msg: RESPONSE.DATA_NOT_FOUND });
+      return res.json({status :STATUS_CODE.NOT_FOUND, msg: RESPONSE.DATA_NOT_FOUND });
     }
     if (findRequest.status != null) {
       return res.json({ msg: RESPONSE.REQUEST_NOT_FOUND });
@@ -208,9 +203,7 @@ exports.userRequestAcception = async (req, res) => {
     const blood_group = findRequest.blood_group;
     return res.json({ msg: RESPONSE.CREATED_SUCCESS });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -283,9 +276,7 @@ exports.userCancelRequest = async (req, res) => {
       return res.json({ msg: "" });
     }
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -307,9 +298,7 @@ exports.userPaymentDetails = async (req, res) => {
         : res.json({ data: pendingPaymentData, msg: RESPONSE.DATA_GET });
     return pendingCondition;
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -327,6 +316,7 @@ exports.userPaymentCompleteion = async (req, res) => {
     });
     if (paymentFind.payment != ENUM.PAYMENT_STATUS.PENDING) {
       return res.json({
+        status :STATUS_CODE.NOT_FOUND,
         msg: RESPONSE.DATA_NOT_FOUND
       });
     }
@@ -355,9 +345,7 @@ exports.userPaymentCompleteion = async (req, res) => {
     };
     return res.json({ payment_receipt: receipt });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -408,9 +396,7 @@ exports.donationRequest = async (req, res) => {
     const usersAction = await userActionServices.userRequestAction(data);
     return res.send(usersAction);
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -465,9 +451,7 @@ exports.donationAcception = async (req, res) => {
       return rejectionCheck;
     }
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -517,9 +501,7 @@ exports.donationConfirmation = async (req, res) => {
     );
     return res.json({ msg: RESPONSE.DONATION_COMPLETE });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -552,8 +534,6 @@ exports.donationCancel = async (req, res) => {
     );
     res.json({ msg: RESPONSE.REQUEST_REJECTED });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };

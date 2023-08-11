@@ -29,12 +29,6 @@ router.patch("/login", usermiddelware.loginMiddelware, userRoute.userAuthenticat
 
 
 
-/*********************************************************
-* Logout route
-*********************************************************/
-router.patch('/logout', usermiddelware.jwtVerification, userRoute.logout);
-
-
 
 /*****************************************************
  * User Updation Route*

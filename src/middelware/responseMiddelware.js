@@ -1,5 +1,5 @@
 
-const resMiddelware = (statusCode, statusMsg, data)=>{
+const resMiddelware = (res, statusCode, statusMsg, data)=>{
     return res
     .status(statusCode)
     .json({ status: statusCode, message: statusMsg, data:data });

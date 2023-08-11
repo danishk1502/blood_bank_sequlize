@@ -2,7 +2,7 @@
 const RESPONSE = {
     REGISTER_SUCCESSFULLY: "Registration Complete",
     LOGIN_SUCCESSFULLY: "Login successfully",
-    USERNAME_EXIST: "username already Exist",
+    USERNAME_EXIST: "username or Email already Exist",
     EMAIL_EXIST: "email already exist",
     NOT_PERMISION_TO_LOGIN: "your registration request under progress",
     PASSWORD_INCORRECT: "Incorrect Password",

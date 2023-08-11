@@ -6,7 +6,7 @@ const STATUS_CODE = require("../utils/responsesutil/statusCodeUtils");
 const userActionRoutes = require("../services/userAction");
 const Joi = require("joi");
 const ENUM = require("../utils/responsesutil/enumUtils");
-const response = require("../middelware/responseMiddelware");
+const {response} = require("../utils/responsesutil/resUtils");
 
 /*************************************************************************************************************************************
  * userRegister Schema for Joi Validations
@@ -46,8 +46,7 @@ const userUpdationSchema = Joi.object({
 
 exports.userRegister = async (req, res) => {
   try {
-    const { name, lname, email, password, username, role, state, distt } =
-      req.body;
+    const { name, lname, email, password, username, role, state, distt } = req.body;
     const userInfo = {
       name,
       lname,
@@ -66,23 +65,15 @@ exports.userRegister = async (req, res) => {
       service.findOneUser({ username: username }),
       service.findOneUser({ email: email }),
     ]);
-    if (userName != null) {
+    if (userName != null || userEmail != null) {
       return res
         .status(403)
         .json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST });
     }
-    if (userEmail != null) {
-      return res
-        .status(403)
-        .json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
+    if(role ==  ENUM.USER_ROLE.SUPERUSER ){
+      return res.json({ msg: RESPONSE.PERMISSSION_DENIED })
     }
-    let userStatus = ENUM.USERSTATUS.ACTIVE;
-    if (role == ENUM.USER_ROLE.SUPERUSER) {
-      return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
-    }
-    if (role == ENUM.USER_ROLE.BLOOD_BANK) {
-      userStatus = ENUM.USERSTATUS.DEACTIVE;
-    }
+    let userStatus = role == ENUM.USER_ROLE.BLOOD_BANK ? ENUM.USERSTATUS.DEACTIVE : ENUM.USERSTATUS.ACTIVE;
     const userStaticInfo = {
       is_deleted: ENUM.ACTIVE.FALSE,
       created_by: username,
@@ -91,19 +82,10 @@ exports.userRegister = async (req, res) => {
       user_status: userStatus,
     };
     userInfo.password = md5(password);
-    Object.assign(userInfo, userStaticInfo);
-    const saveData = await service.userRegistrationData(userInfo);
-    return res.status(STATUS_CODE.SUCCESS).json({
-      status: STATUS_CODE.SUCCESS,
-      data: saveData,
-      message: RESPONSE.REGISTER_SUCCESSFULLY,
-    });
+    const saveData = await service.userRegistrationData({...userInfo, ...userStaticInfo});
+    return response(res, saveData, RESPONSE.REGISTER_SUCCESSFULLY, STATUS_CODE.SUCCESS);
   } catch (e) {
-    // return response()
-    // STATUS_CODE.EXCEPTION_ERROR, RESPONSE.EXCEPTION_ERROR, 
-    // res
-    //   .status()
-    //   .json({ status: STATUS_CODE.ERROR, message:  });
+      return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -135,15 +117,10 @@ exports.superUserRegister = async (req, res) => {
       service.findOneUser({ username: username }),
       service.findOneUser({ email: email }),
     ]);
-    if (userName != null) {
+    if (userName != null || userEmail != null) {
       return res
         .status(403)
         .json({ status: 403, data: null, message: RESPONSE.USERNAME_EXIST });
-    }
-    if (userEmail != null) {
-      return res
-        .status(403)
-        .json({ status: 403, data: null, message: RESPONSE.EMAIL_EXIST });
     }
     let userStatus = ENUM.USERSTATUS.ACTIVE;
     const userStaticInfo = {
@@ -153,17 +130,14 @@ exports.superUserRegister = async (req, res) => {
       is_active: ENUM.ACTIVE.TRUE,
       user_status: userStatus,
     };
-    Object.assign(userInfo, userStaticInfo);
-    const saveData = await service.userRegistrationData(userInfo);
+    const saveData = await service.userRegistrationData({...userInfo, ...userStaticInfo});
     return res.status(200).json({
       status: 200,
       data: saveData,
       message: RESPONSE.REGISTER_SUCCESSFULLY,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -201,16 +175,9 @@ exports.userAuthentication = async (req, res) => {
       });
     }
     const loginData = await service.userAuthentication(username);
-    return res.status(200).json({
-      status: 200,
-      data: users,
-      message: RESPONSE.LOGIN_SUCCESSFULLY,
-      token: req.token,
-    });
+    return response(res, req.token, RESPONSE.LOGIN_SUCCESSFULLY, STATUS_CODE.SUCCESS);
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -256,9 +223,7 @@ exports.userDeletion = async (req, res) => {
       .status(202)
       .json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -278,15 +243,13 @@ exports.superuserDeletion = async (req, res) => {
         data: null,
         message: RESPONSE.PERMISSSION_DENIED,
       });
-    } 
+    }
     const userDelete = await service.userDeletion(username);
     return res
       .status(202)
       .json({ status: 204, data: null, message: RESPONSE.DELETION_COMPLETE });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -328,9 +291,7 @@ exports.userUpdation = async (req, res) => {
       message: RESPONSE.DATA_UPDATED,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -352,9 +313,7 @@ exports.userUniqueGet = async (req, res) => {
       .status(200)
       .json({ status: 200, data: userUnique, message: RESPONSE.DATA_GET });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -371,9 +330,7 @@ exports.userGet = async (req, res) => {
       .status(200)
       .json({ status: 200, data: users, message: RESPONSE.DATA_GET });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -404,15 +361,13 @@ exports.userRoleFilter = async (req, res) => {
             .status(200)
             .json({ status: 200, data: dataRole, message: RESPONSE.DATA_GET })
         : res.status(404).json({
-            status: 404,
+            status: STATUS_CODE.NOT_FOUND,
             data: dataRole,
             message: RESPONSE.DATA_NOT_FOUND,
           });
     return dataRoleCondition;
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -438,9 +393,7 @@ exports.pendingRequest = async (req, res) => {
       data: bloodBankList,
     });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -456,7 +409,7 @@ exports.requestDecline = async (req, res) => {
     }
     const user = await service.findId(req.body.id);
     if (user == null) {
-      res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND });
+      res.json({ status: STATUS_CODE.NOT_FOUND, message: RESPONSE.DATA_NOT_FOUND });
     }
     if (user.role != ENUM.USER_ROLE.BLOOD_BANK) {
       res.json({ MSG: RESPONSE.PEE });
@@ -464,9 +417,7 @@ exports.requestDecline = async (req, res) => {
     const userDelete = await service.userDeletion(user.username);
     res.json({ msg: RESPONSE.BLOOD_BANK_REQUEST_REJECTED });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -482,7 +433,7 @@ exports.requestAcception = async (req, res) => {
     }
     const user = await service.findOneUser({ id: req.body.id });
     if (user == null) {
-      return res.json({ status: 404, message: RESPONSE.DATA_NOT_FOUND });
+      return res.json({status: STATUS_CODE.NOT_FOUND, message: RESPONSE.DATA_NOT_FOUND });
     }
     if (user.role != ENUM.USER_ROLE.BLOOD_BANK) {
       return res.json({ MSG: RESPONSE.DATA_GET });
@@ -494,9 +445,7 @@ exports.requestAcception = async (req, res) => {
     const updationData = await service.userUpdation(updateData, req.body.id);
     return res.json({ msg: RESPONSE.DATA_GET, data: updationData });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -510,9 +459,7 @@ exports.userAllRequests = async (req, res) => {
     const findData = await userActionRoutes.requestFind({ UserId: userId });
     return res.json({ data: findData });
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -530,9 +477,7 @@ exports.userPendingRequests = async (req, res) => {
     });
     return res.send(findData);
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
@@ -550,28 +495,8 @@ exports.userAcceptedRequests = async (req, res) => {
     });
     return res.send(findData);
   } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
+    return response(res, null, RESPONSE.EXCEPTION_ERROR, STATUS_CODE.EXCEPTION_ERROR);
   }
 };
 
-/*****************************************************************
- * Logout api for users
- * **************************************************************/
-exports.logout = async (req, res) => {
-  try {
-    const token = req.headers["authorization"];
-    jwt.sign(token, " ", { expiresIn: "1sec" }, (result) => {
-      if (result) {
-        return res.json({ msg: RESPONSE.LOG_OUT });
-      } else {
-        return res.json({ msg: RESPONSE.PERMISSSION_DENIED });
-      }
-    });
-  } catch (e) {
-    return res
-      .status(STATUS_CODE.EXCEPTION_ERROR)
-      .json({ status: STATUS_CODE.ERROR, message: RESPONSE.EXCEPTION_ERROR });
-  }
-};
+

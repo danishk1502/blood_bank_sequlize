@@ -37,10 +37,9 @@ const jwtVerification = async (req, res, next) => {
     return res.json({
       message: RESPONSE.INVALID_TOKEN,
     });
-  } else {
-    req.data = verifiedToken;
-    next();
   }
+  req.data = verifiedToken;
+  next();
 };
 
 //Role base Middelware for user
@@ -68,7 +67,7 @@ const userRoleMiddelware = async (req, res, next) => {
 
 //Role base Middelware for blood_bank
 const bloodBankRoleMiddelware = async (req, res, next) => {
-  const token = req.data;
+  const token = req.data.id;
   const findRole = await jwtValidation.userRoleMiddelwareUtil(token);
   if (findRole instanceof jwt.JsonWebTokenError || findRole == undefined) {
     return res.json({
@@ -93,7 +92,7 @@ const bloodBankRoleMiddelware = async (req, res, next) => {
 
 //Role base Middelware for superuser
 const superuserRoleMiddelware = async (req, res, next) => {
-  const token = req.data;
+  const token = req.data.id;
   const findRole = await jwtValidation.userRoleMiddelwareUtil(token);
   if (findRole instanceof jwt.JsonWebTokenError || findRole == undefined) {
     return res.json({
